@@ -1,1 +1,1 @@
-flutter run --release --dart-define=ZSTUDIO_APP_NAME="Zhytomyrska Politechnica"
+flutter run --release --dart-define=SOFTWINE_APP_NAME="Zhytomyr Polytechnic"

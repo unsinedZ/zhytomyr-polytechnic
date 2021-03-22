@@ -1,4 +1,4 @@
 class AppContext {
-  static const String appName = String.fromEnvironment('ZSTUDIO_APP_NAME',
-      defaultValue: 'Zhytomyrska Politechnica');
+  static const String appName = String.fromEnvironment('SOFTWINE_APP_NAME',
+      defaultValue: 'Zhytomyr Polytechnic');
 }

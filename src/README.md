@@ -1,4 +1,4 @@
-# zhytomyr_polytechnic
+# Zhytomyr Polytechnic
 
 A new Flutter project.
 

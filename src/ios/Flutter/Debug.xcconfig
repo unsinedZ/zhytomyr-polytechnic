@@ -1,2 +1,2 @@
 #include "Generated.xcconfig"
-#include "ZStudio-defaults.xcconfig"
+#include "SOFTWINE-defaults.xcconfig"

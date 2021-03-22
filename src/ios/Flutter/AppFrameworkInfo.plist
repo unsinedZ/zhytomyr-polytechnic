@@ -7,11 +7,11 @@
   <key>CFBundleExecutable</key>
   <string>App</string>
   <key>CFBundleIdentifier</key>
-  <string>ch.zosimovy.projects.$(ZSTUDIO_APP_SUFFIX)</string>
+  <string>ch.zosimovy.projects.zp$(SOFTWINE_APP_SUFFIX)</string>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundleName</key>
-  <string>$(ZSTUDIO_APP_NAME)</string>
+  <string>$(SOFTWINE_APP_NAME)</string>
   <key>CFBundlePackageType</key>
   <string>FMWK</string>
   <key>CFBundleShortVersionString</key>
