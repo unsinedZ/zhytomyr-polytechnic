@@ -1,6 +1,6 @@
 {
-    "name": "zhytomyr_polytechnic",
-    "short_name": "zhytomyr_polytechnic",
+    "name": "zp",
+    "short_name": "zp",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
