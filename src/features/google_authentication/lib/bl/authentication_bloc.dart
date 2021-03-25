@@ -1,7 +1,5 @@
 part of google_authentication;
 
-
-
 class AuthenticationBloc {
   final StreamSink<String>? errorSink;
 
@@ -17,7 +15,6 @@ class AuthenticationBloc {
     _userController.add(null);
 
     if (await GoogleSignIn().isSignedIn()) {
-      await Firebase.initializeApp();
       _userController.add(FirebaseAuth.instance.currentUser);
     } else {
       _userController.add(null);
@@ -28,8 +25,6 @@ class AuthenticationBloc {
     _userController.add(null);
 
     try {
-      await Firebase.initializeApp();
-
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
       final GoogleSignInAuthentication googleAuth =

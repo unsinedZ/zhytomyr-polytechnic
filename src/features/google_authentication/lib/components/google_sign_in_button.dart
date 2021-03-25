@@ -16,12 +16,14 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
   @override
   void initState() {
-    widget.userBloc.loadUser();
+    Firebase.initializeApp().then((_) {
+      widget.userBloc.loadUser();
 
-    _userSubscription = widget.userBloc.user.listen((user) {
-      if(user != null){
-        widget.authorizationCallback!(user);
-      }
+      _userSubscription = widget.userBloc.user.listen((user) {
+        if(user != null){
+          widget.authorizationCallback!(user);
+        }
+      });
     });
 
     super.initState();
