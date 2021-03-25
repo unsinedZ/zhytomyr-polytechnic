@@ -7,7 +7,10 @@ class AuthenticationBloc {
     this.errorSink,
   });
 
-  final BehaviorSubject<User?> _userController = BehaviorSubject()..add(null);
+  final BehaviorSubject<User?> _userController = BehaviorSubject();
+  var logger = Logger(
+    printer: PrettyPrinter(),
+  );
 
   Stream<User?> get user => _userController.stream;
 
@@ -38,7 +41,8 @@ class AuthenticationBloc {
       User? user =
           (await FirebaseAuth.instance.signInWithCredential(credential)).user;
 
-      print(user);
+      logger.d('Signed in Google user');
+      logger.d(user);
 
       _userController.add(user);
     } catch (_) {
