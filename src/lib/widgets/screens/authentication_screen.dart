@@ -17,8 +17,9 @@ class AuthenticationScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    FlutterLogo(
-                      size: 250,
+                    Image.asset(
+                      'assets/images/logo.png',
+                      width: MediaQuery.of(context).size.width * 0.7,
                     ),
                     SizedBox(
                       height: 110,
@@ -26,12 +27,12 @@ class AuthenticationScreen extends StatelessWidget {
                     GoogleSignInButton(
                       authorizationCallback: (user) =>
                           Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => UserInfoScreen(
-                                user: user,
-                              ),
-                            ),
+                        MaterialPageRoute(
+                          builder: (context) => UserInfoScreen(
+                            user: user,
                           ),
+                        ),
+                      ),
                       userBloc: context.read<AuthenticationBloc>(),
                     ),
                   ],
@@ -41,5 +42,4 @@ class AuthenticationScreen extends StatelessWidget {
           ),
         ),
       );
-
 }

@@ -1,4 +1,9 @@
-part of google_authentication;
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:google_authentication/bl/authentication_bloc.dart';
 
 class GoogleSignInButton extends StatefulWidget {
   final Function(User)? authorizationCallback;
@@ -20,7 +25,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       widget.userBloc.loadUser();
 
       _userSubscription = widget.userBloc.user.listen((user) {
-        if(user != null){
+        if (user != null) {
           widget.authorizationCallback!(user);
         }
       });
