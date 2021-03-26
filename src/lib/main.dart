@@ -6,9 +6,9 @@ Future<void> main() async {
   await initLocalizationAsync();
   runApp(
     EasyLocalization(
-        supportedLocales: [Locale('uk')],
+        supportedLocales: [Locale('uk'), Locale('en')],
         path: 'assets/translations',
-        fallbackLocale: Locale('uk'),
+        fallbackLocale: Locale('en'),
         child: App()),
   );
 }
