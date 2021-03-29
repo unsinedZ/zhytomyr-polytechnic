@@ -1,13 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:zhytomyr_polytechnic/app.dart';
+import 'package:zhytomyr_polytechnic/app_constants.dart';
 
 Future<void> main() async {
   await initLocalizationAsync();
   runApp(
     EasyLocalization(
         supportedLocales: [Locale('uk'), Locale('en')],
-        path: 'assets/translations',
+        path: AppConstants.translationPath,
         fallbackLocale: Locale('en'),
         child: App()),
   );
