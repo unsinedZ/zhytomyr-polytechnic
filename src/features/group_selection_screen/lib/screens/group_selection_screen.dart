@@ -188,9 +188,12 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                           subgroup == null)
                   ? null
                   : () => {},
-              child: Text(
-                'Continue',
-                textScaleFactor: 1.3,
+              child: Padding(
+                padding: const EdgeInsets.all(17.0),
+                child: Text(
+                  'Continue',
+                  textScaleFactor: 1.3,
+                ),
               ),
             ),
           )
