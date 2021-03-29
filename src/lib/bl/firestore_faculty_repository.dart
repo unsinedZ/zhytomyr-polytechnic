@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:faculty_list_abstractions/faculty_list_abstractions.dart';
+import 'package:faculty_list/faculty_list.dart';
 
 class FirestoreFacultyRepository implements FacultyRepository {
   @override

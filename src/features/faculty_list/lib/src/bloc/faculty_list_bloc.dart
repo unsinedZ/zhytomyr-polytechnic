@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:faculty_list_abstractions/faculty_list_abstractions.dart';
+import 'package:faculty_list/src/models/faculty.dart';
+import 'package:faculty_list/src/repositories/faculty_repository.dart';
 
 class FacultyListBloc {
   final FacultyRepository facultyRepository;
@@ -13,8 +14,8 @@ class FacultyListBloc {
 
   Future<void> loadList() => facultyRepository
       .getList()
-      .map(
-        _facultiesListController.add,
+      .map((facultyList) =>
+        _facultiesListController.add(facultyList),
       )
       .toList();
 

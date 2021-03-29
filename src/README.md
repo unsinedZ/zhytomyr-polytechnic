@@ -1,1 +1,0 @@
-# Zhytomyr Polytechnic application

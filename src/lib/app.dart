@@ -1,6 +1,6 @@
 import 'package:faculty_list/faculty_list.dart';
 import 'package:flutter/material.dart';
-import 'bl/faculty_list_impl.dart';
+import 'bl/firestore_faculty_repository.dart';
 
 class App extends StatelessWidget {
   @override

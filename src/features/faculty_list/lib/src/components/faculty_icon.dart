@@ -1,14 +1,14 @@
+import 'package:faculty_list/src/models/faculty.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'package:faculty_list_abstractions/faculty_list_abstractions.dart';
 
 class FacultyIcon extends StatelessWidget {
   final Faculty? faculty;
 
-  const FacultyIcon({Key? key, this.faculty}) : super(key: key);
+  const FacultyIcon({this.faculty});
 
   @override
   Widget build(BuildContext context) {

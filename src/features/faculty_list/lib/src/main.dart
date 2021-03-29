@@ -1,8 +1,10 @@
+import 'package:faculty_list/src/models/faculty.dart';
+import 'package:flutter/material.dart';
+
 import 'package:faculty_list/src/bloc/faculty_list_bloc.dart';
 import 'package:faculty_list/src/components/faculty_icon.dart';
 import 'package:faculty_list/src/plugin_constasts.dart';
-import 'package:faculty_list_abstractions/faculty_list_abstractions.dart';
-import 'package:flutter/material.dart';
+import 'package:faculty_list/src/repositories/faculty_repository.dart';
 
 class FacultyList extends StatefulWidget {
   final FacultyRepository facultyRepository;
@@ -47,7 +49,7 @@ class _FacultyListState extends State<FacultyList> {
         onRefresh: () => _facultyListBloc.loadList(),
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
-          child: StreamBuilder(
+          child: StreamBuilder<List<Faculty>>(
             stream: _facultyListBloc.faculties,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
@@ -67,7 +69,6 @@ class _FacultyListState extends State<FacultyList> {
                         children: (snapshot.data as List<Faculty>)
                             .map(
                               (facultyList) => FacultyIcon(
-                                key: Key(facultyList.name),
                                 faculty: facultyList,
                               ),
                             )
@@ -80,8 +81,7 @@ class _FacultyListState extends State<FacultyList> {
 
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [CircularProgressIndicator()]);
+                  children: [Center(child: CircularProgressIndicator())]);
             },
           ),
         ),
