@@ -43,15 +43,8 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
-  cupertino_icons:
-    dependency: "direct main"
-    description:
-      name: cupertino_icons
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.2"
   dropdown_search:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: dropdown_search
       url: "https://pub.dartlang.org"
@@ -74,13 +67,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  group_selection_screen:
-    dependency: "direct main"
-    description:
-      path: "features/group_selection_screen"
-      relative: true
-    source: path
-    version: "0.0.1"
   matcher:
     dependency: transitive
     description:

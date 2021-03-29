@@ -4,12 +4,15 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
+  flutter: ">=2.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  group_selection_screen:
+    path: ./features/group_selection_screen
 
 dev_dependencies:
   flutter_test:

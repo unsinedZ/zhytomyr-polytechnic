@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:group_selection_screen/group_selection_screen.dart';
 
 import 'app_context.dart';
 
@@ -15,13 +16,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: AppContext.appName),
+      home: GroupSelectionScreen(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({required this.title}) : super();
 
   final String title;
 
