@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:zhytomyr_polytechnic/app.dart';
 import 'package:zhytomyr_polytechnic/app_constants.dart';
 import 'package:flutter/services.dart';
 

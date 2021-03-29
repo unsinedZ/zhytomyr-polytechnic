@@ -21,5 +21,6 @@ class Dependencies extends StatelessWidget {
         child: child,
       );
 
-  AuthenticationBloc getUserBloc(BuildContext context) => AuthenticationBloc(errorSink: StreamController<String>().sink);
+  AuthenticationBloc getUserBloc(BuildContext context) =>
+      AuthenticationBloc(errorSink: StreamController<String>().sink);
 }
