@@ -55,9 +55,11 @@ class _FacultyListState extends State<FacultyList> {
                   width: double.infinity,
                   child: Column(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Text(PluginConstants.facultyListHeader, style: Theme.of(context).textTheme.headline6,),
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Text(PluginConstants.facultyListHeader, style: Theme.of(context).textTheme.headline6,),
+                        ),
                       ),
                       Wrap(
                         spacing: 20,
@@ -76,9 +78,10 @@ class _FacultyListState extends State<FacultyList> {
                 );
               }
 
-              return Container(
-                  alignment: Alignment.center,
-                  child: CircularProgressIndicator());
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [CircularProgressIndicator()]);
             },
           ),
         ),

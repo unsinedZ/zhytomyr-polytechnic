@@ -19,11 +19,15 @@ class FacultyIcon extends StatelessWidget {
             width: 150,
             imageUrl: faculty!.imageUrl,
             placeholder: (context, url) => Shimmer.fromColors(
-              baseColor: Colors.grey,
+              baseColor: Colors.black,
               highlightColor: Colors.grey.shade800,
               child: Container(
-                height: 20,
-                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.black12,
+                  shape: BoxShape.circle,
+                ),
+                height: 150,
+                width: 147.2,
               ),
             ),
             errorWidget: (context, url, error) => Icon(Icons.error),

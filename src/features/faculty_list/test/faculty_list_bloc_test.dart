@@ -5,8 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 class FacultyRepositoryMock extends FacultyRepository {
   @override
   Stream<List<Faculty>> getList() => Stream.value([
-          Faculty(id: "1", name: "name", imageUrl: "imageUrl"),
-          Faculty(id: "2", name: "name", imageUrl: "imageUrl")
+          Faculty(id: 1, name: "name", imageUrl: "imageUrl"),
+          Faculty(id: 2, name: "name", imageUrl: "imageUrl")
         ]);
 }
 
