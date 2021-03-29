@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -19,5 +21,5 @@ class Dependencies extends StatelessWidget {
         child: child,
       );
 
-  AuthenticationBloc getUserBloc(BuildContext context) => AuthenticationBloc();
+  AuthenticationBloc getUserBloc(BuildContext context) => AuthenticationBloc(errorSink: StreamController<String>().sink);
 }

@@ -6,10 +6,10 @@ import 'package:rxdart/rxdart.dart';
 import 'package:logger/logger.dart';
 
 class AuthenticationBloc {
-  final StreamSink<String>? errorSink;
+  final StreamSink<String> errorSink;
 
   AuthenticationBloc({
-    this.errorSink,
+    required this.errorSink,
   });
 
   final BehaviorSubject<User?> _userController = BehaviorSubject();
@@ -20,12 +20,15 @@ class AuthenticationBloc {
   Stream<User?> get user => _userController.stream;
 
   void loadUser() async {
-    _userController.add(null);
-
-    if (await GoogleSignIn().isSignedIn()) {
-      _userController.add(FirebaseAuth.instance.currentUser);
-    } else {
+    try {
       _userController.add(null);
+
+      if (await GoogleSignIn().isSignedIn()) {
+        _userController.add(FirebaseAuth.instance.currentUser);
+      }
+    } catch (err) {
+      _userController.add(null);
+      errorSink.add(err.toString());
     }
   }
 
@@ -50,7 +53,8 @@ class AuthenticationBloc {
       logger.d(user);
 
       _userController.add(user);
-    } catch (_) {
+    } catch (err) {
+      errorSink.add(err.toString());
       _userController.add(null);
     }
   }
