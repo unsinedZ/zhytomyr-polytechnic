@@ -178,25 +178,21 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
               ),
             ),
           ),
-          Column(
-            children: [
-              Container(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: course == null ||
-                          group == null ||
-                          (group!.subgroups != null &&
-                              group!.subgroups!.length > 0 &&
-                              subgroup == null)
-                      ? null
-                      : () => {},
-                  child: Text(
-                    'Continue',
-                    textScaleFactor: 1.3,
-                  ),
-                ),
-              )
-            ],
+          Container(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: course == null ||
+                      group == null ||
+                      (group!.subgroups != null &&
+                          group!.subgroups!.length > 0 &&
+                          subgroup == null)
+                  ? null
+                  : () => {},
+              child: Text(
+                'Continue',
+                textScaleFactor: 1.3,
+              ),
+            ),
           )
         ],
       ),
