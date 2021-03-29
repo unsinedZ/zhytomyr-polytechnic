@@ -52,7 +52,7 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                   Text(
                     'Chose course and group',
                     textAlign: TextAlign.center,
-                    textScaleFactor: 3,
+                    textScaleFactor: 2.5,
                   ),
                   SizedBox(
                     height: 20,
@@ -95,7 +95,7 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                     }).toList(),
                   ),
                   SizedBox(
-                    height: 15,
+                    height: 20,
                   ),
                   DropdownButton<Group>(
                     hint: Text('Group'),
@@ -162,7 +162,11 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                           }),
                       GestureDetector(
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(
+                            top: 8.0,
+                            right: 8.0,
+                            bottom: 8.0,
+                          ),
                           child: Text('It`s my group'),
                         ),
                         onTap: () {
