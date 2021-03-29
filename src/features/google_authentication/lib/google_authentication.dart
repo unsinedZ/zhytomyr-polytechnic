@@ -1,4 +1,4 @@
 library google_authentication;
 
-export 'components/google_sign_in_button.dart';
-export 'bl/authentication_bloc.dart';
+export 'src/components/google_sign_in_button.dart';
+export 'src/bl/authentication_bloc.dart';
