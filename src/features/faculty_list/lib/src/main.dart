@@ -1,21 +1,25 @@
 import 'package:faculty_list/src/bloc/faculty_list_bloc.dart';
+import 'package:faculty_list/src/repositories/faculty_repository.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
-import 'package:faculty_list/src/components/faculty_icon.dart';
-
-initFirebase() => Firebase.initializeApp();
+Future<void> initFirebase() => Firebase.initializeApp();
 
 class FacultyList extends StatefulWidget {
+  final FacultyRepository facultyRepository;
+
+  const FacultyList({required this.facultyRepository});
+
   _FacultyListState createState() => _FacultyListState();
 }
 
 class _FacultyListState extends State<FacultyList> {
-  final _facultyListBloc = FacultyListBloc();
+  late FacultyListBloc _facultyListBloc;
 
   @override
   void initState() {
+    _facultyListBloc = FacultyListBloc(facultyRepository: widget.facultyRepository);
     _facultyListBloc.loadList();
     super.initState();
   }
