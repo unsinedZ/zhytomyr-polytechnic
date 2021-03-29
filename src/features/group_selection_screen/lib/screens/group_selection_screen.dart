@@ -15,7 +15,7 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
   Group? group;
   Subgroup? subgroup;
   String? facultyId;
-  bool? isMyGroup;
+  bool isMyGroup = false;
 
   @override
   void didChangeDependencies() {
@@ -42,6 +42,21 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
               child: Column(
                 children: [
                   Spacer(),
+                  Image.asset(
+                    'assets/images/timetable.png',
+                    package: 'group_selection_screen',
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'Chose course and group',
+                    textAlign: TextAlign.center,
+                    textScaleFactor: 3,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   DropdownButton<int>(
                     hint: Text('Course'),
                     isExpanded: true,
@@ -56,17 +71,13 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                               name: 'group_4_' + newValue.toString(),
                               subgroups: [
                                 Subgroup(
-                                    name:
-                                        'subgroup_1_' + newValue.toString()),
+                                    name: 'subgroup_1_' + newValue.toString()),
                                 Subgroup(
-                                    name:
-                                        'subgroup_2_' + newValue.toString()),
+                                    name: 'subgroup_2_' + newValue.toString()),
                                 Subgroup(
-                                    name:
-                                        'subgroup_3_' + newValue.toString()),
+                                    name: 'subgroup_3_' + newValue.toString()),
                                 Subgroup(
-                                    name:
-                                        'subgroup_4_' + newValue.toString()),
+                                    name: 'subgroup_4_' + newValue.toString()),
                               ]),
                           Group(name: 'group_5_' + newValue.toString()),
                         ];
@@ -82,6 +93,9 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                         child: Text(value.toString()),
                       );
                     }).toList(),
+                  ),
+                  SizedBox(
+                    height: 15,
                   ),
                   DropdownButton<Group>(
                     hint: Text('Group'),
@@ -102,35 +116,61 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                           }).toList()
                         : null,
                   ),
+                  SizedBox(
+                    height: 15,
+                  ),
                   group != null &&
                           group!.subgroups != null &&
                           group!.subgroups!.length > 0
-                      ? DropdownButton<Subgroup>(
-                          hint: Text('Subgroup'),
-                          isExpanded: true,
-                          value: subgroup,
-                          onChanged: (Subgroup? newValue) {
-                            setState(() {
-                              subgroup = newValue;
-                            });
-                          },
-                          items: group!.subgroups != null
-                              ? group!.subgroups!
-                                  .map<DropdownMenuItem<Subgroup>>(
-                                      (Subgroup subgroup) {
-                                  return DropdownMenuItem<Subgroup>(
-                                    value: subgroup,
-                                    child: Text(subgroup.name!),
-                                  );
-                                }).toList()
-                              : null,
+                      ? Column(
+                          children: [
+                            DropdownButton<Subgroup>(
+                              hint: Text('Subgroup'),
+                              isExpanded: true,
+                              value: subgroup,
+                              onChanged: (Subgroup? newValue) {
+                                setState(() {
+                                  subgroup = newValue;
+                                });
+                              },
+                              items: group!.subgroups != null
+                                  ? group!.subgroups!
+                                      .map<DropdownMenuItem<Subgroup>>(
+                                          (Subgroup subgroup) {
+                                      return DropdownMenuItem<Subgroup>(
+                                        value: subgroup,
+                                        child: Text(subgroup.name!),
+                                      );
+                                    }).toList()
+                                  : null,
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                          ],
                         )
                       : Container(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Checkbox(value: false, onChanged: (_) => {}),
-                      Text('It`s my group'),
+                      Checkbox(
+                          value: isMyGroup,
+                          onChanged: (value) {
+                            setState(() {
+                              isMyGroup = value!;
+                            });
+                          }),
+                      GestureDetector(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('It`s my group'),
+                        ),
+                        onTap: () {
+                          setState(() {
+                            isMyGroup = !isMyGroup;
+                          });
+                        },
+                      ),
                     ],
                   ),
                   Spacer(),
@@ -150,7 +190,10 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                               subgroup == null)
                       ? null
                       : () => {},
-                  child: Text('Continue'),
+                  child: Text(
+                    'Continue',
+                    textScaleFactor: 1.3,
+                  ),
                 ),
               )
             ],
