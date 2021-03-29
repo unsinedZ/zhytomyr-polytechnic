@@ -1,15 +1,14 @@
 import 'package:faculty_list/src/bloc/faculty_list_bloc.dart';
-import 'package:faculty_list/src/repositories/faculty_repository.dart';
+import 'package:faculty_list/src/components/faculty_icon.dart';
+import 'package:faculty_list/src/plugin_constasts.dart';
+import 'package:faculty_list_abstractions/faculty_list_abstractions.dart';
 import 'package:flutter/material.dart';
-
-import 'package:firebase_core/firebase_core.dart';
-
-Future<void> initFirebase() => Firebase.initializeApp();
 
 class FacultyList extends StatefulWidget {
   final FacultyRepository facultyRepository;
+  final VoidCallback sidebarAction;
 
-  const FacultyList({required this.facultyRepository});
+  FacultyList({required this.facultyRepository, required this.sidebarAction});
 
   _FacultyListState createState() => _FacultyListState();
 }
@@ -19,7 +18,8 @@ class _FacultyListState extends State<FacultyList> {
 
   @override
   void initState() {
-    _facultyListBloc = FacultyListBloc(facultyRepository: widget.facultyRepository);
+    _facultyListBloc =
+        FacultyListBloc(facultyRepository: widget.facultyRepository);
     _facultyListBloc.loadList();
     super.initState();
   }
@@ -30,7 +30,6 @@ class _FacultyListState extends State<FacultyList> {
     super.dispose();
   }
 
-// _facultyListBloc.loadList()
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,53 +37,50 @@ class _FacultyListState extends State<FacultyList> {
         leading: Container(
           decoration: BoxDecoration(shape: BoxShape.circle),
           child: InkWell(
-            onTap: () {},
+            onTap: widget.sidebarAction,
             child: Icon(Icons.menu),
           ),
         ),
-        title: Text("Faculty List"),
+        title: Text(PluginConstants.appBarHeader),
       ),
       body: RefreshIndicator(
-        onRefresh: () => Future.delayed(Duration(seconds: 1)),
-        child: StreamBuilder(
-          stream: _facultyListBloc.faculties,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            // if (snapshot.hasData) {
-            //   return GridView.builder(
-            //     physics: ClampingScrollPhysics(),
-            //     shrinkWrap: true,
-            //     itemCount: snapshot.data.length,
-            //     padding: EdgeInsets.all(10),
-            //     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-            //       childAspectRatio: 0.95,
-            //       maxCrossAxisExtent: 300,
-            //       mainAxisSpacing: 15,
-            //     ),
-            //     itemBuilder: (BuildContext context, int index) => FacultyIcon(
-            //       key: Key(snapshot.data[index].name),
-            //       faculty: snapshot.data[index],
-            //     ),
-            //   );
-            // }
+        onRefresh: () => _facultyListBloc.loadList(),
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: StreamBuilder(
+            stream: _facultyListBloc.faculties,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return Container(
+                  width: double.infinity,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Text(PluginConstants.facultyListHeader, style: Theme.of(context).textTheme.headline6,),
+                      ),
+                      Wrap(
+                        spacing: 20,
+                        alignment: WrapAlignment.center,
+                        children: (snapshot.data as List<Faculty>)
+                            .map(
+                              (facultyList) => FacultyIcon(
+                                key: Key(facultyList.name),
+                                faculty: facultyList,
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                );
+              }
 
-            // if (snapshot.hasData) {
-            //   return Wrap(
-            //     alignment: WrapAlignment.center,
-            //     children: (snapshot.data as List<Faculty>)
-            //         .map(
-            //           (facultyList) => FacultyIcon(
-            //             key: Key(facultyList.name),
-            //             faculty: facultyList,
-            //           ),
-            //         )
-            //         .toList(),
-            //   );
-            // }
-
-            return Container(
-                alignment: Alignment.center,
-                child: CircularProgressIndicator());
-          },
+              return Container(
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator());
+            },
+          ),
         ),
       ),
     );

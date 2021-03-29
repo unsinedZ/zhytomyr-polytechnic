@@ -1,7 +1,4 @@
 library faculty_list_abstractions;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/repositories/faculty_repository.dart';
+export 'src/models/faculty.dart';

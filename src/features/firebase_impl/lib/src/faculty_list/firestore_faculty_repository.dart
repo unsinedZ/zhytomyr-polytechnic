@@ -1,3 +1,0 @@
-class FirestoreFacultyRepository implements FacultyRepository {
-  
-}

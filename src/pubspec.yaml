@@ -10,8 +10,12 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  cloud_firestore: ^1.0.2
+  firebase_core: "1.0.2"
   faculty_list: 
     path: features/faculty_list
+  faculty_list_abstractions: 
+    path: features/faculty_list_abstractions
 
 dev_dependencies:
   flutter_test:
