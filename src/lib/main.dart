@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:zhytomyr_polytechnic/app.dart';
 import 'package:zhytomyr_polytechnic/app_constants.dart';
+import 'package:flutter/services.dart';
+
+import 'package:zhytomyr_polytechnic/widgets/app.dart';
 
 Future<void> main() async {
   await initLocalizationAsync();
@@ -17,4 +19,5 @@ Future<void> main() async {
 Future<void> initLocalizationAsync() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }

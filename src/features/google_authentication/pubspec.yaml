@@ -1,0 +1,38 @@
+name: google_authentication
+description: A new flutter plugin project.
+version: 0.0.1
+author:
+
+publish_to: 'none'
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+  flutter: ">=2.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_auth: ^1.0.1
+  firebase_core: ^1.0.1
+  google_sign_in: ^5.0.1
+  sign_in_with_apple: ^3.0.0
+  crypto: ^3.0.0
+  rxdart: ^0.26.0
+  logger: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.example.google_apple_authentication
+        pluginClass: GoogleAppleAuthenticationPlugin
+      ios:
+        pluginClass: GoogleAppleAuthenticationPlugin
+
+  assets:
+    - assets/
+    - assets/images/
