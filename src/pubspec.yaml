@@ -13,9 +13,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   group_selection:
     path: ./features/group_selection
-  provider: ^5.0.0
   google_authentication:
-    path: './features/google_authentication'
+    path: ./features/google_authentication
+  provider: ^5.0.0
 
   easy_localization: ^3.0.0
 
