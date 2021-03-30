@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:google_authentication/google_authentication.dart';
 
-import 'package:group_selection/group_selection.dart';
+import 'package:group_selection/group_selection.dart' hide TextLocalizer;
 
 import 'package:provider/provider.dart';
+import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 
 class AuthenticationScreen extends StatelessWidget {
   @override
@@ -29,6 +30,8 @@ class AuthenticationScreen extends StatelessWidget {
                           Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => GroupSelectionScreen(
+                            textLocalizer: TextLocalizer(),
+                            firebaseDataGetter: FirebaseDataGetterMock(),
                           ),
                         ),
                       ),

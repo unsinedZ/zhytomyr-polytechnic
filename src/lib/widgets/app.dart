@@ -11,6 +11,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dependencies(
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           canvasColor: Colors.white,
           primaryColor: Color(0xff35b9ca),
