@@ -11,8 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  group_selection_screen:
-    path: ./features/group_selection_screen
+  group_selection:
+    path: ./features/group_selection
 
 dev_dependencies:
   flutter_test:

@@ -1,10 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:group_selection_screen/models/models.dart';
+import 'package:group_selection/src/models/models.dart';
 
+import '../../group_selection.dart';
 import '../models/models.dart';
 
 class GroupSelectionScreen extends StatefulWidget {
+  final TextLocalizer? textLocalizer;
+
+  GroupSelectionScreen({this.textLocalizer}) : super();
+
   @override
   _GroupSelectionScreenState createState() => _GroupSelectionScreenState();
 }
@@ -44,7 +49,7 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                   Spacer(),
                   Image.asset(
                     'assets/images/timetable.png',
-                    package: 'group_selection_screen',
+                    package: 'group_selection',
                   ),
                   SizedBox(
                     height: 20,

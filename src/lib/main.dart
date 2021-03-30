@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:group_selection_screen/group_selection_screen.dart';
+import 'package:group_selection/group_selection.dart';
 
 import 'app_context.dart';
 
@@ -8,7 +8,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
