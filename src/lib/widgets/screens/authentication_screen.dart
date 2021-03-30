@@ -29,15 +29,7 @@ class AuthenticationScreen extends StatelessWidget {
                     ),
                     GoogleSignInButton(
                       authorizationCallback: (_) =>
-                          Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => FacultyList(
-                            facultyRepository: FirestoreFacultyRepository(),
-                            sidebarAction: () {},
-                            textLocalizer: TextLocalizer(),
-                          ),
-                        ),
-                      ),
+                          Navigator.of(context).pushNamed('/faculties'),
                       userBloc: context.read<AuthenticationBloc>(),
                     ),
                   ],

@@ -1,8 +1,8 @@
 name: faculty_list
 description: A list of faculties.
 version: 0.0.1
-author: Softwine 
-homepage:
+author: Softwine
+
 publish_to: none
 
 environment:
