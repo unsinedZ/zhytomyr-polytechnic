@@ -1,22 +1,25 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:terms_and_conditions/terms_and_conditions.dart';
+import 'package:flutter/services.dart';
 
-import 'app_context.dart';
+import 'package:zhytomyr_polytechnic/app_constants.dart';
+import 'package:zhytomyr_polytechnic/widgets/app.dart';
 
-void main() {
-  runApp(MyApp());
+Future<void> main() async {
+  await initLocalizationAsync();
+  runApp(
+    EasyLocalization(
+        supportedLocales: [Locale('uk'), Locale('en')],
+        path: AppConstants.translationPath,
+        fallbackLocale: Locale('en'),
+        child: App()),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppContext.appName,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: TermsAndConditionsScreen(),
-    );
-  }
+Future<void> initLocalizationAsync() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+  await Firebase.initializeApp();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }
