@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "707239863559",
+    "project_id": "zhytomyr-politechnic-dev",
+    "storage_bucket": "zhytomyr-politechnic-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707239863559:android:055b88680679a09b2411a2",
+        "android_client_info": {
+          "package_name": "ch.zosimovy.projects.zp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707239863559-au33oc13ra7ukp19q7hdncr56vd273lf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ch.zosimovy.projects.zp",
+            "certificate_hash": "337112021341e69fb6e871b74b9f25fd04b3bb46"
+          }
+        },
+        {
+          "client_id": "707239863559-mvub1sf9n769i8h5m6oi31og3kgenro8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCD7Pt5L0O2f2yszUwnT1Zi_JPPOR4s4mM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707239863559-mvub1sf9n769i8h5m6oi31og3kgenro8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

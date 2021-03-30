@@ -1,37 +1,24 @@
+import 'package:easy_localization/easy_localization.dart';
+
 import 'package:flutter/material.dart';
-import 'package:group_selection/group_selection.dart';
+import 'package:flutter/services.dart';
 
-import 'app_context.dart';
+import 'package:zhytomyr_polytechnic/app_constants.dart';
+import 'package:zhytomyr_polytechnic/widgets/app.dart';
 
-void main() {
-  runApp(MyApp());
+Future<void> main() async {
+  await initLocalizationAsync();
+  runApp(
+    EasyLocalization(
+        supportedLocales: [Locale('uk'), Locale('en')],
+        path: AppConstants.translationPath,
+        fallbackLocale: Locale('en'),
+        child: App()),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppContext.appName,
-      theme: ThemeData(
-        canvasColor: Colors.white,
-        primaryColor: Color(0xff35b9ca),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                (Set<MaterialState> states) {
-              if (states.contains(MaterialState.disabled)) {
-                return Colors.white;
-              }
-              return Color(0xfff4e83d);
-            }),
-            foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                  return Colors.black;
-                }),
-          ),
-        ),
-      ),
-      home: GroupSelectionScreen(),
-    );
-  }
+Future<void> initLocalizationAsync() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }

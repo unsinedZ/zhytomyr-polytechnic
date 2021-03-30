@@ -13,6 +13,11 @@ dependencies:
   cupertino_icons: ^1.0.2
   group_selection:
     path: ./features/group_selection
+  provider: ^5.0.0
+  google_authentication:
+    path: './features/google_authentication'
+
+  easy_localization: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -20,3 +25,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/translations/ 
