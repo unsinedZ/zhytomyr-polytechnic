@@ -1,5 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -20,5 +22,6 @@ Future<void> main() async {
 Future<void> initLocalizationAsync() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  await Firebase.initializeApp();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }

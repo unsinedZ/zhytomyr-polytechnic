@@ -17,18 +17,16 @@ class GoogleSignInButton extends StatefulWidget {
 }
 
 class _GoogleSignInButtonState extends State<GoogleSignInButton> {
-  StreamSubscription? _userSubscription;
+  late StreamSubscription _userSubscription;
 
   @override
   void initState() {
-    Firebase.initializeApp().then((_) {
-      widget.userBloc.loadUser();
+    widget.userBloc.loadUser();
 
-      _userSubscription = widget.userBloc.user.listen((user) {
-        if (user != null) {
-          widget.authorizationCallback!(user);
-        }
-      });
+    _userSubscription = widget.userBloc.user.listen((user) {
+      if (user != null) {
+        widget.authorizationCallback!(user);
+      }
     });
 
     super.initState();
@@ -81,7 +79,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
   @override
   void dispose() {
-    _userSubscription!.cancel();
+    _userSubscription.cancel();
 
     super.dispose();
   }

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:google_authentication/google_authentication.dart';
 
-import 'package:group_selection/group_selection.dart' hide TextLocalizer;
-
 import 'package:provider/provider.dart';
+
+import 'package:faculty_list/faculty_list.dart' hide TextLocalizer;
+
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
+import 'package:zhytomyr_polytechnic/bl/firestore_faculty_repository.dart';
 
 class AuthenticationScreen extends StatelessWidget {
   @override
@@ -29,9 +31,10 @@ class AuthenticationScreen extends StatelessWidget {
                       authorizationCallback: (_) =>
                           Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (context) => GroupSelectionScreen(
+                          builder: (context) => FacultyList(
+                            facultyRepository: FirestoreFacultyRepository(),
+                            sidebarAction: () {},
                             textLocalizer: TextLocalizer(),
-                            firebaseDataGetter: FirebaseDataGetterMock(),
                           ),
                         ),
                       ),
