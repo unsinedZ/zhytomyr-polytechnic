@@ -45,7 +45,6 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  //RichText(text: text),
                   MarkdownBody(
                     data: text ?? '',
                     selectable: true,
