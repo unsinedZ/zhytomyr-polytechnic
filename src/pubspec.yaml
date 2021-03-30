@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   terms_and_conditions:
-    path: './features/terms_and_conditions'
+    path: ./features/terms_and_conditions
   cupertino_icons: ^1.0.2
   rxdart: ^0.26.0
 
