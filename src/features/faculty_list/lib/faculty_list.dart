@@ -1,6 +1,6 @@
 library faculty_list;
 
-export 'src/main.dart';
-export 'src/repositories/faculty_repository.dart';
-export 'src/repositories/text_localizer.dart';
-export 'src/models/faculty.dart';
+export 'src/widgets/faculty_list.dart';
+export 'src/bl/repositories/faculty_repository.dart';
+export 'src/bl/repositories/text_localizer.dart';
+export 'src/bl/models/faculty.dart';

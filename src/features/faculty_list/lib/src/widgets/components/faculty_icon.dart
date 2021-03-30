@@ -1,24 +1,25 @@
-import 'package:faculty_list/src/models/faculty.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 
+import 'package:faculty_list/src/bl/models/faculty.dart';
+
 
 class FacultyIcon extends StatelessWidget {
-  final Faculty? faculty;
+  final Faculty faculty;
 
   const FacultyIcon({required this.faculty});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, "/group", arguments: {faculty!.id}),
+      onTap: () => Navigator.pushNamed(context, "/group", arguments: {faculty.id}),
       child: Column(
         children: [
           CachedNetworkImage(
             width: 150,
-            imageUrl: faculty!.imageUrl,
+            imageUrl: faculty.imageUrl,
             placeholder: (context, url) => Shimmer.fromColors(
               baseColor: Colors.black,
               highlightColor: Colors.grey.shade800,
@@ -35,7 +36,7 @@ class FacultyIcon extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.all(8.0),
-            child: Text(faculty!.name),
+            child: Text(faculty.name),
           ),
         ],
       ),

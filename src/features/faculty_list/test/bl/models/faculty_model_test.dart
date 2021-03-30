@@ -1,4 +1,4 @@
-import 'package:faculty_list/src/models/faculty.dart';
+import 'package:faculty_list/src/bl/models/faculty.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

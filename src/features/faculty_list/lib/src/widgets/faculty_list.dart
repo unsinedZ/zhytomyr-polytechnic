@@ -1,11 +1,11 @@
-import 'package:faculty_list/src/models/faculty.dart';
 import 'package:flutter/material.dart';
 
-import 'package:faculty_list/src/bloc/faculty_list_bloc.dart';
-import 'package:faculty_list/src/components/faculty_icon.dart';
+import 'package:faculty_list/src/bl/bloc/faculty_list_bloc.dart';
+import 'package:faculty_list/src/bl/models/faculty.dart';
+import 'package:faculty_list/src/bl/repositories/faculty_repository.dart';
+import 'package:faculty_list/src/bl/repositories/text_localizer.dart';
 import 'package:faculty_list/src/plugin_constasts.dart';
-import 'package:faculty_list/src/repositories/faculty_repository.dart';
-import 'package:faculty_list/src/repositories/text_localizer.dart';
+import 'package:faculty_list/src/widgets/components/faculty_icon.dart';
 
 class FacultyList extends StatefulWidget {
   final FacultyRepository facultyRepository;

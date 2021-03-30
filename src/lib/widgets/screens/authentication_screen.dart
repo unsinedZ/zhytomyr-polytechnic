@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_authentication/google_authentication.dart';
 
 import 'package:zhytomyr_polytechnic/bl/firestore_faculty_repository.dart';
-import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart' as FacultyListTranslation;
+import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart'
+    as FacultyListTranslation;
 
 import 'package:provider/provider.dart';
 
@@ -32,7 +33,9 @@ class AuthenticationScreen extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => FacultyList(
                             facultyRepository: FirestoreFacultyRepository(),
-                            sidebarAction: () {}, textLocalizer: FacultyListTranslation.TextLocalizer(),
+                            sidebarAction: () {},
+                            textLocalizer:
+                                FacultyListTranslation.TextLocalizer(),
                           ),
                         ),
                       ),
