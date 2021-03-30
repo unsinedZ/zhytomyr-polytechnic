@@ -11,13 +11,15 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  group_selection:
+    path: ./features/group_selection
   cloud_firestore: ^1.0.2
   firebase_core: "1.0.2"
   faculty_list: 
     path: features/faculty_list
   provider: ^5.0.0
   google_authentication:
-    path: './features/google_authentication'
+    path: ./features/google_authentication
 
   easy_localization: ^3.0.0
 

@@ -1,5 +1,12 @@
 {
-    "Choose faculty": "Обери факультет",
-    "Faculty List": "Список факультетів",
-    "Zhytomyr Polytechnic": "Житомирська Політехніка"
+  "Chose course and group": "Оберіть курс та групу",
+  "Continue": "Продовжити",
+  "Course": "Курс",
+  "Group": "Група",
+  "It`s my group": "Це моя група",
+  "Schedule": "Розклад",
+  "Subgroup": "Підгрупа",
+  "Zhytomyr Polytechnic": "Житомирська Політехніка",
+  "Choose faculty": "Обери факультет",
+  "Faculty List": "Список факультетів"
 }
