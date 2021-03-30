@@ -1,13 +1,11 @@
-import 'package:faculty_list/faculty_list.dart';
 import 'package:flutter/material.dart';
 
-import 'package:google_authentication/google_authentication.dart';
-
-import 'package:zhytomyr_polytechnic/bl/firestore_faculty_repository.dart';
-import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart'
-    as FacultyListTranslation;
-
 import 'package:provider/provider.dart';
+
+import 'package:faculty_list/faculty_list.dart' hide TextLocalizer;
+import 'package:google_authentication/google_authentication.dart';
+import 'package:zhytomyr_polytechnic/bl/firestore_faculty_repository.dart';
+import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 
 class AuthenticationScreen extends StatelessWidget {
   @override
@@ -34,8 +32,7 @@ class AuthenticationScreen extends StatelessWidget {
                           builder: (context) => FacultyList(
                             facultyRepository: FirestoreFacultyRepository(),
                             sidebarAction: () {},
-                            textLocalizer:
-                                FacultyListTranslation.TextLocalizer(),
+                            textLocalizer: TextLocalizer(),
                           ),
                         ),
                       ),

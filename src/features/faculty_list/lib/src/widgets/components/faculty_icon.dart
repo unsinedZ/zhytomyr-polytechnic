@@ -5,7 +5,6 @@ import 'package:shimmer/shimmer.dart';
 
 import 'package:faculty_list/src/bl/models/faculty.dart';
 
-
 class FacultyIcon extends StatelessWidget {
   final Faculty faculty;
 

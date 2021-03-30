@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:faculty_list/src/bl/bloc/faculty_list_bloc.dart';
 import 'package:faculty_list/src/bl/models/faculty.dart';
-import 'package:faculty_list/src/bl/repositories/faculty_repository.dart';
-import 'package:faculty_list/src/bl/repositories/text_localizer.dart';
-import 'package:faculty_list/src/plugin_constasts.dart';
+import 'package:faculty_list/src/bl/astractions/faculty_repository.dart';
+import 'package:faculty_list/src/bl/astractions/text_localizer.dart';
 import 'package:faculty_list/src/widgets/components/faculty_icon.dart';
 
 class FacultyList extends StatefulWidget {
@@ -45,7 +44,7 @@ class _FacultyListState extends State<FacultyList> {
             child: Icon(Icons.menu),
           ),
         ),
-        title: Text(widget.textLocalizer.localize(PluginConstants.appBarHeader)),
+        title: Text(widget.textLocalizer.localize("Faculty List")),
       ),
       body: RefreshIndicator(
         onRefresh: () => _facultyListBloc.loadList(),
@@ -62,7 +61,7 @@ class _FacultyListState extends State<FacultyList> {
                       Center(
                         child: Padding(
                           padding: EdgeInsets.all(15),
-                          child: Text(widget.textLocalizer.localize(PluginConstants.facultyListHeader), style: Theme.of(context).textTheme.headline6,),
+                          child: Text(widget.textLocalizer.localize("Choose faculty"), style: Theme.of(context).textTheme.headline6,),
                         ),
                       ),
                       Wrap(
