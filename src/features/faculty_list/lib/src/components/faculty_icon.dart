@@ -8,11 +8,12 @@ import 'package:shimmer/shimmer.dart';
 class FacultyIcon extends StatelessWidget {
   final Faculty? faculty;
 
-  const FacultyIcon({this.faculty});
+  const FacultyIcon({required this.faculty});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, "/group", arguments: {faculty!.id}),
       child: Column(
         children: [
           CachedNetworkImage(

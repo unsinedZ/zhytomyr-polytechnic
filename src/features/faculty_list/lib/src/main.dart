@@ -5,12 +5,14 @@ import 'package:faculty_list/src/bloc/faculty_list_bloc.dart';
 import 'package:faculty_list/src/components/faculty_icon.dart';
 import 'package:faculty_list/src/plugin_constasts.dart';
 import 'package:faculty_list/src/repositories/faculty_repository.dart';
+import 'package:faculty_list/src/repositories/text_localizer.dart';
 
 class FacultyList extends StatefulWidget {
   final FacultyRepository facultyRepository;
   final VoidCallback sidebarAction;
+  final TextLocalizer textLocalizer;
 
-  FacultyList({required this.facultyRepository, required this.sidebarAction});
+  FacultyList({required this.facultyRepository, required this.sidebarAction, required this.textLocalizer});
 
   _FacultyListState createState() => _FacultyListState();
 }
@@ -43,7 +45,7 @@ class _FacultyListState extends State<FacultyList> {
             child: Icon(Icons.menu),
           ),
         ),
-        title: Text(PluginConstants.appBarHeader),
+        title: Text(widget.textLocalizer.localize(PluginConstants.appBarHeader)),
       ),
       body: RefreshIndicator(
         onRefresh: () => _facultyListBloc.loadList(),
@@ -60,7 +62,7 @@ class _FacultyListState extends State<FacultyList> {
                       Center(
                         child: Padding(
                           padding: EdgeInsets.all(15),
-                          child: Text(PluginConstants.facultyListHeader, style: Theme.of(context).textTheme.headline6,),
+                          child: Text(widget.textLocalizer.localize(PluginConstants.facultyListHeader), style: Theme.of(context).textTheme.headline6,),
                         ),
                       ),
                       Wrap(
