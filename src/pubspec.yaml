@@ -19,7 +19,7 @@ dependencies:
     path: features/faculty_list
   provider: ^5.0.0
   google_authentication:
-    path: './features/google_authentication'
+    path: ./features/google_authentication
 
   easy_localization: ^3.0.0
 
