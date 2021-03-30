@@ -1,10 +1,11 @@
 name: zhytomyr_polytechnic
 description: A new Flutter project.
-publish_to: 'none' 
+publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
+  flutter: ">=2.0.0"
 
 dependencies:
   flutter:
@@ -14,10 +15,19 @@ dependencies:
   firebase_core: "1.0.2"
   faculty_list: 
     path: features/faculty_list
+  provider: ^5.0.0
+  google_authentication:
+    path: './features/google_authentication'
+
+  easy_localization: ^3.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-    
+
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/translations/ 

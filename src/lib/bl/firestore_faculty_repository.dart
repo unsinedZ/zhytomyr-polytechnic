@@ -6,7 +6,7 @@ class FirestoreFacultyRepository implements FacultyRepository {
   Stream<List<Faculty>> getList() =>
       FirebaseFirestore.instance.collection('faculty').get().asStream().map(
             (facultyListJson) => facultyListJson.docs.map(
-              (facultyJson) => Faculty.fromJson(facultyJson.data()),
+              (facultyJson) => Faculty.fromJson(facultyJson.data()!),
             ).toList(),
           );
 }

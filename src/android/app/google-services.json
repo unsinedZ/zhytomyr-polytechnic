@@ -37,13 +37,6 @@
             {
               "client_id": "707239863559-mvub1sf9n769i8h5m6oi31og3kgenro8.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "707239863559-8kgnrutr38i9idonogi6d8718794sd8r.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "ch.zosimovy.projects.zp"
-              }
             }
           ]
         }
