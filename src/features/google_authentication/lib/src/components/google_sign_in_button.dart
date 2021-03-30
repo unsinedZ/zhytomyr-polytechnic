@@ -17,7 +17,7 @@ class GoogleSignInButton extends StatefulWidget {
 }
 
 class _GoogleSignInButtonState extends State<GoogleSignInButton> {
-  StreamSubscription? _userSubscription;
+  late StreamSubscription _userSubscription;
 
   @override
   void initState() {
@@ -81,7 +81,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
   @override
   void dispose() {
-    _userSubscription!.cancel();
+    _userSubscription.cancel();
 
     super.dispose();
   }
