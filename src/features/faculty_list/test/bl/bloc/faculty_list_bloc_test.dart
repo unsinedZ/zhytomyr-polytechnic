@@ -26,7 +26,7 @@ void main() {
     await Future.delayed(const Duration());
 
     expect(result.length, 2);
-    expect(result[0].id, '1');
-    expect(result[1].id, '2');
+    expect(result[0].id, 1);
+    expect(result[1].id, 2);
   });
 }
