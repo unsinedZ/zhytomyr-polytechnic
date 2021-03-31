@@ -21,4 +21,4 @@ jobs:
         flutter pub get
         flutter analyze
         flutter test
-        ./run-tests.sh
+        sh run-tests.sh
