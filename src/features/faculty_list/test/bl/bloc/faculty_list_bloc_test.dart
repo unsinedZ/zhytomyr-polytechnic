@@ -27,6 +27,6 @@ void main() {
 
     expect(result.length, 2);
     expect(result[0].id, '1');
-    expect(result[1].id, 2);
+    expect(result[1].id, '2');
   });
 }
