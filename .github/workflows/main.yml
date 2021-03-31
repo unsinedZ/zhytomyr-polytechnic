@@ -20,4 +20,5 @@ jobs:
         cd src
         flutter pub get
         flutter analyze
-        flutter test     
+        flutter test
+        ./run-tests.sh
