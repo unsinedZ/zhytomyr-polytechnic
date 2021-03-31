@@ -4,11 +4,6 @@ import 'package:google_authentication/google_authentication.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:faculty_list/faculty_list.dart' hide TextLocalizer;
-
-import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
-import 'package:zhytomyr_polytechnic/bl/firestore_faculty_repository.dart';
-
 class AuthenticationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SafeArea(
