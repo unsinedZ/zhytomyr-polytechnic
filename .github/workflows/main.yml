@@ -4,6 +4,8 @@ on:
   pull_request:
     branches: 
       - develop
+      
+  workflow_dispatch:
 
 jobs:
  build:
@@ -20,4 +22,5 @@ jobs:
         cd src
         flutter pub get
         flutter analyze
-        flutter test     
+        flutter test
+        sh run-tests.sh
