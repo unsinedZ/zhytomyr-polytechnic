@@ -13,7 +13,7 @@ class FacultyListBloc {
   Stream<List<Faculty>> get faculties => _facultiesListController.stream;
 
   Future<void> loadList() => facultyRepository
-      .getList()
+      .getFaculties()
       .map((facultyList) =>
         _facultiesListController.add(facultyList),
       )

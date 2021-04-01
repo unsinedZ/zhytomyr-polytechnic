@@ -6,7 +6,7 @@ import 'package:faculty_list/faculty_list.dart' hide TextLocalizer;
 
 import 'package:group_selection/group_selection.dart' hide TextLocalizer;
 
-import 'package:zhytomyr_polytechnic/bl/firestore_faculty_repository.dart';
+import 'package:zhytomyr_polytechnic/bl/firestore_repository.dart';
 
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 
@@ -46,12 +46,12 @@ class App extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           '/authentication': (context) => AuthenticationScreen(),
           '/faculties': (context) => FacultyList(
-                facultyRepository: FirestoreFacultyRepository(),
+                facultyRepository: FirestoreRepository(),
                 sidebarAction: () {},
                 textLocalizer: TextLocalizer(),
               ),
           '/group': (context) => GroupSelectionScreen(
-                firebaseDataGetter: FirebaseDataGetterMock(),
+                firebaseDataGetter: FirestoreRepository(),
                 textLocalizer: TextLocalizer(),
               ),
         },

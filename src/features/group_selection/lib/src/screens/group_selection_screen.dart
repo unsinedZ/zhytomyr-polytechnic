@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:group_selection/src/abstract/firebase_data_getter.dart';
+import 'package:group_selection/src/abstractions/firebase_groups_loader.dart';
 import 'package:group_selection/src/models/models.dart';
 
 import '../../group_selection.dart';
@@ -8,7 +8,7 @@ import '../models/models.dart';
 
 class GroupSelectionScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
-  final FirebaseDataGetter firebaseDataGetter;
+  final FirebaseGroupsLoader firebaseDataGetter;
 
   GroupSelectionScreen(
       {required this.textLocalizer, required this.firebaseDataGetter})
@@ -23,7 +23,7 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
   List<Group>? groups;
   Group? group;
   Subgroup? subgroup;
-  String? facultyId;
+  late String facultyId;
   bool isMyGroup = false;
 
   MediaQueryData get mediaQuery => MediaQuery.of(context);
@@ -31,6 +31,8 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
   @override
   void didChangeDependencies() {
     facultyId = ModalRoute.of(context)!.settings.arguments.toString();
+    print(ModalRoute.of(context)!.settings.arguments);
+    print(facultyId);
     super.didChangeDependencies();
   }
 
