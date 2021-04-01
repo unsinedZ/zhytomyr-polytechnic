@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:faculty_list/faculty_list.dart';
 import 'package:group_selection/group_selection.dart';
-import 'package:group_selection/src/models/group.dart';
 
 class FirestoreRepository implements FacultyRepository, FirebaseGroupsLoader {
   @override
