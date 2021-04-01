@@ -97,7 +97,7 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                           groups = null;
                         });
                         widget.firebaseDataGetter
-                            .getGroups(newValue!)
+                            .getGroups(newValue!, facultyId)
                             .then((groups) {
                           Navigator.of(context).pop();
                           setState(() {

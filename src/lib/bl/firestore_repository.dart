@@ -15,7 +15,7 @@ class FirestoreRepository implements FacultyRepository, FirebaseGroupsLoader {
           );
 
   @override
-  Future<List<Group>> getGroups(int course) async {
+  Future<List<Group>> getGroups(int course, String facultyId) async {
     return FirebaseFirestore.instance
         .collection('group')
         .get()
@@ -23,7 +23,7 @@ class FirestoreRepository implements FacultyRepository, FirebaseGroupsLoader {
             .map(
               (groupJson) => Group.fromJson(groupJson.data()!),
             )
-            .where((group) => group.year == course)
+            .where((group) => group.year == course && group.facultyId == facultyId)
             .toList());
   }
 }
