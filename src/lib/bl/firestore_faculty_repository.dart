@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:faculty_list/faculty_list.dart';
-import 'package:timetable_screen/timetable_screen.dart';
+import 'package:timetable/timetable.dart';
 
 class FirestoreFacultyRepository implements FacultyRepository, TimetableLoader {
   @override
@@ -15,14 +15,10 @@ class FirestoreFacultyRepository implements FacultyRepository, TimetableLoader {
 
   @override
   Future<Timetable> loadTimetable(WeekDetermination weekDetermination) async {
-    print('loadTimetable');
     return FirebaseFirestore.instance.collection('timetable').get().then(
         (timetablesListJson) => timetablesListJson.docs
             .map((timetableJson) => Timetable.fromJson(timetableJson.data()!))
-            .firstWhere((timetable) {
-              print(timetable);
-              print(timetable.weekDetermination);
-          return timetable.weekDetermination == weekDetermination;
-        }));
+            .firstWhere((timetable) =>
+                timetable.weekDetermination == weekDetermination));
   }
 }

@@ -1,4 +1,4 @@
-import 'package:timetable_screen/src/models/models.dart';
+import 'package:timetable/src/models/models.dart';
 
 class Timetable {
   Timetable({

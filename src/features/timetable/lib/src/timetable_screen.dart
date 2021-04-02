@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:timetable_screen/src/abstractions/text_localizer.dart';
-import 'package:timetable_screen/src/components/timetable_tab.dart';
+import 'package:timetable/src/abstractions/text_localizer.dart';
+import 'package:timetable/src/components/timetable_tab.dart';
 
+import '../timetable.dart';
 import 'abstractions/timetable_loader.dart';
 import 'bl/bloc/timetable_bloc.dart';
 import 'models/models.dart';
@@ -21,8 +22,11 @@ class TimetableScreen extends StatefulWidget {
 
 class _TimetableScreenState extends State<TimetableScreen> {
   MediaQueryData get mediaQuery => MediaQuery.of(context);
-  late TimetableBloc timetableBloc;
   int initialIndex = (DateTime.now().weekday - 1) % 6;
+
+  late TimetableBloc timetableBloc;
+  late String id;
+  late TimetableType timetableType;
 
   @override
   void initState() {
@@ -31,6 +35,20 @@ class _TimetableScreenState extends State<TimetableScreen> {
     timetableBloc.loadTimetable(WeekDetermination.Odd);
 
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    id = (ModalRoute.of(context)!.settings.arguments as List<dynamic>)[0];
+
+    if ((ModalRoute.of(context)!.settings.arguments as List<dynamic>)[1] ==
+        'group') {
+      timetableType = TimetableType.Group;
+    } else {
+      Navigator.pop(context);
+    }
+
+    super.didChangeDependencies();
   }
 
   @override
@@ -77,34 +95,60 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     Navigator.pop(context);
                   },
                 ),
-                title: Text(widget.textLocalizer.localize('Timetable'), style: Theme.of(context).textTheme.headline1,),
+                title: Text(
+                  widget.textLocalizer.localize('Timetable'),
+                  style: Theme.of(context).textTheme.headline1,
+                ),
               ),
               body: TabBarView(
                 children: [
                   TimetableTab(
-                      timetable: snapshot.data!,
-                      weekNumber: 1,
-                      dateTime: DateTime.now().add(Duration(days: -initialIndex))),
+                    timetable: snapshot.data!,
+                    weekNumber: 1,
+                    dateTime: DateTime.now().add(Duration(days: -initialIndex)),
+                    id: id,
+                    timetableType: timetableType,
+                  ),
                   TimetableTab(
-                      timetable: snapshot.data!,
-                      weekNumber: 2,
-                      dateTime: DateTime.now().add(Duration(days: -initialIndex + 1))),
+                    timetable: snapshot.data!,
+                    weekNumber: 2,
+                    dateTime:
+                        DateTime.now().add(Duration(days: -initialIndex + 1)),
+                    id: id,
+                    timetableType: timetableType,
+                  ),
                   TimetableTab(
-                      timetable: snapshot.data!,
-                      weekNumber: 3,
-                      dateTime: DateTime.now().add(Duration(days: -initialIndex + 2))),
+                    timetable: snapshot.data!,
+                    weekNumber: 3,
+                    dateTime:
+                        DateTime.now().add(Duration(days: -initialIndex + 2)),
+                    id: id,
+                    timetableType: timetableType,
+                  ),
                   TimetableTab(
-                      timetable: snapshot.data!,
-                      weekNumber: 4,
-                      dateTime: DateTime.now().add(Duration(days: -initialIndex + 3))),
+                    timetable: snapshot.data!,
+                    weekNumber: 4,
+                    dateTime:
+                        DateTime.now().add(Duration(days: -initialIndex + 3)),
+                    id: id,
+                    timetableType: timetableType,
+                  ),
                   TimetableTab(
-                      timetable: snapshot.data!,
-                      weekNumber: 5,
-                      dateTime: DateTime.now().add(Duration(days: -initialIndex + 4))),
+                    timetable: snapshot.data!,
+                    weekNumber: 5,
+                    dateTime:
+                        DateTime.now().add(Duration(days: -initialIndex + 4)),
+                    id: id,
+                    timetableType: timetableType,
+                  ),
                   TimetableTab(
-                      timetable: snapshot.data!,
-                      weekNumber: 6,
-                      dateTime: DateTime.now().add(Duration(days: -initialIndex + 5))),
+                    timetable: snapshot.data!,
+                    weekNumber: 6,
+                    dateTime:
+                        DateTime.now().add(Duration(days: -initialIndex + 5)),
+                    id: id,
+                    timetableType: timetableType,
+                  ),
                 ],
               ),
             );
@@ -118,3 +162,5 @@ class _TimetableScreenState extends State<TimetableScreen> {
     );
   }
 }
+
+enum TimetableType { Group, Teacher }

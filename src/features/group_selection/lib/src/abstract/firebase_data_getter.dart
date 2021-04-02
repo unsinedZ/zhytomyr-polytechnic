@@ -8,11 +8,21 @@ class FirebaseDataGetterMock implements FirebaseDataGetter {
   Future<List<Group>> getGroups(int course) => Future.delayed(
       Duration(seconds: 1),
       () => [
-            Group(name: 'group_1_' + course.toString()),
-            Group(name: 'group_2_' + course.toString()),
-            Group(name: 'group_3_' + course.toString()),
+            Group(
+              name: 'group_1_' + course.toString(),
+              id: '0',
+            ),
+            Group(
+              name: 'group_2_' + course.toString(),
+              id: '0',
+            ),
+            Group(
+              name: 'group_3_' + course.toString(),
+              id: '0',
+            ),
             Group(
               name: 'group_4_' + course.toString(),
+              id: '0',
               subgroups: [
                 Subgroup(
                   name: 'subgroup_1_' + course.toString(),

@@ -6,7 +6,7 @@ import 'package:group_selection/group_selection.dart' as GroupSelection
 import 'package:faculty_list/faculty_list.dart' as FacultyListLocale
     show TextLocalizer;
 
-import 'package:timetable_screen/timetable_screen.dart' as TimetableScreen
+import 'package:timetable/timetable.dart' as TimetableScreen
     show TextLocalizer;
 
 class TextLocalizer

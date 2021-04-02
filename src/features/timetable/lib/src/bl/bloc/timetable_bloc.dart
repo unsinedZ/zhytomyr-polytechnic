@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:timetable_screen/src/abstractions/timetable_loader.dart';
-import 'package:timetable_screen/src/models/models.dart';
+import 'package:timetable/src/abstractions/timetable_loader.dart';
+import 'package:timetable/src/models/models.dart';
 
 class TimetableBloc {
   final TimetableLoader timetableLoader;

@@ -1,4 +1,4 @@
-library timetable_screen;
+library timetable;
 
 export 'src/timetable_screen.dart';
 
