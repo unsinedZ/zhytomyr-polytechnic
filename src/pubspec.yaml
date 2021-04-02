@@ -22,6 +22,8 @@ dependencies:
     path: ./features/google_authentication
   group_selection:
     path: ./features/group_selection
+  timetable_screen:
+    path: ./features/timetable_screen
 
   easy_localization: ^3.0.0
 

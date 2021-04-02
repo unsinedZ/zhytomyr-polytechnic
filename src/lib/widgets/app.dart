@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 
+import 'package:timetable_screen/timetable_screen.dart' hide TextLocalizer;
+
 import 'package:faculty_list/faculty_list.dart' hide TextLocalizer;
 
 import 'package:group_selection/group_selection.dart' hide TextLocalizer;
@@ -23,6 +25,9 @@ class App extends StatelessWidget {
         theme: ThemeData(
           canvasColor: Colors.white,
           primaryColor: Color(0xff35b9ca),
+          primaryIconTheme: IconThemeData(
+            color: Colors.white,
+          ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.resolveWith<Color>(
@@ -36,6 +41,13 @@ class App extends StatelessWidget {
                   (Set<MaterialState> states) {
                 return Colors.black;
               }),
+            ),
+          ),
+          textTheme: TextTheme(
+            headline1: TextStyle(
+              fontSize: 25,
+              color: Colors.white,
+              fontWeight: FontWeight.w500
             ),
           ),
         ),
@@ -52,6 +64,10 @@ class App extends StatelessWidget {
               ),
           '/group': (context) => GroupSelectionScreen(
                 firebaseDataGetter: FirebaseDataGetterMock(),
+                textLocalizer: TextLocalizer(),
+              ),
+          '/timetable': (context) => TimetableScreen(
+                timetableLoader: FirestoreFacultyRepository(),
                 textLocalizer: TextLocalizer(),
               ),
         },
