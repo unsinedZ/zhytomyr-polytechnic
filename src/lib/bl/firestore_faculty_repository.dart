@@ -14,11 +14,10 @@ class FirestoreFacultyRepository implements FacultyRepository, TimetableLoader {
           );
 
   @override
-  Future<Timetable> loadTimetable(WeekDetermination weekDetermination) async {
-    return FirebaseFirestore.instance.collection('timetable').get().then(
-        (timetablesListJson) => timetablesListJson.docs
-            .map((timetableJson) => Timetable.fromJson(timetableJson.data()!))
-            .firstWhere((timetable) =>
-                timetable.weekDetermination == weekDetermination));
-  }
+  Future<Timetable> loadTimetable(WeekDetermination weekDetermination) async =>
+      FirebaseFirestore.instance.collection('timetable').get().then(
+          (timetablesListJson) => timetablesListJson.docs
+              .map((timetableJson) => Timetable.fromJson(timetableJson.data()!))
+              .firstWhere((timetable) =>
+                  timetable.weekDetermination == weekDetermination));
 }

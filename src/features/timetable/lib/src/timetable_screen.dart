@@ -13,8 +13,7 @@ class TimetableScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
   final TimetableLoader timetableLoader;
 
-  TimetableScreen({required this.textLocalizer, required this.timetableLoader})
-      : super();
+  TimetableScreen({required this.textLocalizer, required this.timetableLoader});
 
   @override
   _TimetableScreenState createState() => _TimetableScreenState();
@@ -68,22 +67,22 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   unselectedLabelColor: Color(0xc3ffffff),
                   tabs: [
                     Tab(
-                      text: 'ПН',
+                      text: widget.textLocalizer.localize('ПН'),
                     ),
                     Tab(
-                      text: 'ВТ',
+                      text: widget.textLocalizer.localize('ВТ'),
                     ),
                     Tab(
-                      text: 'СР',
+                      text: widget.textLocalizer.localize('СР'),
                     ),
                     Tab(
-                      text: 'ЧТ',
+                      text: widget.textLocalizer.localize('ЧТ'),
                     ),
                     Tab(
-                      text: 'ПТ',
+                      text: widget.textLocalizer.localize('ПТ'),
                     ),
                     Tab(
-                      text: 'СБ',
+                      text: widget.textLocalizer.localize('СБ'),
                     ),
                   ],
                 ),

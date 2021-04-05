@@ -217,7 +217,7 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                           group!.subgroups!.length > 0 &&
                           subgroup == null)
                   ? null
-                  : () => {Navigator.pushNamed(context, '/timetable', arguments: [group!.id, 'group'])},
+                  : () => Navigator.pushNamed(context, '/timetable', arguments: [group!.id, 'group']),
               child: Padding(
                 padding: const EdgeInsets.all(17.0),
                 child: Text(

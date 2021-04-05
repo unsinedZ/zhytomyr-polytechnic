@@ -5,7 +5,7 @@ import 'package:timetable/src/bl/models/models.dart';
 class ActivityCard extends StatelessWidget {
   final Activity activity;
 
-  ActivityCard({required this.activity}) : super();
+  ActivityCard({required this.activity});
 
   @override
   Widget build(BuildContext context) {
