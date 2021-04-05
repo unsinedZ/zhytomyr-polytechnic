@@ -1,15 +1,15 @@
 import 'package:timetable/src/bl/models/models.dart';
 
 class Timetable {
+  final List<TimetableItem>? items;
+  final String? expiresAt;
+  final WeekDetermination weekDetermination;
+
   Timetable({
     this.items,
     this.expiresAt,
-    this.weekDetermination,
+    required this.weekDetermination,
   });
-
-  List<TimetableItem>? items;
-  String? expiresAt;
-  WeekDetermination? weekDetermination;
 
   factory Timetable.fromJson(Map<String, dynamic> json) {
     return Timetable(

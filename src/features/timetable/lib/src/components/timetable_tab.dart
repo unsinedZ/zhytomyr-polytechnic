@@ -34,7 +34,7 @@ class TimetableTab extends StatelessWidget {
         ),
         ...timetable.items!
             .where((timetableItem) => timetableItem.weekNumber == weekNumber)
-            .map((timetableItem) => timetableItem.activity!)
+            .map((timetableItem) => timetableItem.activity)
             .where((activity) {
               if (timetableType == TimetableType.Group) {
                 return activity.groups.any((group) => group.id == id);

@@ -1,13 +1,13 @@
 import 'models.dart';
 
 class TimetableItem {
-  TimetableItem({
-    this.weekNumber,
-    this.activity,
-  });
+  final int weekNumber;
+  final Activity activity;
 
-  int? weekNumber;
-  Activity? activity;
+  TimetableItem({
+    required this.weekNumber,
+    required this.activity,
+  });
 
   factory TimetableItem.fromJson(Map<String, dynamic> json) {
     return TimetableItem(
