@@ -1,11 +1,11 @@
 class Subgroup {
-  Subgroup({
-    this.id,
-    this.name,
-  });
+  final String id;
+  final String name;
 
-  String? id;
-  String? name;
+  Subgroup({
+    required this.id,
+    required this.name,
+  });
 
   factory Subgroup.fromJson(Map<String, dynamic> json) {
     return Subgroup(

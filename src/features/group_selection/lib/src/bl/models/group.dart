@@ -1,19 +1,19 @@
 import 'subgroup.dart';
 
 class Group {
+  final String id;
+  final String name;
+  final int year;
+  final String facultyId;
+  final List<Subgroup>? subgroups;
+
   Group({
-    this.id,
-    this.name,
-    this.year,
-    this.facultyId,
+    required this.id,
+    required this.name,
+    required this.year,
+    required this.facultyId,
     this.subgroups,
   });
-
-  String? id;
-  String? name;
-  int? year;
-  String? facultyId;
-  List<Subgroup>? subgroups;
 
   factory Group.fromJson(Map<String, dynamic> json) {
     return Group(

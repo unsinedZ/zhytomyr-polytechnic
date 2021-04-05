@@ -140,7 +140,7 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                               ? snapshot.data!.map<DropdownMenuItem<Group>>((Group group) {
                                   return DropdownMenuItem<Group>(
                                     value: group,
-                                    child: Text(group.name!),
+                                    child: Text(group.name),
                                   );
                                 }).toList()
                               : null,
@@ -174,7 +174,7 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                                             (Subgroup subgroup) {
                                         return DropdownMenuItem<Subgroup>(
                                           value: subgroup,
-                                          child: Text(subgroup.name!),
+                                          child: Text(subgroup.name),
                                         );
                                       }).toList()
                                     : null,

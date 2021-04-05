@@ -18,8 +18,11 @@ void main() {
     GroupSelectionBloc groupSelectionBloc =
         GroupSelectionBloc(groupsLoader: groupsLoaderMock);
 
-    when(groupsLoaderMock.getGroups(any, any)).thenAnswer((_) => Future.value(
-        <Group>[Group(name: 'SomeName'), Group(name: 'SomeName1')]));
+    when(groupsLoaderMock.getGroups(any, any))
+        .thenAnswer((_) => Future.value(<Group>[
+              Group(name: 'SomeName', facultyId: '', id: '', year: 2),
+              Group(name: 'SomeName1', facultyId: '', year: 3, id: '')
+            ]));
 
     List<List<Group>?> results = <List<Group>?>[];
 
