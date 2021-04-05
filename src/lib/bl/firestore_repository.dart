@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:faculty_list/faculty_list.dart';
 import 'package:group_selection/group_selection.dart';
 
-class FirestoreRepository implements FacultyRepository, FirebaseGroupsLoader {
+class FirestoreRepository implements FacultyRepository, GroupsLoader {
   @override
   Stream<List<Faculty>> getFaculties() =>
       FirebaseFirestore.instance.collection('faculty').get().asStream().map(

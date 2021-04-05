@@ -51,7 +51,7 @@ class App extends StatelessWidget {
                 textLocalizer: TextLocalizer(),
               ),
           '/group': (context) => GroupSelectionScreen(
-                firebaseDataGetter: FirestoreRepository(),
+                groupsLoader: FirestoreRepository(),
                 textLocalizer: TextLocalizer(),
               ),
         },

@@ -1,5 +1,5 @@
 import '../models/models.dart';
 
-abstract class FirebaseGroupsLoader {
+abstract class GroupsLoader {
   Future<List<Group>> getGroups(int course, String facultyId);
 }

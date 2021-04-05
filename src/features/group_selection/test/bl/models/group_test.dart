@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../lib/src/models/group.dart';
+import '../../../lib/src/bl/models/group.dart';
 
 void main() {
   test('ClientProfile.fromJson work correctly', () {

@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:group_selection/src/abstractions/firebase_groups_loader.dart';
-import 'package:group_selection/src/models/models.dart';
+import 'package:group_selection/src/bl/abstractions/groups_loader.dart';
+import 'package:group_selection/src/bl/bloc/group_selection_bloc.dart';
+import 'package:group_selection/src/bl/models/models.dart';
 
 import '../../group_selection.dart';
-import '../models/models.dart';
 
 class GroupSelectionScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
-  final FirebaseGroupsLoader firebaseDataGetter;
+  final GroupsLoader groupsLoader;
 
   GroupSelectionScreen(
-      {required this.textLocalizer, required this.firebaseDataGetter})
+      {required this.textLocalizer, required this.groupsLoader})
       : super();
 
   @override
@@ -20,19 +20,43 @@ class GroupSelectionScreen extends StatefulWidget {
 
 class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
   int? course;
-  List<Group>? groups;
   Group? group;
   Subgroup? subgroup;
   late String facultyId;
+  late GroupSelectionBloc groupSelectionBloc;
   bool isMyGroup = false;
 
   MediaQueryData get mediaQuery => MediaQuery.of(context);
 
   @override
+  void initState() {
+    groupSelectionBloc = GroupSelectionBloc(groupsLoader: widget.groupsLoader);
+
+    groupSelectionBloc.groups.listen((groups) {
+      if (groups == null) {
+        Navigator.of(context).push(
+          PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (_, __, ___) {
+              return Container(
+                  color: Color(0x43000000),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ));
+            },
+          ),
+        );
+      } else {
+        Navigator.of(context).pop();
+      }
+    });
+
+    super.initState();
+  }
+
+  @override
   void didChangeDependencies() {
     facultyId = ModalRoute.of(context)!.settings.arguments.toString();
-    print(ModalRoute.of(context)!.settings.arguments);
-    print(facultyId);
     super.didChangeDependencies();
   }
 
@@ -77,33 +101,13 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                       hint: Text(widget.textLocalizer.localize('Course')),
                       isExpanded: true,
                       value: course,
-                      onChanged: (int? newValue) {
-                        Navigator.of(context).push(
-                          PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (_, __, ___) {
-                              return Container(
-                                  color: Color(0x43000000),
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ));
-                            },
-                          ),
-                        );
+                      onChanged: (int? course) {
                         setState(() {
-                          course = newValue;
+                          this.course = course;
                           group = null;
                           subgroup = null;
-                          groups = null;
                         });
-                        widget.firebaseDataGetter
-                            .getGroups(newValue!, facultyId)
-                            .then((groups) {
-                          Navigator.of(context).pop();
-                          setState(() {
-                            this.groups = groups;
-                          });
-                        });
+                        groupSelectionBloc.loadGroups(course!, facultyId);
                       },
                       items: <int>[1, 2, 3, 4, 5]
                           .map<DropdownMenuItem<int>>((int value) {
@@ -117,27 +121,32 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                   SizedBox(
                     height: 20,
                   ),
-                  Container(
-                    width: 150,
-                    child: DropdownButton<Group>(
-                      hint: Text(widget.textLocalizer.localize('Group')),
-                      isExpanded: true,
-                      value: group,
-                      onChanged: (Group? newValue) {
-                        setState(() {
-                          subgroup = null;
-                          group = newValue;
-                        });
-                      },
-                      items: groups != null
-                          ? groups!.map<DropdownMenuItem<Group>>((Group group) {
-                              return DropdownMenuItem<Group>(
-                                value: group,
-                                child: Text(group.name!),
-                              );
-                            }).toList()
-                          : null,
-                    ),
+                  StreamBuilder<List<Group>?>(
+                    stream: groupSelectionBloc.groups,
+                    builder: (context, snapshot) {
+                      return Container(
+                        width: 150,
+                        child: DropdownButton<Group>(
+                          hint: Text(widget.textLocalizer.localize('Group')),
+                          isExpanded: true,
+                          value: group,
+                          onChanged: (Group? newValue) {
+                            setState(() {
+                              subgroup = null;
+                              group = newValue;
+                            });
+                          },
+                          items: snapshot.hasData == true && snapshot.data != null
+                              ? snapshot.data!.map<DropdownMenuItem<Group>>((Group group) {
+                                  return DropdownMenuItem<Group>(
+                                    value: group,
+                                    child: Text(group.name!),
+                                  );
+                                }).toList()
+                              : null,
+                        ),
+                      );
+                    }
                   ),
                   SizedBox(
                     height: 15,
@@ -232,5 +241,11 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    groupSelectionBloc.dispose();
+    super.dispose();
   }
 }
