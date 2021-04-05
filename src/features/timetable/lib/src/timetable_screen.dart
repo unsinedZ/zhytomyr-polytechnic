@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:timetable/src/abstractions/text_localizer.dart';
+import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/components/timetable_tab.dart';
+import 'package:timetable/src/bl/bloc/timetable_bloc.dart';
+import 'package:timetable/src/bl/abstractions/timetable_loader.dart';
+import 'package:timetable/src/bl/models/models.dart';
 
 import '../timetable.dart';
-import 'abstractions/timetable_loader.dart';
-import 'bl/bloc/timetable_bloc.dart';
-import 'models/models.dart';
 
 class TimetableScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
@@ -66,8 +66,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   indicatorColor: Colors.amberAccent,
                   labelColor: Colors.white,
                   unselectedLabelColor: Color(0xc3ffffff),
-                  // labelStyle: Theme.of(context).textTheme.headline2,
-                  // unselectedLabelStyle: Theme.of(context).textTheme.headline2,
                   tabs: [
                     Tab(
                       text: 'ПН',

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:timetable/src/models/models.dart';
+import 'package:timetable/src/bl/models/models.dart';
 
 class ActivityCard extends StatelessWidget {
   final Activity activity;

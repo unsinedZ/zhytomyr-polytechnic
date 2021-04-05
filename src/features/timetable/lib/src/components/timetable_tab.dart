@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
-import 'package:timetable/src/models/models.dart';
+import 'package:timetable/src/bl/models/models.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../timetable.dart';
