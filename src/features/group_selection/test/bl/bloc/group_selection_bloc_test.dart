@@ -6,21 +6,25 @@ import 'package:mockito/mockito.dart';
 
 class GroupsLoaderMock extends Mock implements GroupsLoader {
   @override
-  Future<List<Group>> getGroups(int? course, String? facultyId) async {
-    return <Group>[Group(name: 'SomeName'), Group(name: 'SomeName1')];
-  }
+  Future<List<Group>> getGroups(int? course, String? facultyId) =>
+      super.noSuchMethod(Invocation.method(#getGroups, [course, facultyId]),
+          returnValue: Future.value(<Group>[]));
 }
 
 void main() {
   test('GroupSelectionBloc.getGroups work correctly', () async {
     GroupsLoaderMock groupsLoaderMock = GroupsLoaderMock();
 
-    List<List<Group>?> results = <List<Group>?>[];
-
     GroupSelectionBloc groupSelectionBloc =
         GroupSelectionBloc(groupsLoader: groupsLoaderMock);
+
+    when(groupsLoaderMock.getGroups(any, any)).thenAnswer((_) => Future.value(
+        <Group>[Group(name: 'SomeName'), Group(name: 'SomeName1')]));
+
+    List<List<Group>?> results = <List<Group>?>[];
+
     groupSelectionBloc.groups.listen((groups) => results.add(groups));
-    groupSelectionBloc.loadGroups(1, 'faculty');
+    groupSelectionBloc.loadGroups(1, 'facultyId');
 
     await Future.delayed(const Duration());
 
