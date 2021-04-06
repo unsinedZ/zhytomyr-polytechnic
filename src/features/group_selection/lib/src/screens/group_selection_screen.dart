@@ -11,8 +11,7 @@ class GroupSelectionScreen extends StatefulWidget {
   final GroupsLoader groupsLoader;
 
   GroupSelectionScreen(
-      {required this.textLocalizer, required this.groupsLoader})
-      : super();
+      {required this.textLocalizer, required this.groupsLoader});
 
   @override
   _GroupSelectionScreenState createState() => _GroupSelectionScreenState();
@@ -122,32 +121,33 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                     height: 20,
                   ),
                   StreamBuilder<List<Group>?>(
-                    stream: groupSelectionBloc.groups,
-                    builder: (context, snapshot) {
-                      return Container(
-                        width: 150,
-                        child: DropdownButton<Group>(
-                          hint: Text(widget.textLocalizer.localize('Group')),
-                          isExpanded: true,
-                          value: group,
-                          onChanged: (Group? newValue) {
-                            setState(() {
-                              subgroup = null;
-                              group = newValue;
-                            });
-                          },
-                          items: snapshot.hasData == true && snapshot.data != null
-                              ? snapshot.data!.map<DropdownMenuItem<Group>>((Group group) {
-                                  return DropdownMenuItem<Group>(
-                                    value: group,
-                                    child: Text(group.name),
-                                  );
-                                }).toList()
-                              : null,
-                        ),
-                      );
-                    }
-                  ),
+                      stream: groupSelectionBloc.groups,
+                      builder: (context, snapshot) {
+                        return Container(
+                          width: 150,
+                          child: DropdownButton<Group>(
+                            hint: Text(widget.textLocalizer.localize('Group')),
+                            isExpanded: true,
+                            value: group,
+                            onChanged: (Group? newValue) {
+                              setState(() {
+                                subgroup = null;
+                                group = newValue;
+                              });
+                            },
+                            items: snapshot.hasData == true &&
+                                    snapshot.data != null
+                                ? snapshot.data!.map<DropdownMenuItem<Group>>(
+                                    (Group group) {
+                                    return DropdownMenuItem<Group>(
+                                      value: group,
+                                      child: Text(group.name),
+                                    );
+                                  }).toList()
+                                : null,
+                          ),
+                        );
+                      }),
                   SizedBox(
                     height: 15,
                   ),
