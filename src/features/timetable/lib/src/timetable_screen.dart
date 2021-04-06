@@ -67,22 +67,22 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   unselectedLabelColor: Color(0xc3ffffff),
                   tabs: [
                     Tab(
-                      text: widget.textLocalizer.localize('ПН'),
+                      text: widget.textLocalizer.localize('Mon'),
                     ),
                     Tab(
-                      text: widget.textLocalizer.localize('ВТ'),
+                      text: widget.textLocalizer.localize('Tue'),
                     ),
                     Tab(
-                      text: widget.textLocalizer.localize('СР'),
+                      text: widget.textLocalizer.localize('Wed'),
                     ),
                     Tab(
-                      text: widget.textLocalizer.localize('ЧТ'),
+                      text: widget.textLocalizer.localize('Thu'),
                     ),
                     Tab(
-                      text: widget.textLocalizer.localize('ПТ'),
+                      text: widget.textLocalizer.localize('Fri'),
                     ),
                     Tab(
-                      text: widget.textLocalizer.localize('СБ'),
+                      text: widget.textLocalizer.localize('Sat'),
                     ),
                   ],
                 ),
