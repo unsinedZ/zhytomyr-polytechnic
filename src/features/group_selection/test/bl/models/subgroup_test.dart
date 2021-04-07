@@ -1,8 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-
-import '../../../lib/src/bl/models/models.dart';
+import 'package:group_selection/src/bl/models/models.dart';
 
 void main() {
   test('Subgroup.fromJson work correctly', () {

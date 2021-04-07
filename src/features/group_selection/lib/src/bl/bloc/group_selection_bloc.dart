@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:group_selection/src/bl/abstractions/groups_loader.dart';
-
-import '../../../group_selection.dart';
+import 'package:group_selection/src/bl/models/models.dart';
 
 class GroupSelectionBloc {
   final GroupsLoader groupsLoader;
