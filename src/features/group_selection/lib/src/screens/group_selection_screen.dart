@@ -68,7 +68,10 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
             onPressed: () {
               Navigator.pop(context);
             }),
-        title: Text(widget.textLocalizer.localize('Schedule')),
+        title: Text(
+          widget.textLocalizer.localize('Schedule'),
+          style: Theme.of(context).textTheme.headline1,
+        ),
       ),
       body: Column(
         children: [
@@ -228,7 +231,8 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                           group!.subgroups!.length > 0 &&
                           subgroup == null)
                   ? null
-                  : () => {},
+                  : () => Navigator.pushNamed(context, '/timetable',
+                      arguments: [group!.id, 'group']),
               child: Padding(
                 padding: const EdgeInsets.all(17.0),
                 child: Text(

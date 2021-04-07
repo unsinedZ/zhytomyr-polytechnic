@@ -11,7 +11,10 @@ class FacultyList extends StatefulWidget {
   final VoidCallback sidebarAction;
   final TextLocalizer textLocalizer;
 
-  FacultyList({required this.facultyRepository, required this.sidebarAction, required this.textLocalizer});
+  FacultyList(
+      {required this.facultyRepository,
+      required this.sidebarAction,
+      required this.textLocalizer});
 
   _FacultyListState createState() => _FacultyListState();
 }
@@ -44,7 +47,10 @@ class _FacultyListState extends State<FacultyList> {
             child: Icon(Icons.menu),
           ),
         ),
-        title: Text(widget.textLocalizer.localize("Faculty List")),
+        title: Text(
+          widget.textLocalizer.localize("Faculty List"),
+          style: Theme.of(context).textTheme.headline1,
+        ),
       ),
       body: RefreshIndicator(
         onRefresh: () => _facultyListBloc.loadList(),
@@ -61,7 +67,10 @@ class _FacultyListState extends State<FacultyList> {
                       Center(
                         child: Padding(
                           padding: EdgeInsets.all(15),
-                          child: Text(widget.textLocalizer.localize("Choose faculty"), style: Theme.of(context).textTheme.headline6,),
+                          child: Text(
+                            widget.textLocalizer.localize("Choose faculty"),
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
                         ),
                       ),
                       Wrap(
@@ -81,7 +90,7 @@ class _FacultyListState extends State<FacultyList> {
               }
 
               return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [Center(child: CircularProgressIndicator())]);
             },
           ),
