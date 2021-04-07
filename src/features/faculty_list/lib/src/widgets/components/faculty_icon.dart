@@ -13,7 +13,7 @@ class FacultyIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, "/group", arguments: {faculty.id}),
+      onTap: () => Navigator.pushNamed(context, "/group", arguments: faculty.id),
       child: Column(
         children: [
           CachedNetworkImage(

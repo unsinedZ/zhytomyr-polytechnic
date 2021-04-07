@@ -1,18 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:group_selection/src/abstract/firebase_data_getter.dart';
-import 'package:group_selection/src/models/models.dart';
+import 'package:group_selection/src/bl/abstractions/groups_loader.dart';
+import 'package:group_selection/src/bl/bloc/group_selection_bloc.dart';
+import 'package:group_selection/src/bl/models/models.dart';
 
 import '../../group_selection.dart';
-import '../models/models.dart';
 
 class GroupSelectionScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
-  final FirebaseDataGetter firebaseDataGetter;
+  final GroupsLoader groupsLoader;
 
   GroupSelectionScreen(
-      {required this.textLocalizer, required this.firebaseDataGetter})
-      : super();
+      {required this.textLocalizer, required this.groupsLoader});
 
   @override
   _GroupSelectionScreenState createState() => _GroupSelectionScreenState();
@@ -20,13 +19,39 @@ class GroupSelectionScreen extends StatefulWidget {
 
 class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
   int? course;
-  List<Group>? groups;
   Group? group;
   Subgroup? subgroup;
-  String? facultyId;
+  late String facultyId;
+  late GroupSelectionBloc groupSelectionBloc;
   bool isMyGroup = false;
 
   MediaQueryData get mediaQuery => MediaQuery.of(context);
+
+  @override
+  void initState() {
+    groupSelectionBloc = GroupSelectionBloc(groupsLoader: widget.groupsLoader);
+
+    groupSelectionBloc.groups.listen((groups) {
+      if (groups == null) {
+        Navigator.of(context).push(
+          PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (_, __, ___) {
+              return Container(
+                  color: Color(0x43000000),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ));
+            },
+          ),
+        );
+      } else {
+        Navigator.of(context).pop();
+      }
+    });
+
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -43,7 +68,10 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
             onPressed: () {
               Navigator.pop(context);
             }),
-        title: Text(widget.textLocalizer.localize('Schedule')),
+        title: Text(
+          widget.textLocalizer.localize('Schedule'),
+          style: Theme.of(context).textTheme.headline1,
+        ),
       ),
       body: Column(
         children: [
@@ -75,33 +103,13 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                       hint: Text(widget.textLocalizer.localize('Course')),
                       isExpanded: true,
                       value: course,
-                      onChanged: (int? newValue) {
-                        Navigator.of(context).push(
-                          PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (_, __, ___) {
-                              return Container(
-                                  color: Color(0x43000000),
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ));
-                            },
-                          ),
-                        );
+                      onChanged: (int? course) {
                         setState(() {
-                          course = newValue;
+                          this.course = course;
                           group = null;
                           subgroup = null;
-                          groups = null;
                         });
-                        widget.firebaseDataGetter
-                            .getGroups(newValue!)
-                            .then((groups) {
-                          Navigator.of(context).pop();
-                          setState(() {
-                            this.groups = groups;
-                          });
-                        });
+                        groupSelectionBloc.loadGroups(course!, facultyId);
                       },
                       items: <int>[1, 2, 3, 4, 5]
                           .map<DropdownMenuItem<int>>((int value) {
@@ -115,28 +123,34 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                   SizedBox(
                     height: 20,
                   ),
-                  Container(
-                    width: 150,
-                    child: DropdownButton<Group>(
-                      hint: Text(widget.textLocalizer.localize('Group')),
-                      isExpanded: true,
-                      value: group,
-                      onChanged: (Group? newValue) {
-                        setState(() {
-                          subgroup = null;
-                          group = newValue;
-                        });
-                      },
-                      items: groups != null
-                          ? groups!.map<DropdownMenuItem<Group>>((Group group) {
-                              return DropdownMenuItem<Group>(
-                                value: group,
-                                child: Text(group.name!),
-                              );
-                            }).toList()
-                          : null,
-                    ),
-                  ),
+                  StreamBuilder<List<Group>?>(
+                      stream: groupSelectionBloc.groups,
+                      builder: (context, snapshot) {
+                        return Container(
+                          width: 150,
+                          child: DropdownButton<Group>(
+                            hint: Text(widget.textLocalizer.localize('Group')),
+                            isExpanded: true,
+                            value: group,
+                            onChanged: (Group? newValue) {
+                              setState(() {
+                                subgroup = null;
+                                group = newValue;
+                              });
+                            },
+                            items: snapshot.hasData == true &&
+                                    snapshot.data != null
+                                ? snapshot.data!.map<DropdownMenuItem<Group>>(
+                                    (Group group) {
+                                    return DropdownMenuItem<Group>(
+                                      value: group,
+                                      child: Text(group.name),
+                                    );
+                                  }).toList()
+                                : null,
+                          ),
+                        );
+                      }),
                   SizedBox(
                     height: 15,
                   ),
@@ -163,7 +177,7 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                                             (Subgroup subgroup) {
                                         return DropdownMenuItem<Subgroup>(
                                           value: subgroup,
-                                          child: Text(subgroup.name!),
+                                          child: Text(subgroup.name),
                                         );
                                       }).toList()
                                     : null,
@@ -217,7 +231,8 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                           group!.subgroups!.length > 0 &&
                           subgroup == null)
                   ? null
-                  : () => Navigator.pushNamed(context, '/timetable', arguments: [group!.id, 'group']),
+                  : () => Navigator.pushNamed(context, '/timetable',
+                      arguments: [group!.id, 'group']),
               child: Padding(
                 padding: const EdgeInsets.all(17.0),
                 child: Text(
@@ -230,5 +245,11 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    groupSelectionBloc.dispose();
+    super.dispose();
   }
 }
