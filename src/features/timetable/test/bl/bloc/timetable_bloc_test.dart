@@ -11,7 +11,7 @@ class TimetableLoaderMock extends Mock implements TimetableLoader {
   Future<Timetable> loadTimetable(WeekDetermination? weekDetermination) =>
       super.noSuchMethod(Invocation.method(#loadTimetable, [weekDetermination]),
           returnValue: Future.value(
-              Timetable(weekDetermination: WeekDetermination.Odd, items: [])));
+              Timetable(weekDetermination: WeekDetermination.Odd)));
 }
 
 void main() {
@@ -22,7 +22,7 @@ void main() {
         TimetableBloc(timetableLoader: timetableLoaderMock);
 
     when(timetableLoaderMock.loadTimetable(any)).thenAnswer((_) => Future.value(
-        Timetable(weekDetermination: WeekDetermination.Even)));
+        Timetable(weekDetermination: WeekDetermination.Even, items: [])));
 
     List<Timetable?> results = <Timetable?>[];
 

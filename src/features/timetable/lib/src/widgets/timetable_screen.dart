@@ -1,13 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
-import 'package:timetable/src/components/timetable_tab.dart';
+import 'package:timetable/src/widgets/components/timetable_tab.dart';
 import 'package:timetable/src/bl/bloc/timetable_bloc.dart';
 import 'package:timetable/src/bl/abstractions/timetable_loader.dart';
 import 'package:timetable/src/bl/models/models.dart';
-
-import '../timetable.dart';
 
 class TimetableScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
@@ -44,7 +41,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
         'group') {
       timetableType = TimetableType.Group;
     } else {
-      Navigator.pop(context);
+      timetableType = TimetableType.Teacher;
     }
 
     super.didChangeDependencies();
@@ -55,10 +52,10 @@ class _TimetableScreenState extends State<TimetableScreen> {
     return DefaultTabController(
       initialIndex: initialIndex,
       length: 6,
-      child: StreamBuilder<Timetable>(
+      child: StreamBuilder<Timetable?>(
         stream: timetableBloc.timetable,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data != null) {
             return Scaffold(
               appBar: AppBar(
                 bottom: TabBar(

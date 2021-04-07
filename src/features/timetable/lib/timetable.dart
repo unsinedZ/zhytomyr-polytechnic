@@ -1,6 +1,6 @@
 library timetable;
 
-export 'src/timetable_screen.dart';
+export 'src/widgets/timetable_screen.dart';
 
 export 'src/bl/models/models.dart';
 
