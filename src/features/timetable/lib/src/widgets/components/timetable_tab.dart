@@ -12,6 +12,7 @@ import 'activity_card.dart';
 class TimetableTab extends StatelessWidget {
   final Timetable timetable;
   final int weekNumber;
+  final int dayOfWeekNumber;
   final DateTime dateTime;
   final TimetableType timetableType;
   final String id;
@@ -19,6 +20,7 @@ class TimetableTab extends StatelessWidget {
   TimetableTab({
     required this.timetable,
     required this.weekNumber,
+    required this.dayOfWeekNumber,
     required this.dateTime,
     required this.timetableType,
     required this.id,
@@ -34,7 +36,7 @@ class TimetableTab extends StatelessWidget {
               DateFormat('d MMMM', context.locale.toString()).format(dateTime)),
         ),
         ...timetable.items!
-            .where((timetableItem) => timetableItem.weekNumber == weekNumber)
+            .where((timetableItem) => timetableItem.weekNumber == weekNumber && timetableItem.dayNumber == dayOfWeekNumber)
             .map((timetableItem) => timetableItem.activity)
             .where((activity) {
               if (timetableType == TimetableType.Group) {

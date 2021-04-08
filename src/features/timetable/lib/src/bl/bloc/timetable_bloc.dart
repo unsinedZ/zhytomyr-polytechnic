@@ -16,11 +16,11 @@ class TimetableBloc {
 
   Stream<Timetable?> get timetable => _timetableController.stream;
 
-  void loadTimetable(WeekDetermination weekDetermination) {
+  void loadTimetable() {
     _timetableController.add(null);
 
     timetableLoader
-        .loadTimetable(weekDetermination)
+        .loadTimetable()
         .then((timetable) => _timetableController.add(timetable));
   }
 

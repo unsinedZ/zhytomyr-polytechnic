@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'package:intl/intl.dart';
+
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/widgets/components/timetable_tab.dart';
 import 'package:timetable/src/bl/bloc/timetable_bloc.dart';
@@ -30,6 +32,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
   late TimetableBloc timetableBloc;
   late String id;
   late TimetableType timetableType;
+  late int weekNumber;
 
   @override
   void initState() {
@@ -38,7 +41,18 @@ class _TimetableScreenState extends State<TimetableScreen> {
       errorSink: widget.errorSink,
     );
 
-    timetableBloc.loadTimetable(WeekDetermination.Odd);
+    timetableBloc.loadTimetable();
+
+    final date = DateTime.now();
+
+    int dayOfYear = int.parse(DateFormat("D").format(date));
+    weekNumber = ((dayOfYear - date.weekday + 10) / 7).floor();
+
+    if (weekNumber < 1) {
+      weekNumber = _numOfWeeks(date.year - 1);
+    } else if (weekNumber > _numOfWeeks(date.year)) {
+      weekNumber = 1;
+    }
 
     super.initState();
   }
@@ -66,6 +80,18 @@ class _TimetableScreenState extends State<TimetableScreen> {
         stream: timetableBloc.timetable,
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
+
+            if ((weekNumber.isEven &&
+                    snapshot.data!.weekDetermination ==
+                        WeekDetermination.Even) ||
+                (weekNumber.isOdd &&
+                    snapshot.data!.weekDetermination ==
+                        WeekDetermination.Odd)) {
+              weekNumber = 1;
+            } else {
+              weekNumber = 2;
+            }
+
             return Scaffold(
               appBar: AppBar(
                 bottom: TabBar(
@@ -108,14 +134,16 @@ class _TimetableScreenState extends State<TimetableScreen> {
                 children: [
                   TimetableTab(
                     timetable: snapshot.data!,
-                    weekNumber: 1,
+                    weekNumber: weekNumber,
+                    dayOfWeekNumber: 1,
                     dateTime: DateTime.now().add(Duration(days: -initialIndex)),
                     id: id,
                     timetableType: timetableType,
                   ),
                   TimetableTab(
                     timetable: snapshot.data!,
-                    weekNumber: 2,
+                    weekNumber: weekNumber,
+                    dayOfWeekNumber: 2,
                     dateTime:
                         DateTime.now().add(Duration(days: -initialIndex + 1)),
                     id: id,
@@ -123,7 +151,8 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   ),
                   TimetableTab(
                     timetable: snapshot.data!,
-                    weekNumber: 3,
+                    weekNumber: weekNumber,
+                    dayOfWeekNumber: 3,
                     dateTime:
                         DateTime.now().add(Duration(days: -initialIndex + 2)),
                     id: id,
@@ -131,7 +160,8 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   ),
                   TimetableTab(
                     timetable: snapshot.data!,
-                    weekNumber: 4,
+                    weekNumber: weekNumber,
+                    dayOfWeekNumber: 4,
                     dateTime:
                         DateTime.now().add(Duration(days: -initialIndex + 3)),
                     id: id,
@@ -139,7 +169,8 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   ),
                   TimetableTab(
                     timetable: snapshot.data!,
-                    weekNumber: 5,
+                    weekNumber: weekNumber,
+                    dayOfWeekNumber: 5,
                     dateTime:
                         DateTime.now().add(Duration(days: -initialIndex + 4)),
                     id: id,
@@ -147,7 +178,8 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   ),
                   TimetableTab(
                     timetable: snapshot.data!,
-                    weekNumber: 6,
+                    weekNumber: weekNumber,
+                    dayOfWeekNumber: 6,
                     dateTime:
                         DateTime.now().add(Duration(days: -initialIndex + 5)),
                     id: id,
@@ -168,3 +200,9 @@ class _TimetableScreenState extends State<TimetableScreen> {
 }
 
 enum TimetableType { Group, Teacher }
+
+int _numOfWeeks(int year) {
+  DateTime dec28 = DateTime(year, 12, 28);
+  int dayOfDec28 = int.parse(DateFormat("D").format(dec28));
+  return ((dayOfDec28 - dec28.weekday + 10) / 7).floor();
+}
