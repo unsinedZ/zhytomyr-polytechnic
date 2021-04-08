@@ -16,6 +16,7 @@ class TimetableTab extends StatelessWidget {
   final DateTime dateTime;
   final TimetableType timetableType;
   final String id;
+  final String? subgroupId;
 
   TimetableTab({
     required this.timetable,
@@ -24,6 +25,7 @@ class TimetableTab extends StatelessWidget {
     required this.dateTime,
     required this.timetableType,
     required this.id,
+    this.subgroupId,
   }) : super();
 
   @override
@@ -36,11 +38,19 @@ class TimetableTab extends StatelessWidget {
               DateFormat('d MMMM', context.locale.toString()).format(dateTime)),
         ),
         ...timetable.items!
-            .where((timetableItem) => timetableItem.weekNumber == weekNumber && timetableItem.dayNumber == dayOfWeekNumber)
+            .where((timetableItem) =>
+                timetableItem.weekNumber == weekNumber &&
+                timetableItem.dayNumber == dayOfWeekNumber)
             .map((timetableItem) => timetableItem.activity)
             .where((activity) {
               if (timetableType == TimetableType.Group) {
-                return activity.groups.any((group) => group.id == id);
+                return activity.groups.any((group) =>
+                    group.id == id &&
+                    (group.subgroups == null ||
+                        group.subgroups!.length == 1 ||
+                        subgroupId == null ||
+                        group.subgroups!.any(
+                            (subgroup) => subgroup.id == subgroupId)));
               }
 
               if (timetableType == TimetableType.Teacher) {

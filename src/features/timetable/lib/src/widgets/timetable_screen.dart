@@ -30,9 +30,11 @@ class _TimetableScreenState extends State<TimetableScreen> {
   int initialIndex = (DateTime.now().weekday - 1) % 6;
 
   late TimetableBloc timetableBloc;
-  late String id;
   late TimetableType timetableType;
   late int weekNumber;
+  late String id;
+
+  String? subgroupId;
 
   @override
   void initState() {
@@ -59,10 +61,11 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   void didChangeDependencies() {
-    id = (ModalRoute.of(context)!.settings.arguments as List<dynamic>)[0];
+    id = (ModalRoute.of(context)!.settings.arguments as List<dynamic>)[1];
 
-    if ((ModalRoute.of(context)!.settings.arguments as List<dynamic>)[1] ==
+    if ((ModalRoute.of(context)!.settings.arguments as List<dynamic>)[0] ==
         'group') {
+      subgroupId = (ModalRoute.of(context)!.settings.arguments as List<dynamic>)[2];
       timetableType = TimetableType.Group;
     } else {
       timetableType = TimetableType.Teacher;
@@ -138,6 +141,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     dayOfWeekNumber: 1,
                     dateTime: DateTime.now().add(Duration(days: -initialIndex)),
                     id: id,
+                    subgroupId: subgroupId,
                     timetableType: timetableType,
                   ),
                   TimetableTab(
@@ -147,6 +151,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     dateTime:
                         DateTime.now().add(Duration(days: -initialIndex + 1)),
                     id: id,
+                    subgroupId: subgroupId,
                     timetableType: timetableType,
                   ),
                   TimetableTab(
@@ -156,6 +161,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     dateTime:
                         DateTime.now().add(Duration(days: -initialIndex + 2)),
                     id: id,
+                    subgroupId: subgroupId,
                     timetableType: timetableType,
                   ),
                   TimetableTab(
@@ -165,6 +171,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     dateTime:
                         DateTime.now().add(Duration(days: -initialIndex + 3)),
                     id: id,
+                    subgroupId: subgroupId,
                     timetableType: timetableType,
                   ),
                   TimetableTab(
@@ -174,6 +181,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     dateTime:
                         DateTime.now().add(Duration(days: -initialIndex + 4)),
                     id: id,
+                    subgroupId: subgroupId,
                     timetableType: timetableType,
                   ),
                   TimetableTab(
@@ -183,6 +191,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     dateTime:
                         DateTime.now().add(Duration(days: -initialIndex + 5)),
                     id: id,
+                    subgroupId: subgroupId,
                     timetableType: timetableType,
                   ),
                 ],
