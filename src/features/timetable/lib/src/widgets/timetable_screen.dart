@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
@@ -9,8 +11,13 @@ import 'package:timetable/src/bl/models/models.dart';
 class TimetableScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
   final TimetableLoader timetableLoader;
+  final StreamSink<String> errorSink;
 
-  TimetableScreen({required this.textLocalizer, required this.timetableLoader});
+  TimetableScreen({
+    required this.textLocalizer,
+    required this.timetableLoader,
+    required this.errorSink,
+  });
 
   @override
   _TimetableScreenState createState() => _TimetableScreenState();
@@ -26,7 +33,10 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   void initState() {
-    timetableBloc = TimetableBloc(timetableLoader: widget.timetableLoader);
+    timetableBloc = TimetableBloc(
+      timetableLoader: widget.timetableLoader,
+      errorSink: widget.errorSink,
+    );
 
     timetableBloc.loadTimetable(WeekDetermination.Odd);
 

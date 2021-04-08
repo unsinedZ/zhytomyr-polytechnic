@@ -1,17 +1,22 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import 'package:group_selection/src/bl/abstractions/groups_loader.dart';
+import 'package:group_selection/src/bl/abstractions/text_localizer.dart';
 import 'package:group_selection/src/bl/bloc/group_selection_bloc.dart';
 import 'package:group_selection/src/bl/models/models.dart';
-
-import '../../group_selection.dart';
 
 class GroupSelectionScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
   final GroupsLoader groupsLoader;
+  final StreamSink<String> errorSink;
 
-  GroupSelectionScreen(
-      {required this.textLocalizer, required this.groupsLoader});
+  GroupSelectionScreen({
+    required this.textLocalizer,
+    required this.groupsLoader,
+    required this.errorSink,
+  });
 
   @override
   _GroupSelectionScreenState createState() => _GroupSelectionScreenState();
@@ -29,7 +34,10 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
 
   @override
   void initState() {
-    groupSelectionBloc = GroupSelectionBloc(groupsLoader: widget.groupsLoader);
+    groupSelectionBloc = GroupSelectionBloc(
+      groupsLoader: widget.groupsLoader,
+      errorSink: widget.errorSink,
+    );
 
     groupSelectionBloc.groups.listen((groups) {
       if (groups == null) {

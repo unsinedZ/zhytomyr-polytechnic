@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:group_selection/group_selection.dart';
 import 'package:group_selection/src/bl/bloc/group_selection_bloc.dart';
@@ -16,7 +18,7 @@ void main() {
     GroupsLoaderMock groupsLoaderMock = GroupsLoaderMock();
 
     GroupSelectionBloc groupSelectionBloc =
-        GroupSelectionBloc(groupsLoader: groupsLoaderMock);
+        GroupSelectionBloc(groupsLoader: groupsLoaderMock, errorSink: StreamController<String>().sink);
 
     when(groupsLoaderMock.getGroups(any, any))
         .thenAnswer((_) => Future.value(<Group>[

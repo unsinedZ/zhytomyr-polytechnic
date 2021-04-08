@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 
+import 'package:provider/provider.dart';
+
 import 'package:timetable/timetable.dart' hide TextLocalizer;
 
 import 'package:faculty_list/faculty_list.dart' hide TextLocalizer;
 
 import 'package:group_selection/group_selection.dart' hide TextLocalizer;
 
+import 'package:error_bloc/error_bloc.dart';
+
 import 'package:zhytomyr_polytechnic/bl/firestore_repository.dart';
-
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
-
 import 'package:zhytomyr_polytechnic/widgets/screens/authentication_screen.dart';
 
 import 'dependecies.dart';
@@ -38,9 +40,10 @@ class App extends StatelessWidget {
                 return Color(0xfff4e83d);
               }),
               foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
-                return Colors.black;
-              }),
+                (Set<MaterialState> states) {
+                  return Colors.black;
+                },
+              ),
             ),
           ),
           textTheme: TextTheme(
@@ -66,14 +69,17 @@ class App extends StatelessWidget {
                 facultyRepository: FirestoreRepository(),
                 sidebarAction: () {},
                 textLocalizer: TextLocalizer(),
+                errorSink: context.read<ErrorBloc>().errorSink,
               ),
           '/group': (context) => GroupSelectionScreen(
                 groupsLoader: FirestoreRepository(),
                 textLocalizer: TextLocalizer(),
+                errorSink: context.read<ErrorBloc>().errorSink,
               ),
           '/timetable': (context) => TimetableScreen(
                 timetableLoader: FirestoreRepository(),
                 textLocalizer: TextLocalizer(),
+                errorSink: context.read<ErrorBloc>().errorSink,
               ),
         },
       ),

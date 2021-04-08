@@ -5,10 +5,14 @@ import 'package:timetable/src/bl/models/models.dart';
 
 class TimetableBloc {
   final TimetableLoader timetableLoader;
+  final StreamSink<String> errorSink;
 
   StreamController<Timetable?> _timetableController = StreamController();
 
-  TimetableBloc({required this.timetableLoader});
+  TimetableBloc({
+    required this.timetableLoader,
+    required this.errorSink,
+  });
 
   Stream<Timetable?> get timetable => _timetableController.stream;
 

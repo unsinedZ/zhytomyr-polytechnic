@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:faculty_list/src/bl/bloc/faculty_list_bloc.dart';
 import 'package:faculty_list/src/bl/models/faculty.dart';
 import 'package:faculty_list/src/bl/astractions/faculty_repository.dart';
@@ -17,7 +19,7 @@ void main() {
     FacultyRepositoryMock facultyRepositoryMock = FacultyRepositoryMock();
 
     FacultyListBloc facultyListBloc =
-        FacultyListBloc(facultyRepository: facultyRepositoryMock);
+        FacultyListBloc(facultyRepository: facultyRepositoryMock, errorSink: StreamController<String>().sink);
 
     facultyListBloc.faculties.listen((facultyList) => result += facultyList);
  
