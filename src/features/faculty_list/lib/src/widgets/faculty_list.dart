@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:faculty_list/src/bl/bloc/faculty_list_bloc.dart';
@@ -10,11 +12,14 @@ class FacultyList extends StatefulWidget {
   final FacultyRepository facultyRepository;
   final VoidCallback sidebarAction;
   final TextLocalizer textLocalizer;
+  final StreamSink<String> errorSink;
 
-  FacultyList(
-      {required this.facultyRepository,
-      required this.sidebarAction,
-      required this.textLocalizer});
+  FacultyList({
+    required this.facultyRepository,
+    required this.sidebarAction,
+    required this.textLocalizer,
+    required this.errorSink,
+  });
 
   _FacultyListState createState() => _FacultyListState();
 }
@@ -24,8 +29,10 @@ class _FacultyListState extends State<FacultyList> {
 
   @override
   void initState() {
-    _facultyListBloc =
-        FacultyListBloc(facultyRepository: widget.facultyRepository);
+    _facultyListBloc = FacultyListBloc(
+      facultyRepository: widget.facultyRepository,
+      errorSink: widget.errorSink,
+    );
     _facultyListBloc.loadList();
     super.initState();
   }

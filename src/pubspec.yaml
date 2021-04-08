@@ -14,6 +14,8 @@ dependencies:
     path: ./features/terms_and_conditions
   cupertino_icons: ^1.0.2
   cloud_firestore: ^1.0.3
+  rxdart: ^0.26.0
+  fluttertoast: ^8.0.3
   firebase_core: ^1.0.2
   faculty_list: 
     path: features/faculty_list
@@ -22,6 +24,8 @@ dependencies:
     path: ./features/google_authentication
   group_selection:
     path: ./features/group_selection
+  error_bloc:
+    path: ./features/error_bloc
   timetable:
     path: ./features/timetable
 

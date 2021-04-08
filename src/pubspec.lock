@@ -176,6 +176,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.2"
+  error_bloc:
+    dependency: "direct main"
+    description:
+      path: "features/error_bloc"
+      relative: true
+    source: path
+    version: "0.0.1"
   faculty_list:
     dependency: "direct main"
     description:
@@ -294,6 +301,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  fluttertoast:
+    dependency: "direct main"
+    description:
+      name: fluttertoast
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "8.0.3"
   glob:
     dependency: transitive
     description:
@@ -533,7 +547,7 @@ packages:
     source: hosted
     version: "3.0.0"
   rxdart:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: rxdart
       url: "https://pub.dartlang.org"

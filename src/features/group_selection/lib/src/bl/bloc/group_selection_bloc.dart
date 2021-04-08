@@ -5,18 +5,26 @@ import 'package:group_selection/src/bl/models/models.dart';
 
 class GroupSelectionBloc {
   final GroupsLoader groupsLoader;
+  final StreamSink<String> errorSink;
 
   StreamController<List<Group>?> _groupsController =
       StreamController.broadcast();
 
-  GroupSelectionBloc({required this.groupsLoader});
+  GroupSelectionBloc({
+    required this.groupsLoader,
+    required this.errorSink,
+  });
 
   Stream<List<Group>?> get groups => _groupsController.stream;
 
   void loadGroups(int course, String faculty) async {
     _groupsController.add(null);
-
-    _groupsController.add(await groupsLoader.getGroups(course, faculty));
+    try {
+      _groupsController.add(await groupsLoader.getGroups(course, faculty));
+    } catch (err) {
+      errorSink.add(err.toString());
+      _groupsController.add([]);
+    }
   }
 
   void dispose() {
