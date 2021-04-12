@@ -4,18 +4,18 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mockito/mockito.dart';
 
-import 'package:timetable/src/bl/abstractions/timetable_loader.dart';
+import 'package:timetable/src/bl/abstractions/timetable_repository.dart';
 import 'package:timetable/src/bl/bloc/timetable_bloc.dart';
 import 'package:timetable/src/bl/models/models.dart';
 
-class TimetableLoaderMock extends Mock implements TimetableLoader {}
+class TimetableLoaderMock extends Mock implements TimetableRepository {}
 
 void main() {
   test('TimetableBloc.loadTimetable work correctly', () async {
     TimetableLoaderMock timetableLoaderMock = TimetableLoaderMock();
 
     TimetableBloc groupSelectionBloc =
-        TimetableBloc(timetableLoader: timetableLoaderMock, errorSink: StreamController<String>().sink);
+        TimetableBloc(timetableRepository: timetableLoaderMock, errorSink: StreamController<String>().sink);
 
     when(timetableLoaderMock.loadTimetable()).thenAnswer((_) => Future.value(
         Timetable(weekDetermination: WeekDetermination.Even, items: [])));
