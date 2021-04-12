@@ -1,0 +1,19 @@
+name: push_notification
+description: A new Flutter package project.
+version: 0.0.1
+author:
+homepage:
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_messaging: ^9.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+flutter:
