@@ -165,6 +165,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
               body: TabBarView(
                 children: [0, 1, 2, 3, 4, 5]
                     .map<Widget>((index) => TimetableTab(
+                          textLocalizer: widget.textLocalizer,
                           timetable: timetable,
                           weekNumber: weekNumber,
                           dayOfWeekNumber: index + 1,
