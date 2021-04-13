@@ -1,17 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:intl/intl.dart';
-import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 
-import 'package:timetable/src/bl/models/models.dart';
 import 'package:easy_localization/easy_localization.dart';
+
+import 'package:timetable/src/bl/abstractions/text_localizer.dart';
+import 'package:timetable/src/bl/models/models.dart';
+import 'package:timetable/src/widgets/components/activity_card.dart';
 import 'package:timetable/src/widgets/timetable_screen.dart';
 
-import 'activity_card.dart';
-
-class TimetableTab extends StatelessWidget {
+class TimetableTab extends StatefulWidget {
   final TextLocalizer textLocalizer;
   final Timetable timetable;
   final int weekNumber;
@@ -19,6 +18,7 @@ class TimetableTab extends StatelessWidget {
   final DateTime dateTime;
   final TimetableType timetableType;
   final String id;
+  final bool isTomorrow;
   final String? subgroupId;
 
   TimetableTab({
@@ -29,35 +29,41 @@ class TimetableTab extends StatelessWidget {
     required this.dateTime,
     required this.timetableType,
     required this.id,
+    required this.isTomorrow,
     this.subgroupId,
   }) : super();
 
   @override
+  _TimetableTabState createState() => _TimetableTabState();
+}
+
+class _TimetableTabState extends State<TimetableTab> {
+  @override
   Widget build(BuildContext context) {
-    List<Widget> activityCards = timetable.items!
+    List<Widget> activityCards = widget.timetable.items!
         .where((timetableItem) =>
-            timetableItem.weekNumber == weekNumber &&
-            timetableItem.dayNumber == dayOfWeekNumber)
+            timetableItem.weekNumber == widget.weekNumber &&
+            timetableItem.dayNumber == widget.dayOfWeekNumber)
         .map((timetableItem) => timetableItem.activity)
         .where((activity) {
-          if (timetableType == TimetableType.Group) {
+          if (widget.timetableType == TimetableType.Group) {
             return activity.groups.any((group) =>
-                group.id == id &&
+                group.id == widget.id &&
                 (group.subgroups == null ||
                     group.subgroups!.length == 1 ||
-                    subgroupId == null ||
+                    widget.subgroupId == null ||
                     group.subgroups!
-                        .any((subgroup) => subgroup.id == subgroupId)));
+                        .any((subgroup) => subgroup.id == widget.subgroupId)));
           }
 
-          if (timetableType == TimetableType.Teacher) {
-            return activity.tutor.id == id;
+          if (widget.timetableType == TimetableType.Teacher) {
+            return activity.tutor.id == widget.id;
           }
           return false;
         })
         .map((activity) => ActivityCard(
               activity: activity,
-              dateTime: dateTime,
+              dateTime: widget.dateTime,
             ))
         .expand((element) => [Divider(), element])
         .skip(1)
@@ -68,11 +74,15 @@ class TimetableTab extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            DateFormat('d MMMM', context.locale.toString()).format(dateTime),
+            (widget.isTomorrow == true
+                    ? widget.textLocalizer.localize('Tomorrow ')
+                    : '') +
+                DateFormat('d MMMM', context.locale.toString())
+                    .format(widget.dateTime),
           ),
         ),
         ...activityCards,
-        if (activityCards.isNotEmpty)
+        if (activityCards.isEmpty)
           Expanded(
             child: Center(
               child: Column(
@@ -87,7 +97,7 @@ class TimetableTab extends StatelessWidget {
                     height: 15,
                   ),
                   Text(
-                    textLocalizer.localize('DAY OFF'),
+                    widget.textLocalizer.localize('DAY OFF'),
                     textScaleFactor: 1.7,
                     style: Theme.of(context).textTheme.headline3,
                   ),

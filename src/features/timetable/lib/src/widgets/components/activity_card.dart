@@ -21,7 +21,9 @@ class _ActivityCardState extends State<ActivityCard> {
   void initState() {
     isCurrentClass = false;
 
-    if (DateTime.now().asDate().difference(widget.dateTime).inDays < 1) {
+    print(widget.dateTime.day);
+
+    if (DateTime.now().asDate().difference(widget.dateTime.asDate()).inDays == 0) {
       List<String> timeStart = widget.activity.time.start.split(':');
       List<String> timeEnd = widget.activity.time.end.split(':');
 
