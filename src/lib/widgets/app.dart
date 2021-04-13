@@ -33,6 +33,13 @@ class App extends StatelessWidget {
           primaryIconTheme: IconThemeData(
             color: Colors.white,
           ),
+          iconTheme: IconThemeData(
+            color: Colors.white,
+          ),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: Color(0xff35b9ca),
+            foregroundColor: Colors.white,
+          ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.resolveWith<Color>(
