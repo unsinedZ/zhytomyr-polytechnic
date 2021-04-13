@@ -158,7 +158,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     ),
                   );
                 },
-                child: Icon(Icons.settings),
+                child: Icon(Icons.filter_list_alt),
                 backgroundColor: Theme.of(context).primaryColor,
               ),
               body: TabBarView(
