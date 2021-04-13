@@ -44,11 +44,7 @@ class TimetableTab extends StatelessWidget {
             return activity.groups.any((group) =>
                 group.id == id &&
                 (group.subgroups == null ||
-<<<<<<< HEAD
-                    group.subgroups!.length == 1 ||
-=======
                     group.subgroups!.length <= 1 ||
->>>>>>> origin/develop
                     subgroupId == null ||
                     group.subgroups!
                         .any((subgroup) => subgroup.id == subgroupId)));
