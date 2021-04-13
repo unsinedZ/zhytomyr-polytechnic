@@ -60,7 +60,7 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                 borderRadius: BorderRadius.all(Radius.circular(15.0)),
                 child: Row(
                   children: _weekNumbers
-                      .map<Widget>((weekNumber) => _SelectedFilterButton(
+                      .map<Widget>((weekNumber) => _FilterButton(
                             onPressed: currentWeekNumber == weekNumber
                                 ? null
                                 : () {
@@ -77,7 +77,8 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
               ),
             ] +
             (widget.timetableType == TimetableType.Group &&
-                    widget.group!.subgroups!.length > 0
+                    widget.group!.subgroups != null &&
+                    widget.group!.subgroups!.isNotEmpty
                 ? [
                     SizedBox(
                       height: 15,
@@ -94,19 +95,21 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: widget.group!.subgroups!
-                            .map<Widget>((subgroup) => _SelectedFilterButton(
-                                  onPressed: currentSubgroupId == subgroup.id
-                                      ? null
-                                      : () {
-                                          setState(() {
-                                            currentSubgroupId = subgroup.id;
-                                          });
-                                          widget.onCurrentSubgroupChanged(
-                                              subgroup.id);
-                                        },
-                                  text: subgroup.name,
-                                  isSelected: currentSubgroupId == subgroup.id,
-                                ))
+                            .map<Widget>(
+                              (subgroup) => _FilterButton(
+                                onPressed: currentSubgroupId == subgroup.id
+                                    ? null
+                                    : () {
+                                        setState(() {
+                                          currentSubgroupId = subgroup.id;
+                                        });
+                                        widget.onCurrentSubgroupChanged(
+                                            subgroup.id);
+                                      },
+                                text: subgroup.name,
+                                isSelected: currentSubgroupId == subgroup.id,
+                              ),
+                            )
                             .toList(),
                       ),
                     ),
@@ -117,12 +120,12 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
   }
 }
 
-class _SelectedFilterButton extends StatelessWidget {
+class _FilterButton extends StatelessWidget {
   final bool isSelected;
   final String text;
   final VoidCallback? onPressed;
 
-  _SelectedFilterButton({
+  _FilterButton({
     required this.isSelected,
     required this.text,
     required this.onPressed,
@@ -153,4 +156,3 @@ class _SelectedFilterButton extends StatelessWidget {
     );
   }
 }
-

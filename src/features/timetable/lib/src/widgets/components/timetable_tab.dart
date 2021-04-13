@@ -67,12 +67,12 @@ class TimetableTab extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-              DateFormat('d MMMM', context.locale.toString()).format(dateTime)),
+            DateFormat('d MMMM', context.locale.toString()).format(dateTime),
+          ),
         ),
         ...activityCards,
-        activityCards.length > 0
-            ? Container()
-            : Expanded(
+        if(activityCards.isNotEmpty)
+          Expanded(
                 child: Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
