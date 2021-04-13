@@ -13,8 +13,6 @@ import 'package:timetable/src/bl/abstractions/timetable_repository.dart';
 import 'package:timetable/src/bl/models/models.dart';
 import 'package:timetable/src/widgets/components/filters_bottom_sheet.dart';
 
-import '../../timetable.dart';
-
 class TimetableScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
   final TimetableRepository timetableLoader;
@@ -133,31 +131,32 @@ class _TimetableScreenState extends State<TimetableScreen> {
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
                   showModalBottomSheet(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
                       ),
-                      context: context,
-                      builder: (context) => FiltersBottomSheet(
-                            onCurrentWeekChanged: (int newWeekNumber) {
-                              setState(() {
-                                weekNumber = newWeekNumber;
-                                isWeekChanged = !isWeekChanged;
-                              });
-                            },
-                            onCurrentSubgroupChanged: (String newSubgroupId) {
-                              setState(() {
-                                subgroupId = newSubgroupId;
-                              });
-                            },
-                            currentWeekNumber: weekNumber,
-                            timetableType: timetableType,
-                            group: group,
-                            currentSubgroupId: subgroupId,
-                            textLocalizer: widget.textLocalizer,
-                          ));
+                    ),
+                    context: context,
+                    builder: (context) => FiltersBottomSheet(
+                      onCurrentWeekChanged: (int newWeekNumber) {
+                        setState(() {
+                          weekNumber = newWeekNumber;
+                          isWeekChanged = !isWeekChanged;
+                        });
+                      },
+                      onCurrentSubgroupChanged: (String newSubgroupId) {
+                        setState(() {
+                          subgroupId = newSubgroupId;
+                        });
+                      },
+                      currentWeekNumber: weekNumber,
+                      timetableType: timetableType,
+                      group: group,
+                      currentSubgroupId: subgroupId,
+                      textLocalizer: widget.textLocalizer,
+                    ),
+                  );
                 },
                 child: Icon(Icons.settings),
                 backgroundColor: Theme.of(context).primaryColor,
