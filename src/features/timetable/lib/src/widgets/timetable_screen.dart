@@ -51,8 +51,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
       errorSink: widget.errorSink,
     );
 
-    if (indexDayDateTime.hour >= 16) {
-      // TODO 18
+    if (indexDayDateTime.hour >= 18) {
       isNextDay = true;
       initialIndex = (initialIndex + 1) % 6;
       indexDayDateTime = indexDayDateTime.add(Duration(days: 1));

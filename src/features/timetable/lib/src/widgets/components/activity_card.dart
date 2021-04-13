@@ -21,18 +21,18 @@ class _ActivityCardState extends State<ActivityCard> {
   void initState() {
     isCurrentClass = false;
 
-    if (DateTime.now().asDate().difference(widget.dateTime.asDate()).inDays == 0) {
+    if (DateTime.now().asDate().difference(widget.dateTime.asDate()).inDays ==
+        0) {
       List<String> timeStart = widget.activity.time.start.split(':');
       List<String> timeEnd = widget.activity.time.end.split(':');
 
       DateTime dateTimeStart = DateTime.now().asDate().add(Duration(
-          hours: int.parse(timeStart[0]),
-          minutes: int.parse(timeStart[1])));
+          hours: int.parse(timeStart[0]), minutes: int.parse(timeStart[1])));
       DateTime dateTimeEnd = DateTime.now().asDate().add(Duration(
-          hours: int.parse(timeEnd[0]),
-          minutes: int.parse(timeEnd[1])));
+          hours: int.parse(timeEnd[0]), minutes: int.parse(timeEnd[1])));
 
-      if (DateTime.now().isAfter(dateTimeStart) && DateTime.now().isBefore(dateTimeEnd)) {
+      if (DateTime.now().isAfter(dateTimeStart) &&
+          DateTime.now().isBefore(dateTimeEnd)) {
         isCurrentClass = true;
       }
     }

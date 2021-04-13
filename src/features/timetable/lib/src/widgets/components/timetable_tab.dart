@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:intl/intl.dart';
+import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 
