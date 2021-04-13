@@ -57,6 +57,7 @@ class TimetableTab extends StatelessWidget {
         })
         .map((activity) => ActivityCard(
               activity: activity,
+              dateTime: dateTime,
             ))
         .expand((element) => [Divider(), element])
         .skip(1)
@@ -71,32 +72,32 @@ class TimetableTab extends StatelessWidget {
           ),
         ),
         ...activityCards,
-        if(activityCards.isNotEmpty)
+        if (activityCards.isNotEmpty)
           Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(
-                        'assets/images/day_off.png',
-                        package: 'timetable',
-                        width: MediaQuery.of(context).size.width * 0.7,
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Text(
-                        textLocalizer.localize('DAY OFF'),
-                        textScaleFactor: 1.7,
-                        style: Theme.of(context).textTheme.headline3,
-                      ),
-                      SizedBox(
-                        height: 60,
-                      ),
-                    ],
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/images/day_off.png',
+                    package: 'timetable',
+                    width: MediaQuery.of(context).size.width * 0.7,
                   ),
-                ),
-              )
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    textLocalizer.localize('DAY OFF'),
+                    textScaleFactor: 1.7,
+                    style: Theme.of(context).textTheme.headline3,
+                  ),
+                  SizedBox(
+                    height: 60,
+                  ),
+                ],
+              ),
+            ),
+          )
       ],
     );
   }
