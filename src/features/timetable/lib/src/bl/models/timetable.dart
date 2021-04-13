@@ -13,7 +13,7 @@ class Timetable {
 
   factory Timetable.fromJson(Map<String, dynamic> json) {
     return Timetable(
-      items: (json['timetableItems'] as List<dynamic>)
+      items: (json['items'] as List<dynamic>)
           .map((timetableItemJson) => TimetableItem.fromJson(timetableItemJson))
           .toList(),
       expiresAt: json['expiresAt'] as String,

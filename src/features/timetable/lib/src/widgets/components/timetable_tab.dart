@@ -44,7 +44,11 @@ class TimetableTab extends StatelessWidget {
             return activity.groups.any((group) =>
                 group.id == id &&
                 (group.subgroups == null ||
+<<<<<<< HEAD
                     group.subgroups!.length == 1 ||
+=======
+                    group.subgroups!.length <= 1 ||
+>>>>>>> origin/develop
                     subgroupId == null ||
                     group.subgroups!
                         .any((subgroup) => subgroup.id == subgroupId)));
@@ -67,10 +71,11 @@ class TimetableTab extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-              DateFormat('d MMMM', context.locale.toString()).format(dateTime)),
+            DateFormat('d MMMM', context.locale.toString()).format(dateTime),
+          ),
         ),
         ...activityCards,
-        if(activityCards.length > 0)
+        if(activityCards.isEmpty)
           Expanded(
                 child: Center(
                   child: Column(

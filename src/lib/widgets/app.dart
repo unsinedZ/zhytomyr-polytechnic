@@ -27,6 +27,8 @@ class App extends StatelessWidget {
         theme: ThemeData(
           canvasColor: Colors.white,
           primaryColor: Color(0xff35b9ca),
+          focusColor: Color(0xfff8eb4d),
+          disabledColor: Color(0xffeeeeee),
           primaryIconTheme: IconThemeData(
             color: Colors.white,
           ),
@@ -35,10 +37,11 @@ class App extends StatelessWidget {
               backgroundColor: MaterialStateProperty.resolveWith<Color>(
                   (Set<MaterialState> states) {
                 if (states.contains(MaterialState.disabled)) {
-                  return Colors.white;
+                  return Color(0xffeeeeee);
                 }
                 return Color(0xfff4e83d);
               }),
+              elevation: MaterialStateProperty.all(0),
               foregroundColor: MaterialStateProperty.resolveWith<Color>(
                 (Set<MaterialState> states) {
                   return Colors.black;
@@ -56,6 +59,11 @@ class App extends StatelessWidget {
               fontSize: 14,
               color: Colors.grey,
               fontWeight: FontWeight.w400,
+            ),
+            headline3: TextStyle(
+              fontSize: 20.0,
+              color: Colors.black,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),
