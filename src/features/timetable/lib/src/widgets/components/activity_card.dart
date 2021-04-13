@@ -24,19 +24,24 @@ class ActivityCard extends StatelessWidget {
         child: IntrinsicHeight(
           child: Row(
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    activity.time.start,
-                    textScaleFactor: 1.3,
-                  ),
-                  Text(
-                    activity.time.end,
-                    style: Theme.of(context).textTheme.headline2,
-                    textScaleFactor: 1.3,
-                  ),
-                ],
+              ConstrainedBox(
+                constraints: new BoxConstraints(
+                  minWidth: 45.0,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      activity.time.start,
+                      textScaleFactor: 1.3,
+                    ),
+                    Text(
+                      activity.time.end,
+                      style: Theme.of(context).textTheme.headline2,
+                      textScaleFactor: 1.3,
+                    ),
+                  ],
+                ),
               ),
               SizedBox(
                 width: 7,
