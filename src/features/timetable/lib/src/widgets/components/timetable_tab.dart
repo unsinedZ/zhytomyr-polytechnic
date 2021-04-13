@@ -44,7 +44,7 @@ class TimetableTab extends StatelessWidget {
             return activity.groups.any((group) =>
                 group.id == id &&
                 (group.subgroups == null ||
-                    group.subgroups!.length == 1 ||
+                    group.subgroups!.length <= 1 ||
                     subgroupId == null ||
                     group.subgroups!
                         .any((subgroup) => subgroup.id == subgroupId)));
@@ -71,7 +71,7 @@ class TimetableTab extends StatelessWidget {
           ),
         ),
         ...activityCards,
-        if(activityCards.isNotEmpty)
+        if(activityCards.isEmpty)
           Expanded(
                 child: Center(
                   child: Column(
