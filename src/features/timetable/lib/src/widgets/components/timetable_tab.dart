@@ -44,7 +44,7 @@ class TimetableTab extends StatelessWidget {
             return activity.groups.any((group) =>
                 group.id == id &&
                 (group.subgroups == null ||
-                    group.subgroups!.length == 1 ||
+                    group.subgroups!.length <= 1 ||
                     subgroupId == null ||
                     group.subgroups!
                         .any((subgroup) => subgroup.id == subgroupId)));
@@ -68,36 +68,36 @@ class TimetableTab extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-              DateFormat('d MMMM', context.locale.toString()).format(dateTime)),
+            DateFormat('d MMMM', context.locale.toString()).format(dateTime),
+          ),
         ),
         ...activityCards,
-        activityCards.length > 0
-            ? Container()
-            : Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(
-                        'assets/images/day_off.png',
-                        package: 'timetable',
-                        width: MediaQuery.of(context).size.width * 0.7,
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Text(
-                        textLocalizer.localize('DAY OFF'),
-                        textScaleFactor: 1.7,
-                        style: Theme.of(context).textTheme.headline3,
-                      ),
-                      SizedBox(
-                        height: 60,
-                      ),
-                    ],
+        if (activityCards.isEmpty)
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/images/day_off.png',
+                    package: 'timetable',
+                    width: MediaQuery.of(context).size.width * 0.7,
                   ),
-                ),
-              )
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    textLocalizer.localize('DAY OFF'),
+                    textScaleFactor: 1.7,
+                    style: Theme.of(context).textTheme.headline3,
+                  ),
+                  SizedBox(
+                    height: 60,
+                  ),
+                ],
+              ),
+            ),
+          )
       ],
     );
   }
