@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+
+import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/bl/models/models.dart';
 
 class ActivityInfoDialog extends StatelessWidget {
+  final TextLocalizer textLocalizer;
   final Activity activity;
 
-  ActivityInfoDialog({required this.activity});
+  ActivityInfoDialog({
+    required this.activity,
+    required this.textLocalizer,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +38,7 @@ class ActivityInfoDialog extends StatelessWidget {
                 RichText(
                   textScaleFactor: 1.1,
                   text: TextSpan(
-                    text: 'Teacher: ',
+                    text: textLocalizer.localize('Teacher: '),
                     style: Theme.of(context).textTheme.subtitle1,
                     children: <TextSpan>[
                       TextSpan(
@@ -47,7 +53,7 @@ class ActivityInfoDialog extends StatelessWidget {
                 RichText(
                   textScaleFactor: 1.1,
                   text: TextSpan(
-                    text: 'Groups: ',
+                    text: textLocalizer.localize('Groups: '),
                     style: Theme.of(context).textTheme.subtitle1,
                     children: <TextSpan>[
                       TextSpan(
@@ -64,7 +70,7 @@ class ActivityInfoDialog extends StatelessWidget {
                 RichText(
                   textScaleFactor: 1.1,
                   text: TextSpan(
-                    text: 'Auditory: ',
+                    text: textLocalizer.localize('Auditory: '),
                     style: Theme.of(context).textTheme.subtitle1,
                     children: <TextSpan>[
                       TextSpan(

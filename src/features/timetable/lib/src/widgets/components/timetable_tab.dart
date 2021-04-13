@@ -57,6 +57,7 @@ class TimetableTab extends StatelessWidget {
         })
         .map((activity) => ActivityCard(
               activity: activity,
+              textLocalizer: textLocalizer,
             ))
         .expand((element) => [Divider(), element])
         .skip(1)

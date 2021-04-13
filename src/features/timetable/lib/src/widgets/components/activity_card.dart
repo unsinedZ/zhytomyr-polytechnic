@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 
 import 'package:timetable/src/bl/models/models.dart';
 import 'package:timetable/src/widgets/components/activity_info_dialog.dart';
 
 class ActivityCard extends StatelessWidget {
+  final TextLocalizer textLocalizer;
   final Activity activity;
 
-  ActivityCard({required this.activity});
+  ActivityCard({
+    required this.activity,
+    required this.textLocalizer,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +21,7 @@ class ActivityCard extends StatelessWidget {
           context: context,
           builder: (context) => ActivityInfoDialog(
             activity: activity,
+            textLocalizer: textLocalizer,
           ),
         );
       },
