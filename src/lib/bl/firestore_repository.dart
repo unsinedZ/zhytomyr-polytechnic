@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:faculty_list/faculty_list.dart';
+
 import 'package:group_selection/group_selection.dart';
-import 'package:timetable/timetable.dart' hide Group;
+
+import 'package:timetable/timetable.dart' as Timetable;
 
 class FirestoreRepository
-    implements FacultyRepository, GroupsLoader, TimetableLoader {
+    implements FacultyRepository, GroupsLoader, Timetable.TimetableRepository {
   @override
   Stream<List<Faculty>> getFaculties() =>
       FirebaseFirestore.instance.collection('faculty').get().asStream().map(
@@ -28,10 +31,23 @@ class FirestoreRepository
   }
 
   @override
-  Future<Timetable> loadTimetable(WeekDetermination weekDetermination) async =>
-      FirebaseFirestore.instance.collection('timetable').get().then(
-          (timetablesListJson) => timetablesListJson.docs
-              .map((timetableJson) => Timetable.fromJson(timetableJson.data()!))
-              .firstWhere((timetable) =>
-                  timetable.weekDetermination == weekDetermination));
+  Future<Timetable.Timetable> loadTimetable() async {
+    return FirebaseFirestore.instance.collection('timetable').get().then(
+        (timetablesListJson) => timetablesListJson.docs
+            .map((timetableJson) =>
+                Timetable.Timetable.fromJson(timetableJson.data()!))
+            .first);
+  }
+
+  @override
+  Future<Timetable.Group> getGroupById(String groupId) async {
+    return FirebaseFirestore.instance.collection('group').get().then(
+        (groupListJson) => groupListJson.docs
+            .map(
+              (groupJson) => Timetable.Group.fromJson(groupJson.data()!),
+            )
+            .firstWhere(
+                (group) => group.id == groupId)
+            );
+  }
 }
