@@ -28,7 +28,8 @@ dependencies:
     path: ./features/error_bloc
   timetable:
     path: ./features/timetable
-
+  push_notification:
+    path: ./features/push_notification
   easy_localization: ^3.0.0
 
 dev_dependencies:

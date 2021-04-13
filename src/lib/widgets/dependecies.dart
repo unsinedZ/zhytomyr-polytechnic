@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -7,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:google_authentication/google_authentication.dart';
 
 import 'package:error_bloc/error_bloc.dart';
+import 'package:push_notification/push_notification.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -21,6 +20,7 @@ class Dependencies extends StatelessWidget {
   Widget build(BuildContext context) => MultiProvider(
         providers: [
           Provider<ErrorBloc>(create: getErrorBloc),
+          Provider<PushNotificationBloc>(create: getPushNotifications),
         ],
         child: MultiProvider(
           providers: [
@@ -44,4 +44,7 @@ class Dependencies extends StatelessWidget {
 
   AuthenticationBloc getUserBloc(BuildContext context) =>
       AuthenticationBloc(errorSink: context.read<ErrorBloc>().errorSink);
+
+  PushNotificationBloc getPushNotifications(BuildContext context) =>
+      PushNotificationBloc();
 }
