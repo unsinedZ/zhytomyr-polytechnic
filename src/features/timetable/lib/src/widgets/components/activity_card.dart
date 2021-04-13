@@ -2,16 +2,49 @@ import 'package:flutter/material.dart';
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 
 import 'package:timetable/src/bl/models/models.dart';
+import 'package:timetable/src/bl/extensions/date_time_extension.dart';
 import 'package:timetable/src/widgets/components/activity_info_dialog.dart';
 
-class ActivityCard extends StatelessWidget {
-  final TextLocalizer textLocalizer;
+class ActivityCard extends StatefulWidget {
   final Activity activity;
+  final DateTime dateTime;
+  final TextLocalizer textLocalizer;
 
   ActivityCard({
     required this.activity,
+    required this.dateTime,
     required this.textLocalizer,
   });
+
+  @override
+  _ActivityCardState createState() => _ActivityCardState();
+}
+
+class _ActivityCardState extends State<ActivityCard> {
+  late bool isCurrentClass;
+
+  @override
+  void initState() {
+    isCurrentClass = false;
+
+    if (DateTime.now().asDate().difference(widget.dateTime.asDate()).inDays ==
+        0) {
+      List<String> timeStart = widget.activity.time.start.split(':');
+      List<String> timeEnd = widget.activity.time.end.split(':');
+
+      DateTime dateTimeStart = DateTime.now().asDate().add(Duration(
+          hours: int.parse(timeStart[0]), minutes: int.parse(timeStart[1])));
+      DateTime dateTimeEnd = DateTime.now().asDate().add(Duration(
+          hours: int.parse(timeEnd[0]), minutes: int.parse(timeEnd[1])));
+
+      if (DateTime.now().isAfter(dateTimeStart) &&
+          DateTime.now().isBefore(dateTimeEnd)) {
+        isCurrentClass = true;
+      }
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +53,13 @@ class ActivityCard extends StatelessWidget {
         showDialog<void>(
           context: context,
           builder: (context) => ActivityInfoDialog(
-            activity: activity,
-            textLocalizer: textLocalizer,
+            activity: widget.activity,
+            textLocalizer: widget.textLocalizer,
           ),
         );
       },
       child: Container(
+        color: isCurrentClass ? Theme.of(context).accentColor : null,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 5),
           child: IntrinsicHeight(
@@ -39,11 +73,11 @@ class ActivityCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        activity.time.start,
+                        widget.activity.time.start,
                         textScaleFactor: 1.3,
                       ),
                       Text(
-                        activity.time.end,
+                        widget.activity.time.end,
                         style: Theme.of(context).textTheme.headline2,
                         textScaleFactor: 1.3,
                       ),
@@ -65,14 +99,14 @@ class ActivityCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      activity.name,
+                      widget.activity.name,
                       textScaleFactor: 1.3,
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     Text(
-                      activity.room,
+                      widget.activity.room,
                       style: Theme.of(context).textTheme.headline2,
                     ),
                   ],
@@ -82,7 +116,7 @@ class ActivityCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      activity.tutor.name,
+                      widget.activity.tutor.name,
                       style: Theme.of(context).textTheme.headline2,
                       textScaleFactor: 1.15,
                     ),

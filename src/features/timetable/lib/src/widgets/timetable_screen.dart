@@ -29,9 +29,13 @@ class TimetableScreen extends StatefulWidget {
 }
 
 class _TimetableScreenState extends State<TimetableScreen> {
+  List<String> _weekDaysNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
   MediaQueryData get mediaQuery => MediaQuery.of(context);
+  DateTime indexDayDateTime = DateTime.now();
   int initialIndex = (DateTime.now().weekday - 1) % 6;
   bool isWeekChanged = false;
+  bool isNextDay = false;
 
   late TimetableBloc timetableBloc;
   late TimetableType timetableType;
@@ -46,6 +50,12 @@ class _TimetableScreenState extends State<TimetableScreen> {
       timetableRepository: widget.timetableLoader,
       errorSink: widget.errorSink,
     );
+
+    if (indexDayDateTime.hour >= 18) {
+      isNextDay = true;
+      initialIndex = (initialIndex + 1) % 6;
+      indexDayDateTime = indexDayDateTime.add(Duration(days: 1));
+    }
 
     timetableBloc.loadTimetable();
 
@@ -111,7 +121,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   indicatorColor: Colors.amberAccent,
                   labelColor: Colors.white,
                   unselectedLabelColor: Color(0xc3ffffff),
-                  tabs: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+                  tabs: _weekDaysNames
                       .map((weekDay) => Tab(
                             text: widget.textLocalizer.localize(weekDay),
                           ))
@@ -162,19 +172,26 @@ class _TimetableScreenState extends State<TimetableScreen> {
                 backgroundColor: Theme.of(context).primaryColor,
               ),
               body: TabBarView(
-                children: [0, 1, 2, 3, 4, 5]
+                children: _weekDaysNames
+                    .asMap()
+                    .keys
                     .map<Widget>((index) => TimetableTab(
                           textLocalizer: widget.textLocalizer,
                           timetable: timetable,
                           weekNumber: weekNumber,
                           dayOfWeekNumber: index + 1,
-                          dateTime: DateTime.now().add(Duration(
+                          dateTime: indexDayDateTime.add(Duration(
                               days: -initialIndex +
                                   index +
                                   (isWeekChanged ? 7 : 0))),
                           id: id,
                           subgroupId: subgroupId,
                           timetableType: timetableType,
+                          isTomorrow: initialIndex == index &&
+                                  isNextDay == true &&
+                                  isWeekChanged == false
+                              ? true
+                              : false,
                         ))
                     .toList(),
               ),
