@@ -10,5 +10,3 @@ FirebaseMessaging get initNotification => FirebaseMessaging.instance
       provisional: true,
       sound: true,
     );
-
-Future<RemoteMessage?> test() => FirebaseMessaging.instance.getInitialMessage();

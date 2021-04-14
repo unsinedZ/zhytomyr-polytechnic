@@ -5,27 +5,25 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rxdart/rxdart.dart';
 
 class PushNotificationBloc {
-  late StreamController<String?> _controller;
+  final StreamController<String?> _controller = StreamController.broadcast();
   Stream<String?> get pushNotification => _controller.stream;
 
   PushNotificationBloc() {
-    _controller = StreamController();
     SharedPreferences.getInstance()
-        .asStream()
-        .map((preferences) => preferences.getString("subscription"))
-        .map(_controller.add);
+        .then((prefs) => _controller.add(prefs.getString("subscription")));
   }
 
-  void subscribeToNew(String topic) => pushNotification.switchMap((lastTopic) =>
-      SharedPreferences.getInstance().asStream().switchMap((prefs) => Stream.value(prefs)
-          .asyncMap(
-              (preferences) => preferences.setString("subscription", topic))
-          .doOnData((_) => _controller.add(topic))
-          .asyncMap((_) => FirebaseMessaging.instance.subscribeToTopic(topic))
-          .map((_) => lastTopic)
-          .where((lastTopic) => lastTopic != null)
-          .switchMap((value) => Stream.value(value).asyncMap((_) =>
-              FirebaseMessaging.instance.unsubscribeFromTopic(lastTopic!)))));
+  void subscribeToNew(String topic) {
+    pushNotification
+        .asyncMap((lastTopic) =>
+            FirebaseMessaging.instance.unsubscribeFromTopic(lastTopic!))
+        .doOnData((_) => _controller.add(topic))
+        .asyncMap((_) =>
+            FirebaseMessaging.instance.subscribeToTopic("group." + topic))
+        .asyncMap((_) async => (await SharedPreferences.getInstance())
+            .setString("subscription", "group." + topic));
+    FirebaseMessaging.instance.subscribeToTopic("group." + topic);
+  }
 
   void dispose() {
     _controller.close();

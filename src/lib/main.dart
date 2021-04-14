@@ -24,6 +24,5 @@ Future<void> initLocalizationAsync() async {
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp();
   initNotification;
-  print(await test());
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }

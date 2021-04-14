@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:provider/provider.dart';
+import 'package:push_notification/push_notification.dart';
 
 import 'package:timetable/timetable.dart' hide TextLocalizer;
 
@@ -83,6 +84,8 @@ class App extends StatelessWidget {
                 groupsLoader: FirestoreRepository(),
                 textLocalizer: TextLocalizer(),
                 errorSink: context.read<ErrorBloc>().errorSink,
+                subscribeCallback:
+                    context.read<PushNotificationBloc>().subscribeToNew,
               ),
           '/timetable': (context) => TimetableScreen(
                 timetableLoader: FirestoreRepository(),

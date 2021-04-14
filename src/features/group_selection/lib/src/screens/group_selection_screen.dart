@@ -11,11 +11,13 @@ class GroupSelectionScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
   final GroupsLoader groupsLoader;
   final StreamSink<String> errorSink;
+  final ValueChanged<String> subscribeCallback;
 
   GroupSelectionScreen({
     required this.textLocalizer,
     required this.groupsLoader,
     required this.errorSink,
+    required this.subscribeCallback,
   });
 
   @override
@@ -239,8 +241,17 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                           group!.subgroups!.length > 0 &&
                           subgroup == null)
                   ? null
-                  : () => Navigator.pushNamed(context, '/timetable',
-                      arguments: ['group', group!.id, subgroup == null ? null : subgroup!.id]),
+                  : () {
+                      if (isMyGroup) {
+                        widget.subscribeCallback(
+                            group!.id + (subgroup == null ? "" : subgroup!.id));
+                      }
+                      Navigator.pushNamed(context, '/timetable', arguments: [
+                        'group',
+                        group!.id,
+                        subgroup == null ? null : subgroup!.id
+                      ]);
+                    },
               child: Padding(
                 padding: const EdgeInsets.all(17.0),
                 child: Text(
