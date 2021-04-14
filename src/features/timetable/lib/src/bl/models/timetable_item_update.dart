@@ -3,7 +3,7 @@ import 'package:timetable/src/bl/models/models.dart';
 class TimetableItemUpdate {
   final String date;
   final String time;
-  final TimetableItem timetableItem;
+  final TimetableItem? timetableItem;
 
   TimetableItemUpdate({
     required this.date,
@@ -15,6 +15,6 @@ class TimetableItemUpdate {
       TimetableItemUpdate(
         date: json['date'],
         time: json['time'],
-        timetableItem: TimetableItem.fromJson(json['timetableItem']),
+        timetableItem: json['timetableItem'] != null ? TimetableItem.fromJson(json['timetableItem']) : null,
       );
 }

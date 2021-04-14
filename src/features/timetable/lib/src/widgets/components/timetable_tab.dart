@@ -7,7 +7,9 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/bl/models/models.dart';
-import 'package:timetable/src/widgets/components/activity_card.dart';
+import 'package:timetable/src/bl/extensions/date_time_extension.dart';
+import 'package:timetable/src/bl/extensions/string_extension.dart';
+import 'package:timetable/src/widgets/components/components.dart';
 import 'package:timetable/src/widgets/timetable_screen.dart';
 
 class TimetableTab extends StatefulWidget {
@@ -40,39 +42,29 @@ class TimetableTab extends StatefulWidget {
 }
 
 class _TimetableTabState extends State<TimetableTab> {
+  late List<Widget> widgets;
+  late List<TimetableItemUpdate> timetableItemUpdatesWithRightDate;
+
+  @override
+  void initState() {
+    widgets = stateToWidgets();
+
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant TimetableTab oldWidget) {
+    setState(() {
+      setState(() {
+        widgets = stateToWidgets();
+      });
+    });
+
+    super.didUpdateWidget(oldWidget);
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Widget> activityCards = widget.timetable.items!
-        .where((timetableItem) =>
-            timetableItem.weekNumber == widget.weekNumber &&
-            timetableItem.dayNumber == widget.dayOfWeekNumber)
-        .map((timetableItem) => timetableItem.activity)
-        .where((activity) {
-          if (widget.timetableType == TimetableType.Group) {
-            return activity.groups.any((group) =>
-                group.id == widget.id &&
-                (group.subgroups == null ||
-                    group.subgroups!.length == 1 ||
-                    widget.subgroupId == null ||
-                    group.subgroups!
-                        .any((subgroup) => subgroup.id == widget.subgroupId)));
-          }
-
-          if (widget.timetableType == TimetableType.Teacher) {
-            return activity.tutor.id == widget.id;
-          }
-          return false;
-        })
-        .map((activity) => ActivityCard(
-              activity: activity,
-              timetableItemUpdates: widget.timetableItemUpdates,
-              textLocalizer: widget.textLocalizer,
-              dateTime: widget.dateTime,
-            ))
-        .expand((element) => [Divider(), element])
-        .skip(1)
-        .toList();
-
     return Column(
       children: <Widget>[
         Padding(
@@ -85,8 +77,8 @@ class _TimetableTabState extends State<TimetableTab> {
                     .format(widget.dateTime),
           ),
         ),
-        ...activityCards,
-        if (activityCards.isEmpty)
+        ...widgets,
+        if (widgets.isEmpty)
           Expanded(
             child: Center(
               child: Column(
@@ -114,5 +106,82 @@ class _TimetableTabState extends State<TimetableTab> {
           )
       ],
     );
+  }
+
+  TimetableTabItem defaultTimetableTabItem({required activity, isNew = false}) {
+    return TimetableTabItem(
+      activity: activity,
+      timetableItemUpdates: timetableItemUpdatesWithRightDate,
+      textLocalizer: widget.textLocalizer,
+      dateTime: widget.dateTime,
+      isNew: isNew,
+    );
+  }
+
+  List<Widget> stateToWidgets() {
+    List<Activity> activities = widget.timetable.items!
+        .where((timetableItem) =>
+            timetableItem.weekNumber == widget.weekNumber &&
+            timetableItem.dayNumber == widget.dayOfWeekNumber)
+        .map((timetableItem) => timetableItem.activity)
+        .where((activity) {
+      if (widget.timetableType == TimetableType.Group) {
+        return activity.groups.any((group) =>
+            group.id == widget.id &&
+            (group.subgroups == null ||
+                group.subgroups!.length == 1 ||
+                widget.subgroupId == null ||
+                group.subgroups!
+                    .any((subgroup) => subgroup.id == widget.subgroupId)));
+      }
+
+      if (widget.timetableType == TimetableType.Teacher) {
+        return activity.tutor.id == widget.id;
+      }
+      return false;
+    }).toList();
+
+    timetableItemUpdatesWithRightDate =
+        widget.timetableItemUpdates.where((timetableItemUpdate) {
+      DateTime dateTime = DateTime.parse(timetableItemUpdate.date.replaceAll('/', '-'));
+
+      if (widget.dateTime.asDate().isAtSameMomentAs(dateTime)) {
+        return true;
+      }
+      return false;
+    }).toList();
+
+    List<TimetableTabItem> activityTabItems = activities
+        .map((activity) => defaultTimetableTabItem(
+      activity: activity,
+    ))
+        .toList();
+
+    List<TimetableTabItem> newActivityTabItems =
+        timetableItemUpdatesWithRightDate
+            .where((timetableItemUpdate) => activities.every((activity) =>
+                activity.time.start != timetableItemUpdate.time &&
+                timetableItemUpdate.timetableItem != null))
+            .map((timetableItemUpdate) => defaultTimetableTabItem(
+                activity: timetableItemUpdate.timetableItem!.activity,
+                isNew: true))
+            .toList();
+
+    activityTabItems.addAll(newActivityTabItems);
+
+    activityTabItems.sort((a, b) {
+      return a.activity.time.start.compareAsTimeTo(b.activity.time.start);
+    });
+
+    return activityTabItems
+        .expand((element) => [
+              Divider(
+                height: 1,
+                thickness: 1,
+              ),
+              element
+            ])
+        .skip(1)
+        .toList();
   }
 }

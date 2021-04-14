@@ -7,11 +7,10 @@ import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
-import 'package:timetable/src/widgets/components/timetable_tab.dart';
+import 'package:timetable/src/widgets/components/components.dart';
 import 'package:timetable/src/bl/bloc/timetable_bloc.dart';
 import 'package:timetable/src/bl/abstractions/timetable_repository.dart';
 import 'package:timetable/src/bl/models/models.dart';
-import 'package:timetable/src/widgets/components/filters_bottom_sheet.dart';
 
 class TimetableScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
