@@ -35,7 +35,7 @@ class FacultyIcon extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.all(8.0),
-            child: Text(faculty.name),
+            child: Text(faculty.name, textScaleFactor: 1.2,),
           ),
         ],
       ),

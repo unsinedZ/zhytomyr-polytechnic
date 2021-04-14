@@ -168,8 +168,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     ),
                   );
                 },
-                child: Icon(Icons.settings),
-                backgroundColor: Theme.of(context).primaryColor,
+                child: Icon(Icons.filter_alt_outlined),
               ),
               body: TabBarView(
                 children: _weekDaysNames

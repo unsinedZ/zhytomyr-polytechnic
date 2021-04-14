@@ -6,7 +6,6 @@ import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/bl/models/models.dart';
 import 'package:timetable/src/widgets/components/activity_card.dart';
 import 'package:timetable/src/widgets/timetable_screen.dart';
@@ -64,6 +63,7 @@ class _TimetableTabState extends State<TimetableTab> {
         })
         .map((activity) => ActivityCard(
               activity: activity,
+              textLocalizer: widget.textLocalizer,
               dateTime: widget.dateTime,
             ))
         .expand((element) => [Divider(), element])
