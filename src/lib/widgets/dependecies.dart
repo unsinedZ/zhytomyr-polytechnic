@@ -5,8 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:google_authentication/google_authentication.dart';
 
 import 'package:error_bloc/error_bloc.dart';
+
 import 'package:rxdart/rxdart.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 
 class Dependencies extends StatelessWidget {
   final Widget child;
@@ -19,6 +23,7 @@ class Dependencies extends StatelessWidget {
   Widget build(BuildContext context) => MultiProvider(
         providers: [
           Provider<ErrorBloc>(create: getErrorBloc),
+          Provider<TextLocalizer>(create: getTextLocalizer),
         ],
         child: MultiProvider(
           providers: [
@@ -39,6 +44,8 @@ class Dependencies extends StatelessWidget {
           textColor: Colors.black,
           fontSize: 16.0);
     });
+
+  TextLocalizer getTextLocalizer(BuildContext context) => TextLocalizer();
 
   AuthenticationBloc getUserBloc(BuildContext context) =>
       AuthenticationBloc(errorSink: context.read<ErrorBloc>().errorSink);

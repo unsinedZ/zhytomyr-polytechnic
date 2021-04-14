@@ -66,6 +66,7 @@ class _TimetableTabState extends State<TimetableTab> {
         .map((activity) => ActivityCard(
               activity: activity,
               timetableItemUpdates: widget.timetableItemUpdates,
+              textLocalizer: widget.textLocalizer,
               dateTime: widget.dateTime,
             ))
         .expand((element) => [Divider(), element])
