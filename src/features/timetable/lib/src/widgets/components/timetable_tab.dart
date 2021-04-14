@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:intl/intl.dart';
-import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 
@@ -14,6 +13,7 @@ import 'package:timetable/src/widgets/timetable_screen.dart';
 class TimetableTab extends StatefulWidget {
   final TextLocalizer textLocalizer;
   final Timetable timetable;
+  final List<TimetableItemUpdate> timetableItemUpdates;
   final int weekNumber;
   final int dayOfWeekNumber;
   final DateTime dateTime;
@@ -25,6 +25,7 @@ class TimetableTab extends StatefulWidget {
   TimetableTab({
     required this.textLocalizer,
     required this.timetable,
+    required this.timetableItemUpdates,
     required this.weekNumber,
     required this.dayOfWeekNumber,
     required this.dateTime,
@@ -64,6 +65,7 @@ class _TimetableTabState extends State<TimetableTab> {
         })
         .map((activity) => ActivityCard(
               activity: activity,
+              timetableItemUpdates: widget.timetableItemUpdates,
               dateTime: widget.dateTime,
             ))
         .expand((element) => [Divider(), element])

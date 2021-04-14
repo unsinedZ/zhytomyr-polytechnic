@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:timetable/src/bl/models/models.dart';
@@ -6,22 +5,32 @@ import 'package:timetable/src/bl/extensions/date_time_extension.dart';
 
 class ActivityCard extends StatefulWidget {
   final Activity activity;
+  final List<TimetableItemUpdate> timetableItemUpdates;
   final DateTime dateTime;
 
-  ActivityCard({required this.activity, required this.dateTime});
+  ActivityCard({
+    required this.activity,
+    required this.timetableItemUpdates,
+    required this.dateTime,
+  });
 
   @override
   _ActivityCardState createState() => _ActivityCardState();
 }
 
 class _ActivityCardState extends State<ActivityCard> {
-  late bool isCurrentClass;
+  late bool isCurrentClass = false;
+  late bool isUpdated = false;
+
+  TimetableItemUpdate? timetableItemUpdate;
 
   @override
   void initState() {
-    isCurrentClass = false;
-
-    if (DateTime.now().asDate().difference(widget.dateTime.asDate()).inDays ==
+    if (DateTime
+        .now()
+        .asDate()
+        .difference(widget.dateTime.asDate())
+        .inDays ==
         0) {
       List<String> timeStart = widget.activity.time.start.split(':');
       List<String> timeEnd = widget.activity.time.end.split(':');
@@ -37,13 +46,31 @@ class _ActivityCardState extends State<ActivityCard> {
       }
     }
 
+    if (widget.timetableItemUpdates.isNotEmpty) {
+      widget.timetableItemUpdates.forEach((timetableItemUpdate) {
+        List<int> date = timetableItemUpdate.date.split('/').map((element) =>
+            int.parse(element)).toList();
+        String updateTime = timetableItemUpdate.time;
+        String activityStartTime = widget.activity.time.start;
+
+        DateTime dateTime = DateTime(date[0], date[1], date[2]);
+
+        if (widget.dateTime.asDate().isAtSameMomentAs(dateTime) && updateTime == activityStartTime) {
+          isUpdated = true;
+          this.timetableItemUpdate = timetableItemUpdate;
+        }
+      });
+    }
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: isCurrentClass ? Theme.of(context).accentColor : null,
+      color: isCurrentClass ? Theme
+          .of(context)
+          .accentColor : null,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 5),
         child: IntrinsicHeight(
@@ -62,7 +89,10 @@ class _ActivityCardState extends State<ActivityCard> {
                     ),
                     Text(
                       widget.activity.time.end,
-                      style: Theme.of(context).textTheme.headline2,
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .headline2,
                       textScaleFactor: 1.3,
                     ),
                   ],
@@ -73,7 +103,9 @@ class _ActivityCardState extends State<ActivityCard> {
               ),
               VerticalDivider(
                 thickness: 2,
-                color: Theme.of(context).primaryColor,
+                color: Theme
+                    .of(context)
+                    .primaryColor,
               ),
               SizedBox(
                 width: 7,
@@ -91,7 +123,10 @@ class _ActivityCardState extends State<ActivityCard> {
                   ),
                   Text(
                     widget.activity.room,
-                    style: Theme.of(context).textTheme.headline2,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .headline2,
                   ),
                 ],
               ),
@@ -101,7 +136,10 @@ class _ActivityCardState extends State<ActivityCard> {
                 children: [
                   Text(
                     widget.activity.tutor.name,
-                    style: Theme.of(context).textTheme.headline2,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .headline2,
                     textScaleFactor: 1.15,
                   ),
                 ],

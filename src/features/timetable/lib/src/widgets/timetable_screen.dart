@@ -58,6 +58,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
     }
 
     timetableBloc.loadTimetable();
+    timetableBloc.loadTimetableItemUpdates();
 
     weekNumber = _calculateWeekNumber();
 
@@ -99,12 +100,16 @@ class _TimetableScreenState extends State<TimetableScreen> {
       initialIndex: initialIndex,
       length: 6,
       child: StreamBuilder<List<dynamic>>(
-        stream: Rx.combineLatest2(timetableBloc.timetable, timetableBloc.group,
-            (a, b) => <dynamic>[a, b]),
+        stream: Rx.combineLatest3(
+            timetableBloc.timetable,
+            timetableBloc.group,
+            timetableBloc.timetableItemUpdates,
+            (a, b, c) => <dynamic>[a, b, c]),
         builder: (context, snapshot) {
           if (_isSnapshotHasData(snapshot, timetableType)) {
             Timetable timetable = snapshot.data![0];
             Group? group = snapshot.data![1];
+            List<TimetableItemUpdate> timetableItemUpdates = snapshot.data![2];
 
             if ((weekNumber.isEven &&
                     timetable.weekDetermination == WeekDetermination.Even) ||
@@ -178,6 +183,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     .map<Widget>((index) => TimetableTab(
                           textLocalizer: widget.textLocalizer,
                           timetable: timetable,
+                          timetableItemUpdates: timetableItemUpdates,
                           weekNumber: weekNumber,
                           dayOfWeekNumber: index + 1,
                           dateTime: indexDayDateTime.add(Duration(
@@ -211,7 +217,7 @@ enum TimetableType { Group, Teacher }
 
 bool _isSnapshotHasData(
     AsyncSnapshot<List<dynamic>> snapshot, TimetableType timetableType) {
-  if (snapshot.hasData && snapshot.data != null && snapshot.data![0] != null) {
+  if (snapshot.hasData && snapshot.data != null && snapshot.data![0] != null && snapshot.data![2] != null) {
     if (timetableType == TimetableType.Group && snapshot.data![1] != null) {
       return true;
     } else if (timetableType == TimetableType.Group) {

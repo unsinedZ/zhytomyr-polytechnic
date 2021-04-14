@@ -6,3 +6,4 @@ export 'tutor.dart';
 export 'timetable.dart';
 export 'timetable_item.dart';
 export 'timetable_filters.dart';
+export 'timetable_item_update.dart';
