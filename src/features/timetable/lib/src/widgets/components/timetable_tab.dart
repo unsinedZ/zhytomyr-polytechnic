@@ -65,68 +65,61 @@ class _TimetableTabState extends State<TimetableTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            (widget.isTomorrow == true
-                    ? widget.textLocalizer.localize('Tomorrow ')
-                    : '') +
-                DateFormat('d MMMM', context.locale.toString())
-                    .format(widget.dateTime),
-          ),
-        ),
-        ...widgets,
-        if (widgets.isEmpty)
-          Expanded(
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    'assets/images/day_off.png',
-                    package: 'timetable',
-                    width: MediaQuery.of(context).size.width * 0.7,
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Text(
-                    widget.textLocalizer.localize('DAY OFF'),
-                    textScaleFactor: 1.7,
-                    style: Theme.of(context).textTheme.headline3,
-                  ),
-                  SizedBox(
-                    height: 60,
-                  ),
-                ],
-              ),
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              (widget.isTomorrow == true
+                      ? widget.textLocalizer.localize('Tomorrow ')
+                      : '') +
+                  DateFormat('d MMMM', context.locale.toString())
+                      .format(widget.dateTime),
             ),
-          )
-      ],
+          ),
+          ...widgets,
+          if (widgets.isEmpty) ...[
+            SizedBox(
+              height: 120,
+            ),
+            Image.asset(
+              'assets/images/day_off.png',
+              package: 'timetable',
+              width: MediaQuery.of(context).size.width * 0.7,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Text(
+              widget.textLocalizer.localize('DAY OFF'),
+              textScaleFactor: 1.7,
+              style: Theme.of(context).textTheme.headline3,
+            ),
+          ],
+        ],
+      ),
     );
   }
 
-  TimetableTabItem defaultTimetableTabItem({required activity, isNew = false}) {
+  TimetableTabItem defaultTimetableTabItem(
+      {required UpdatableTimetableItem updatableTimetableItem,
+      bool isNew = false}) {
     return TimetableTabItem(
-      activity: activity,
-      timetableItemUpdates: timetableItemUpdatesWithRightDate,
       textLocalizer: widget.textLocalizer,
       dateTime: widget.dateTime,
-      isNew: isNew,
+      updatableTimetableItem: updatableTimetableItem,
     );
   }
 
   List<Widget> stateToWidgets() {
-    List<Activity> activities = widget.timetable.items!
+    List<TimetableItem> timetableItems = widget.timetable.items!
         .where((timetableItem) =>
             timetableItem.weekNumber == widget.weekNumber &&
             timetableItem.dayNumber == widget.dayOfWeekNumber)
-        .map((timetableItem) => timetableItem.activity)
-        .where((activity) {
+        .where((timetableItem) {
       if (widget.timetableType == TimetableType.Group) {
-        return activity.groups.any((group) =>
+        return timetableItem.activity.groups.any((group) =>
             group.id == widget.id &&
             (group.subgroups == null ||
                 group.subgroups!.length == 1 ||
@@ -136,14 +129,15 @@ class _TimetableTabState extends State<TimetableTab> {
       }
 
       if (widget.timetableType == TimetableType.Teacher) {
-        return activity.tutor.id == widget.id;
+        return timetableItem.activity.tutor.id == widget.id;
       }
       return false;
     }).toList();
 
     timetableItemUpdatesWithRightDate =
         widget.timetableItemUpdates.where((timetableItemUpdate) {
-      DateTime dateTime = DateTime.parse(timetableItemUpdate.date.replaceAll('/', '-'));
+      DateTime dateTime =
+          DateTime.parse(timetableItemUpdate.date.replaceAll('/', '-'));
 
       if (widget.dateTime.asDate().isAtSameMomentAs(dateTime)) {
         return true;
@@ -151,26 +145,41 @@ class _TimetableTabState extends State<TimetableTab> {
       return false;
     }).toList();
 
-    List<TimetableTabItem> activityTabItems = activities
-        .map((activity) => defaultTimetableTabItem(
-      activity: activity,
-    ))
+    List<TimetableTabItem> activityTabItems = timetableItems
+        .map((timetableItem) => defaultTimetableTabItem(
+              updatableTimetableItem: createUpdatableItem(
+                  timetableItemUpdates: timetableItemUpdatesWithRightDate,
+                  timetableItem: timetableItem),
+            ))
         .toList();
 
     List<TimetableTabItem> newActivityTabItems =
         timetableItemUpdatesWithRightDate
-            .where((timetableItemUpdate) => activities.every((activity) =>
-                activity.time.start != timetableItemUpdate.time &&
-                timetableItemUpdate.timetableItem != null))
+            .where((timetableItemUpdate) => timetableItems.every(
+                (timetableItem) =>
+                    timetableItem.activity.time.start !=
+                        timetableItemUpdate.time &&
+                    timetableItemUpdate.timetableItem != null))
             .map((timetableItemUpdate) => defaultTimetableTabItem(
-                activity: timetableItemUpdate.timetableItem!.activity,
+                updatableTimetableItem: createUpdatableItem(
+                    timetableItemUpdates: [],
+                    timetableItemUpdate: timetableItemUpdate),
                 isNew: true))
             .toList();
 
     activityTabItems.addAll(newActivityTabItems);
 
     activityTabItems.sort((a, b) {
-      return a.activity.time.start.compareAsTimeTo(b.activity.time.start);
+      Activity aActivity = a.updatableTimetableItem.timetableItem != null
+          ? a.updatableTimetableItem.timetableItem!.activity
+          : a.updatableTimetableItem.timetableItemUpdate!.timetableItem!
+              .activity;
+      Activity bActivity = b.updatableTimetableItem.timetableItem != null
+          ? b.updatableTimetableItem.timetableItem!.activity
+          : b.updatableTimetableItem.timetableItemUpdate!.timetableItem!
+              .activity;
+
+      return aActivity.time.start.compareAsTimeTo(bActivity.time.start);
     });
 
     return activityTabItems
@@ -183,5 +192,34 @@ class _TimetableTabState extends State<TimetableTab> {
             ])
         .skip(1)
         .toList();
+  }
+
+  UpdatableTimetableItem createUpdatableItem({
+    required List<TimetableItemUpdate> timetableItemUpdates,
+    TimetableItem? timetableItem,
+    TimetableItemUpdate? timetableItemUpdate,
+  }) {
+    if (timetableItemUpdates.isNotEmpty) {
+      timetableItemUpdates.forEach((timetableUpdate) {
+        String updateItemTime = timetableUpdate.time;
+        String activityStartTime = timetableItem!.activity.time.start;
+
+        DateTime dateTime =
+            DateTime.parse(timetableUpdate.date.replaceAll('/', '-'));
+
+        if (widget.dateTime.asDate().isAtSameMomentAs(dateTime) &&
+            updateItemTime == activityStartTime) {
+          timetableItemUpdate = timetableUpdate;
+        }
+      });
+    }
+
+    if (timetableItem != null || timetableItemUpdate != null) {
+      return UpdatableTimetableItem(
+          timetableItem: timetableItem,
+          timetableItemUpdate: timetableItemUpdate);
+    } else {
+      throw ArgumentError.notNull('timetableItem || timetableItemUpdate');
+    }
   }
 }

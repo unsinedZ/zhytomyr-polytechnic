@@ -8,4 +8,7 @@ class UpdatableTimetableItem {
     required this.timetableItem,
     required this.timetableItemUpdate,
   });
+
+  bool get isNew => timetableItem == null;
+  bool get isUpdated => timetableItem != null && timetableItemUpdate != null;
 }

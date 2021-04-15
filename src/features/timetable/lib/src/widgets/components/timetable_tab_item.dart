@@ -6,18 +6,14 @@ import 'package:timetable/src/bl/extensions/date_time_extension.dart';
 import 'package:timetable/src/widgets/components/components.dart';
 
 class TimetableTabItem extends StatefulWidget {
-  final Activity activity;
-  final List<TimetableItemUpdate> timetableItemUpdates;
+  final UpdatableTimetableItem updatableTimetableItem;
   final DateTime dateTime;
   final TextLocalizer textLocalizer;
-  final bool isNew;
 
   TimetableTabItem({
-    required this.activity,
-    required this.timetableItemUpdates,
+    required this.updatableTimetableItem,
     required this.dateTime,
     required this.textLocalizer,
-    required this.isNew,
   });
 
   @override
@@ -26,16 +22,30 @@ class TimetableTabItem extends StatefulWidget {
 
 class _TimetableTabItemState extends State<TimetableTabItem> {
   late bool isCurrentClass = false;
-  late bool isUpdated = false;
 
-  TimetableItemUpdate? timetableItemUpdate;
+  bool get isNew => widget.updatableTimetableItem.isNew;
+
+  bool get isUpdated => widget.updatableTimetableItem.isUpdated;
+
+  Activity get mainActivity =>
+      widget.updatableTimetableItem.timetableItem!.activity;
+
+  Activity get activityUpdate => widget
+      .updatableTimetableItem.timetableItemUpdate!.timetableItem!.activity;
 
   @override
   void initState() {
-    if (DateTime.now().asDate().difference(widget.dateTime.asDate()).inDays ==
-        0) {
-      List<String> timeStart = widget.activity.time.start.split(':');
-      List<String> timeEnd = widget.activity.time.end.split(':');
+    if (DateTime.now().asDate().isAtSameMomentAs(widget.dateTime.asDate())) {
+      Activity activity;
+
+      if (isNew) {
+        activity = activityUpdate;
+      } else {
+        activity = mainActivity;
+      }
+
+      List<String> timeStart = activity.time.start.split(':');
+      List<String> timeEnd = activity.time.end.split(':');
 
       DateTime dateTimeStart = DateTime.now().asDate().add(Duration(
           hours: int.parse(timeStart[0]), minutes: int.parse(timeStart[1])));
@@ -47,22 +57,6 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
         isCurrentClass = true;
       }
     }
-
-    if (widget.timetableItemUpdates.isNotEmpty && !widget.isNew) {
-      widget.timetableItemUpdates.forEach((timetableItemUpdate) {
-        String updateTime = timetableItemUpdate.time;
-        String activityStartTime = widget.activity.time.start;
-
-        DateTime dateTime = DateTime.parse(timetableItemUpdate.date.replaceAll('/', '-'));
-
-        if (widget.dateTime.asDate().isAtSameMomentAs(dateTime) &&
-            updateTime == activityStartTime) {
-          isUpdated = true;
-          this.timetableItemUpdate = timetableItemUpdate;
-        }
-      });
-    }
-
     super.initState();
   }
 
@@ -70,30 +64,41 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ActivityCard(
-          backgroundColor: isUpdated
-              ? Theme.of(context).disabledColor
-              : isCurrentClass
-                  ? Theme.of(context).accentColor
-                  : widget.isNew
-                      ? Theme.of(context).selectedRowColor
-                      : null,
-          textLocalizer: widget.textLocalizer,
-          activity: widget.activity,
-        ),
-        if (isUpdated && timetableItemUpdate!.timetableItem != null)
-          ...[
+        isUpdated
+            ? ActivityCard.canceled(
+                activity: mainActivity,
+                textLocalizer: widget.textLocalizer,
+              )
+            : isCurrentClass
+                ? ActivityCard.current(
+                    activity: mainActivity,
+                    textLocalizer: widget.textLocalizer,
+                  )
+                : isNew
+                    ? ActivityCard.added(
+                        activity: isNew ? activityUpdate : mainActivity,
+                        textLocalizer: widget.textLocalizer,
+                      )
+                    : ActivityCard.simple(
+                        activity: mainActivity,
+                        textLocalizer: widget.textLocalizer,
+                      ),
+        if (isUpdated &&
+            widget.updatableTimetableItem.timetableItemUpdate!.timetableItem !=
+                null) ...[
           Icon(
             Icons.arrow_downward,
             color: Colors.black,
           ),
-          ActivityCard(
-            backgroundColor: isCurrentClass
-                ? Theme.of(context).accentColor
-                : Theme.of(context).selectedRowColor,
-            textLocalizer: widget.textLocalizer,
-            activity: timetableItemUpdate!.timetableItem!.activity,
-          ),
+          isCurrentClass
+              ? ActivityCard.current(
+                  activity: activityUpdate,
+                  textLocalizer: widget.textLocalizer,
+                )
+              : ActivityCard.added(
+                  activity: activityUpdate,
+                  textLocalizer: widget.textLocalizer,
+                ),
         ],
       ],
     );
