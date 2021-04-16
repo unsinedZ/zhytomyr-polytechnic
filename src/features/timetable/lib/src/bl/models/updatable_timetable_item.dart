@@ -10,5 +10,11 @@ class UpdatableTimetableItem {
   });
 
   bool get isNew => timetableItem == null;
+
   bool get isUpdated => timetableItem != null && timetableItemUpdate != null;
+
+  bool get isCancelled =>
+      isUpdated && timetableItemUpdate!.timetableItem == null;
+
+  bool get isReplaced => isUpdated && timetableItemUpdate!.timetableItem != null;
 }

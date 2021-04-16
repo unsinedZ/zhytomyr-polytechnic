@@ -27,6 +27,10 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
 
   bool get isUpdated => widget.updatableTimetableItem.isUpdated;
 
+  bool get isCancelled => widget.updatableTimetableItem.isCancelled;
+
+  bool get isReplaced => widget.updatableTimetableItem.isReplaced;
+
   Activity get mainActivity =>
       widget.updatableTimetableItem.timetableItem!.activity;
 
@@ -64,42 +68,30 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        isUpdated
-            ? ActivityCard.canceled(
-                activity: mainActivity,
-                textLocalizer: widget.textLocalizer,
-              )
-            : isCurrentClass
-                ? ActivityCard.current(
-                    activity: mainActivity,
-                    textLocalizer: widget.textLocalizer,
-                  )
-                : isNew
-                    ? ActivityCard.added(
-                        activity: isNew ? activityUpdate : mainActivity,
-                        textLocalizer: widget.textLocalizer,
-                      )
-                    : ActivityCard.simple(
-                        activity: mainActivity,
-                        textLocalizer: widget.textLocalizer,
-                      ),
-        if (isUpdated &&
-            widget.updatableTimetableItem.timetableItemUpdate!.timetableItem !=
-                null) ...[
+        if (isCancelled || isReplaced)
+          ActivityCard.canceled(
+            activity: mainActivity,
+            textLocalizer: widget.textLocalizer,
+          ),
+        if (isReplaced)
           Icon(
             Icons.arrow_downward,
             color: Colors.black,
           ),
-          isCurrentClass
-              ? ActivityCard.current(
-                  activity: activityUpdate,
-                  textLocalizer: widget.textLocalizer,
-                )
-              : ActivityCard.added(
-                  activity: activityUpdate,
-                  textLocalizer: widget.textLocalizer,
-                ),
-        ],
+        isCurrentClass
+            ? ActivityCard.current(
+                activity: mainActivity,
+                textLocalizer: widget.textLocalizer,
+              )
+            : isReplaced || isNew
+                ? ActivityCard.added(
+                    activity: activityUpdate,
+                    textLocalizer: widget.textLocalizer,
+                  )
+                : ActivityCard.simple(
+                    activity: mainActivity,
+                    textLocalizer: widget.textLocalizer,
+                  ),
       ],
     );
   }
