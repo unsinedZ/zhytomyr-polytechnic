@@ -11,4 +11,9 @@ class Timeslot {
         start: json['start'],
         end: json['end'],
       );
+
+  toJson() => <String, dynamic>{
+    'start': start,
+    'end': end,
+  };
 }

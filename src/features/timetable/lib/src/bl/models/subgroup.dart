@@ -13,4 +13,16 @@ class Subgroup {
       name: json['name'] as String,
     );
   }
+
+  factory Subgroup.fromObject(dynamic object) {
+    return Subgroup(
+      id: object.id as String,
+      name: object.name as String,
+    );
+  }
+
+  toJson() => <String, dynamic>{
+    'id': id,
+    'name': name,
+  };
 }

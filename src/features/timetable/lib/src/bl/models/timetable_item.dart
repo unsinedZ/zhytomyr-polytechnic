@@ -18,4 +18,10 @@ class TimetableItem {
       dayNumber: json['dayNumber'] as int,
     );
   }
+
+  toJson() => <String, dynamic>{
+    'weekNumber': weekNumber,
+    'activity': activity.toJson(),
+    'dayNumber': dayNumber,
+  };
 }

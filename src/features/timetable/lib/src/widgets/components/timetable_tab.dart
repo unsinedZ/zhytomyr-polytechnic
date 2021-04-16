@@ -40,7 +40,7 @@ class TimetableTab extends StatefulWidget {
 class _TimetableTabState extends State<TimetableTab> {
   @override
   Widget build(BuildContext context) {
-    List<Widget> activityCards = widget.timetable.items!
+    List<Widget> activityCards = widget.timetable.items
         .where((timetableItem) =>
             timetableItem.weekNumber == widget.weekNumber &&
             timetableItem.dayNumber == widget.dayOfWeekNumber)
@@ -49,10 +49,9 @@ class _TimetableTabState extends State<TimetableTab> {
           if (widget.timetableType == TimetableType.Group) {
             return activity.groups.any((group) =>
                 group.id == widget.id &&
-                (group.subgroups == null ||
-                    group.subgroups!.length == 1 ||
+                (group.subgroups.length == 1 ||
                     widget.subgroupId == null ||
-                    group.subgroups!
+                    group.subgroups
                         .any((subgroup) => subgroup.id == widget.subgroupId)));
           }
 

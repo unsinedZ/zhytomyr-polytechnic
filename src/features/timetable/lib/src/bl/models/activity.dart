@@ -29,4 +29,13 @@ class Activity {
             .toList(),
         time: Timeslot.fromJson(json['time']),
       );
+
+  toJson() => <String, dynamic>{
+    'id': id,
+    'name': name,
+    'tutor': tutor.toJson(),
+    'room': room,
+    'groups': groups.map((group) => group.toJson()).toList(),
+    'time': time.toJson(),
+  };
 }
