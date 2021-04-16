@@ -1,0 +1,16 @@
+{
+  "name": "firebase-messager",
+  "version": "1.0.0",
+  "description": "Send a notification",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "googleapis": "^71.0.0",
+    "optimist": "^0.6.1"
+  }
+}
