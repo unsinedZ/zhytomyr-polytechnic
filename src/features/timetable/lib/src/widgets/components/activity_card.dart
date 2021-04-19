@@ -2,49 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 
 import 'package:timetable/src/bl/models/models.dart';
-import 'package:timetable/src/bl/extensions/date_time_extension.dart';
 import 'package:timetable/src/widgets/components/activity_info_dialog.dart';
 
-class ActivityCard extends StatefulWidget {
+class ActivityCard extends StatelessWidget {
   final Activity activity;
-  final DateTime dateTime;
   final TextLocalizer textLocalizer;
+  final _ActivityCardType _activityCardType;
 
-  ActivityCard({
+  ActivityCard.simple({
     required this.activity,
-    required this.dateTime,
     required this.textLocalizer,
-  });
+  }) : this._activityCardType = _ActivityCardType.Simple;
 
-  @override
-  _ActivityCardState createState() => _ActivityCardState();
-}
+  ActivityCard.canceled({
+    required this.activity,
+    required this.textLocalizer,
+  }) : this._activityCardType = _ActivityCardType.Canceled;
 
-class _ActivityCardState extends State<ActivityCard> {
-  late bool isCurrentClass;
+  ActivityCard.current({
+    required this.activity,
+    required this.textLocalizer,
+  }) : this._activityCardType = _ActivityCardType.Current;
 
-  @override
-  void initState() {
-    isCurrentClass = false;
-
-    if (DateTime.now().asDate().difference(widget.dateTime.asDate()).inDays ==
-        0) {
-      List<String> timeStart = widget.activity.time.start.split(':');
-      List<String> timeEnd = widget.activity.time.end.split(':');
-
-      DateTime dateTimeStart = DateTime.now().asDate().add(Duration(
-          hours: int.parse(timeStart[0]), minutes: int.parse(timeStart[1])));
-      DateTime dateTimeEnd = DateTime.now().asDate().add(Duration(
-          hours: int.parse(timeEnd[0]), minutes: int.parse(timeEnd[1])));
-
-      if (DateTime.now().isAfter(dateTimeStart) &&
-          DateTime.now().isBefore(dateTimeEnd)) {
-        isCurrentClass = true;
-      }
-    }
-
-    super.initState();
-  }
+  ActivityCard.added({
+    required this.activity,
+    required this.textLocalizer,
+  }) : this._activityCardType = _ActivityCardType.Added;
 
   @override
   Widget build(BuildContext context) {
@@ -53,15 +36,15 @@ class _ActivityCardState extends State<ActivityCard> {
         showDialog<void>(
           context: context,
           builder: (context) => ActivityInfoDialog(
-            activity: widget.activity,
-            textLocalizer: widget.textLocalizer,
+            activity: activity,
+            textLocalizer: textLocalizer,
           ),
         );
       },
       child: Container(
-        color: isCurrentClass ? Theme.of(context).accentColor : null,
+        color: getBackgroundColor(context),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 12),
           child: IntrinsicHeight(
             child: Row(
               children: [
@@ -73,11 +56,11 @@ class _ActivityCardState extends State<ActivityCard> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        widget.activity.time.start,
+                        activity.time.start,
                         textScaleFactor: 1.3,
                       ),
                       Text(
-                        widget.activity.time.end,
+                        activity.time.end,
                         style: Theme.of(context).textTheme.headline2,
                         textScaleFactor: 1.3,
                       ),
@@ -99,14 +82,14 @@ class _ActivityCardState extends State<ActivityCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      widget.activity.name,
+                      activity.name,
                       textScaleFactor: 1.3,
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     Text(
-                      widget.activity.room,
+                      activity.room,
                       style: Theme.of(context).textTheme.headline2,
                     ),
                   ],
@@ -114,12 +97,19 @@ class _ActivityCardState extends State<ActivityCard> {
                 Spacer(),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      widget.activity.tutor.name,
+                      activity.tutor.name,
                       style: Theme.of(context).textTheme.headline2,
                       textScaleFactor: 1.15,
                     ),
+                    if (this._activityCardType == _ActivityCardType.Canceled)
+                      Text(
+                        'Canceled',
+                        style: TextStyle(color: Colors.red),
+                        textScaleFactor: 1.15,
+                      ),
                   ],
                 ),
               ],
@@ -129,4 +119,24 @@ class _ActivityCardState extends State<ActivityCard> {
       ),
     );
   }
+
+  Color? getBackgroundColor(BuildContext context) {
+    switch (this._activityCardType) {
+      case _ActivityCardType.Simple:
+        return null;
+      case _ActivityCardType.Canceled:
+        return Theme.of(context).disabledColor;
+      case _ActivityCardType.Added:
+        return Theme.of(context).selectedRowColor;
+      case _ActivityCardType.Current:
+        return Theme.of(context).accentColor;
+    }
+  }
+}
+
+enum _ActivityCardType {
+  Simple,
+  Canceled,
+  Added,
+  Current,
 }

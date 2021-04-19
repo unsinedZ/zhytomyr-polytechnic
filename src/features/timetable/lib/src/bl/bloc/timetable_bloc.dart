@@ -9,8 +9,12 @@ class TimetableBloc {
   final GroupRepository groupRepository;
   final StreamSink<String> errorSink;
 
-  final StreamController<Timetable?> _timetableController = StreamController.broadcast();
-  final StreamController<Group?> _groupController = StreamController.broadcast();
+  final StreamController<Timetable?> _timetableController =
+      StreamController.broadcast();
+  final StreamController<Group?> _groupController =
+      StreamController.broadcast();
+  final StreamController<List<TimetableItemUpdate>?>
+      _timetableItemUpdatesController = StreamController.broadcast();
 
   TimetableBloc({
     required this.timetableRepository,
@@ -22,17 +26,16 @@ class TimetableBloc {
 
   Stream<Group?> get group => _groupController.stream;
 
+  Stream<List<TimetableItemUpdate>?> get timetableItemUpdates =>
+      _timetableItemUpdatesController.stream;
+
   void loadTimetable(String id) {
     _timetableController.add(null);
 
     timetableRepository
         .loadTimetableByReferenceId(id)
         .then((timetable) => _timetableController.add(timetable))
-        .onError((error, stackTrace) {
-          print(error);
-          print(stackTrace);
-          errorSink.add(error.toString());
-        });
+        .onError((error, _) => errorSink.add(error.toString()));
   }
 
   void loadGroup(String groupId) {
@@ -41,11 +44,22 @@ class TimetableBloc {
     groupRepository
         .getGroupById(groupId)
         .then((group) => _groupController.add(group))
-        .onError((error, stackTrace) => errorSink.add(error.toString()));
+        .onError((error, _) => errorSink.add(error.toString()));
+  }
+
+  void loadTimetableItemUpdates() {
+    _timetableItemUpdatesController.add(null);
+
+    timetableRepository
+        .getTimetableItemUpdates()
+        .then((timetableItemUpdates) =>
+            _timetableItemUpdatesController.add(timetableItemUpdates))
+        .onError((error, _) => errorSink.add(error.toString()));
   }
 
   void dispose() {
     _timetableController.close();
     _groupController.close();
+    _timetableItemUpdatesController.close();
   }
 }

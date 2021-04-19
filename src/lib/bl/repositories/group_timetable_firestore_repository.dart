@@ -60,4 +60,19 @@ class GroupTimetableFirestoreRepository
 
     return Timetable.fromJson(expirableTimetableJson.data);
   }
+
+  @override
+  Future<List<TimetableItemUpdate>> getTimetableItemUpdates() {
+    return FirebaseFirestore.instance
+        .collection('timetable_item_update')
+        .get()
+        .then((timetableItemUpdateListJson) =>
+        timetableItemUpdateListJson.docs
+            .map(
+              (timetableItemUpdateJson) =>
+              TimetableItemUpdate.fromJson(
+                  timetableItemUpdateJson.data()!),
+        )
+            .toList());
+  }
 }

@@ -31,6 +31,7 @@ class App extends StatelessWidget {
           focusColor: Color(0xfff8eb4d),
           disabledColor: Color(0xffeeeeee),
           accentColor: Color(0xfff8f3b3),
+          selectedRowColor: Color(0xffd6ffde),
           primaryIconTheme: IconThemeData(
             color: Colors.white,
           ),
