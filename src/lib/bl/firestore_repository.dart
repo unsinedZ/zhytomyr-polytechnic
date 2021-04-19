@@ -41,13 +41,27 @@ class FirestoreRepository
 
   @override
   Future<Timetable.Group> getGroupById(String groupId) async {
-    return FirebaseFirestore.instance.collection('group').get().then(
-        (groupListJson) => groupListJson.docs
+    return FirebaseFirestore.instance
+        .collection('group')
+        .get()
+        .then((groupListJson) => groupListJson.docs
             .map(
               (groupJson) => Timetable.Group.fromJson(groupJson.data()!),
             )
-            .firstWhere(
-                (group) => group.id == groupId)
-            );
+            .firstWhere((group) => group.id == groupId));
+  }
+
+  @override
+  Future<List<Timetable.TimetableItemUpdate>> getTimetableItemUpdates() {
+    return FirebaseFirestore.instance
+        .collection('timetable_item_update')
+        .get()
+        .then((timetableItemUpdateListJson) => timetableItemUpdateListJson.docs
+            .map(
+              (timetableItemUpdateJson) =>
+                  Timetable.TimetableItemUpdate.fromJson(
+                      timetableItemUpdateJson.data()!),
+            )
+            .toList());
   }
 }
