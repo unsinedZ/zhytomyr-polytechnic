@@ -12,20 +12,16 @@ import 'package:timetable/timetable.dart' as Timetable;
 import 'package:zhytomyr_polytechnic/bl/models/expirable.dart';
 
 class FirestoreRepository
-    implements
-        FacultyRepository,
-        GroupsRepository,
-        Timetable.GroupRepository {
+    implements FacultyRepository, GroupsRepository, Timetable.GroupRepository {
   @override
   Stream<List<Faculty>> getFaculties() =>
       FirebaseFirestore.instance.collection('faculty').get().asStream().map(
-            (facultyListJson) =>
-            facultyListJson.docs
+            (facultyListJson) => facultyListJson.docs
                 .map(
                   (facultyJson) => Faculty.fromJson(facultyJson.data()!),
-            )
+                )
                 .toList(),
-      );
+          );
 
   Future<List<Group>> getAllGroups() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -39,7 +35,7 @@ class FirestoreRepository
           .toList();
 
       expirableGroupsJson =
-      (Expirable<List<Map<String, dynamic>>>.fromJson(json));
+          (Expirable<List<Map<String, dynamic>>>.fromJson(json));
 
       if (expirableGroupsJson.expireAt.isBefore(DateTime.now())) {
         expirableGroupsJson = null;
@@ -60,7 +56,7 @@ class FirestoreRepository
     return expirableGroupsJson.data
         .map(
           (groupJson) => Group.fromJson(groupJson),
-    )
+        )
         .toList();
   }
 
@@ -79,8 +75,13 @@ class FirestoreRepository
   }
 
   @override
-  Future<void> saveUserGroup(String userId, String groupId,
-      String subgroupId) async {
+  Future<void> saveUserGroup(
+      String userId, String groupId, String subgroupId) async {
+    SharedPreferences sharedPreferences =
+        (await SharedPreferences.getInstance());
+
+    sharedPreferences.setString('userGroup', groupId);
+
     Map<String, dynamic> data = {
       'userId': userId,
       'groupId': groupId,
@@ -88,41 +89,15 @@ class FirestoreRepository
     };
 
     List<QueryDocumentSnapshot> documents =
-    (await FirebaseFirestore.instance.collection('users').get())
-        .docs
-        .where((element) => element.data()!['userId'] == userId)
-        .toList();
+        (await FirebaseFirestore.instance.collection('users').get())
+            .docs
+            .where((element) => element.data()!['userId'] == userId)
+            .toList();
 
     if (documents.isNotEmpty) {
       documents.first.reference.set(data);
     } else {
       await FirebaseFirestore.instance.collection('users').add(data);
-    }
-    Future<Timetable.Group> getGroupById(String groupId) async {
-      return FirebaseFirestore.instance
-          .collection('group')
-          .get()
-          .then((groupListJson) =>
-          groupListJson.docs
-              .map(
-                (groupJson) => Timetable.Group.fromJson(groupJson.data()!),
-          )
-              .firstWhere((group) => group.id == groupId));
-    }
-
-    @override
-    Future<List<Timetable.TimetableItemUpdate>> getTimetableItemUpdates() {
-      return FirebaseFirestore.instance
-          .collection('timetable_item_update')
-          .get()
-          .then((timetableItemUpdateListJson) =>
-          timetableItemUpdateListJson.docs
-              .map(
-                (timetableItemUpdateJson) =>
-                Timetable.TimetableItemUpdate.fromJson(
-                    timetableItemUpdateJson.data()!),
-          )
-              .toList());
     }
   }
 }

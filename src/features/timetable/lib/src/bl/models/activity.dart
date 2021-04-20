@@ -30,7 +30,7 @@ class Activity {
         time: Timeslot.fromJson(json['time']),
       );
 
-  toJson() => <String, dynamic>{
+  Map<String, dynamic> toJson() => <String, dynamic>{
     'id': id,
     'name': name,
     'tutor': tutor.toJson(),

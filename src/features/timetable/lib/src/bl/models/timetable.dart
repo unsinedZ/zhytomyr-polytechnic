@@ -23,7 +23,7 @@ class Timetable {
     );
   }
 
-  toJson() => <String, dynamic>{
+  Map<String, dynamic> toJson() => <String, dynamic>{
     'expiresAt': expiresAt,
     'weekDetermination': weekDetermination == WeekDetermination.Odd ? 0 : 1,
     'items': items.map((item) => item.toJson()).toList(),

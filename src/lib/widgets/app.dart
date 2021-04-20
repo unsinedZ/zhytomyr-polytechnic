@@ -2,19 +2,15 @@ import 'package:flutter/material.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:google_authentication/google_authentication.dart';
-
 import 'package:provider/provider.dart';
 
 import 'package:timetable/timetable.dart' hide TextLocalizer;
-
 import 'package:faculty_list/faculty_list.dart' hide TextLocalizer;
-
 import 'package:group_selection/group_selection.dart' hide TextLocalizer;
-
 import 'package:error_bloc/error_bloc.dart';
 
-import 'package:zhytomyr_polytechnic/bl/firestore_repository.dart';
-import 'package:zhytomyr_polytechnic/bl/repositories/base_timetable_firestore_reposytory.dart';
+import 'package:zhytomyr_polytechnic/bl/repositories/main_firestore_repository.dart';
+import 'package:zhytomyr_polytechnic/bl/repositories/timetable_firestore_repository_factory.dart';
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 import 'package:zhytomyr_polytechnic/widgets/dependencies.dart';
 import 'package:zhytomyr_polytechnic/widgets/screens/authentication_screen.dart';
@@ -99,7 +95,8 @@ class App extends StatelessWidget {
                 errorSink: context.read<ErrorBloc>().errorSink,
               ),
           '/timetable': (context) => TimetableScreen(
-            timetableRepositoryFactory: TimetableFirestoreRepositoryFactory(),
+                timetableRepositoryFactory:
+                    TimetableFirestoreRepositoryFactory(),
                 textLocalizer: TextLocalizer(),
                 errorSink: context.read<ErrorBloc>().errorSink,
                 groupRepository: FirestoreRepository(),

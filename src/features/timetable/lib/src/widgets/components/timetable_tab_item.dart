@@ -25,7 +25,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
 
   bool get isNew => widget.updatableTimetableItem.isNew;
 
-  bool get isUpdated => widget.updatableTimetableItem.isUpdated;
+  bool get isEmpty => widget.updatableTimetableItem.isEmpty;
 
   bool get isCancelled => widget.updatableTimetableItem.isCancelled;
 
@@ -88,10 +88,12 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
                     activity: activityUpdate,
                     textLocalizer: widget.textLocalizer,
                   )
-                : ActivityCard.simple(
-                    activity: mainActivity,
-                    textLocalizer: widget.textLocalizer,
-                  ),
+                : !isEmpty
+                    ? ActivityCard.simple(
+                        activity: mainActivity,
+                        textLocalizer: widget.textLocalizer,
+                      )
+                    : Container(),
       ],
     );
   }

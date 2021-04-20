@@ -72,13 +72,12 @@ class _TimetableScreenState extends State<TimetableScreen> {
       timetableType = timetableFilters.timetableType;
       initialIndex = timetableFilters.weekDayNumber - 1;
     } else {
-      id = (arguments)[1];
+      id = arguments[1];
 
-      if ((arguments)[0] == 'group') {
-        subgroupId = (arguments)[2];
-        timetableType = TimetableType.Group;
-      } else {
-        timetableType = TimetableType.Teacher;
+      timetableType = timetableTypeFromString(arguments[0] as String);
+
+      if (timetableType == TimetableType.Group) {
+        subgroupId = arguments[2];
       }
     }
 
@@ -220,22 +219,21 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
 enum TimetableType { Unspecified, Group, Teacher }
 
-extension EnumParser on TimetableType {
-  TimetableType parse(String value) {
-    final String lowerCaseValue = value.toLowerCase();
-
-    return TimetableType.values.firstWhere(
-        (e) => e.toString().split(".").last.toLowerCase() == lowerCaseValue,
+TimetableType timetableTypeFromString(String value) =>
+    TimetableType.values.firstWhere(
+        (e) =>
+            e.toString().split(".").last.toLowerCase() == value.toLowerCase(),
         orElse: () => TimetableType.Unspecified);
-  }
-}
 
 bool _isSnapshotHasData(
     AsyncSnapshot<List<dynamic>> snapshot, TimetableType timetableType) {
-  if (snapshot.hasData && snapshot.data != null && snapshot.data![0] != null && snapshot.data![2] != null) {
+  if (snapshot.hasData &&
+      snapshot.data != null &&
+      snapshot.data![0] != null &&
+      snapshot.data![2] != null) {
     if (timetableType == TimetableType.Group && snapshot.data![1] != null) {
       return true;
-    } else if (timetableType == TimetableType.Group) {
+    } else if (timetableType == TimetableType.Teacher) {
       return true;
     }
   }

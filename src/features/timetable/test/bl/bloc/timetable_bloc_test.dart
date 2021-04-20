@@ -37,6 +37,6 @@ void main() {
 
     expect(results[0], null);
     expect(results[1]!.weekDetermination, WeekDetermination.Even);
-    expect(results[1]!.items!.length, 0);
+    expect(results[1]!.items.length, 0);
   });
 }

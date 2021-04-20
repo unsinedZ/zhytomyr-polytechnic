@@ -42,9 +42,9 @@ void main() {
     expect(activity.groups[0].id, "id");
     expect(activity.groups[0].name, "Name");
     expect(activity.groups[0].year, 3);
-    expect(activity.groups[0].subgroups!.length, 2);
-    expect(activity.groups[0].subgroups![0].name, 'Name');
-    expect(activity.groups[0].subgroups![0].id, 'id');
+    expect(activity.groups[0].subgroups.length, 2);
+    expect(activity.groups[0].subgroups[0].name, 'Name');
+    expect(activity.groups[0].subgroups[0].id, 'id');
 
     expect(activity.time.start, 'Start');
     expect(activity.time.end, 'End');

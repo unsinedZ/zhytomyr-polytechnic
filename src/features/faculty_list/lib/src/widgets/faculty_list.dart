@@ -59,15 +59,15 @@ class _FacultyListState extends State<FacultyList> {
           style: Theme.of(context).textTheme.headline1,
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: () => _facultyListBloc.loadList(),
-        child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          child: StreamBuilder<List<Faculty>>(
-            stream: _facultyListBloc.faculties,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData) {
-                return Container(
+      body: StreamBuilder<List<Faculty>>(
+        stream: _facultyListBloc.faculties,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            return RefreshIndicator(
+              onRefresh: () => _facultyListBloc.loadList(),
+              child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                child: Container(
                   width: double.infinity,
                   child: Column(
                     children: [
@@ -93,15 +93,13 @@ class _FacultyListState extends State<FacultyList> {
                       ),
                     ],
                   ),
-                );
-              }
+                ),
+              ),
+            );
+          }
 
-              return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Center(child: CircularProgressIndicator())]);
-            },
-          ),
-        ),
+          return Center(child: Center(child: CircularProgressIndicator()));
+        },
       ),
     );
   }

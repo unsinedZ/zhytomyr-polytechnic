@@ -19,7 +19,7 @@ class TimetableItem {
     );
   }
 
-  toJson() => <String, dynamic>{
+  Map<String, dynamic> toJson() => <String, dynamic>{
     'weekNumber': weekNumber,
     'activity': activity.toJson(),
     'dayNumber': dayNumber,

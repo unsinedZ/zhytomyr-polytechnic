@@ -12,7 +12,7 @@ class Timeslot {
         end: json['end'],
       );
 
-  toJson() => <String, dynamic>{
+  Map<String, dynamic> toJson() => <String, dynamic>{
     'start': start,
     'end': end,
   };

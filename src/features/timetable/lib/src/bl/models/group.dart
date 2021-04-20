@@ -37,7 +37,7 @@ class Group {
           .toList(),);
   }
 
-  toJson() => <String, dynamic>{
+  Map<String, dynamic> toJson() => <String, dynamic>{
     'id': id,
     'name': name,
     'year': year,

@@ -13,8 +13,8 @@ void main() {
     expect(group.name, "Name");
     expect(group.facultyId, "facultyId");
     expect(group.year, 3);
-    expect(group.subgroups!.length, 2);
-    expect(group.subgroups![0].name, 'Name');
-    expect(group.subgroups![0].id, 'id');
+    expect(group.subgroups.length, 2);
+    expect(group.subgroups[0].name, 'Name');
+    expect(group.subgroups[0].id, 'id');
   });
 }

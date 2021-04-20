@@ -8,7 +8,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/bl/models/models.dart';
 import 'package:timetable/src/bl/extensions/date_time_extension.dart';
-import 'package:timetable/src/bl/extensions/string_extension.dart';
 import 'package:timetable/src/widgets/components/components.dart';
 import 'package:timetable/src/widgets/timetable_screen.dart';
 
@@ -43,7 +42,7 @@ class TimetableTab extends StatefulWidget {
 
 class _TimetableTabState extends State<TimetableTab> {
   late List<Widget> widgets;
-  late List<TimetableItemUpdate> timetableItemUpdatesWithRightDate;
+  late List<TimetableItemUpdate> timetableItemUpdates;
 
   @override
   void initState() {
@@ -102,14 +101,20 @@ class _TimetableTabState extends State<TimetableTab> {
     );
   }
 
-  TimetableTabItem defaultTimetableTabItem(
-      {required UpdatableTimetableItem updatableTimetableItem,
-      bool isNew = false}) {
-    return TimetableTabItem(
-      textLocalizer: widget.textLocalizer,
-      dateTime: widget.dateTime,
-      updatableTimetableItem: updatableTimetableItem,
-    );
+  bool filterByTimetableType(TimetableItem timetableItem) {
+    if (widget.timetableType == TimetableType.Group) {
+      return timetableItem.activity.groups.any((group) =>
+          group.id == widget.id &&
+          (group.subgroups.length <= 1 ||
+              widget.subgroupId == null ||
+              group.subgroups
+                  .any((subgroup) => subgroup.id == widget.subgroupId)));
+    }
+
+    if (widget.timetableType == TimetableType.Teacher) {
+      return timetableItem.activity.tutor.id == widget.id;
+    }
+    return false;
   }
 
   List<Widget> stateToWidgets() {
@@ -117,71 +122,53 @@ class _TimetableTabState extends State<TimetableTab> {
         .where((timetableItem) =>
             timetableItem.weekNumber == widget.weekNumber &&
             timetableItem.dayNumber == widget.dayOfWeekNumber)
-        .where((timetableItem) {
-      if (widget.timetableType == TimetableType.Group) {
-        return timetableItem.activity.groups.any((group) =>
-            group.id == widget.id &&
-            (group.subgroups.length <= 1 ||
-                widget.subgroupId == null ||
-                group.subgroups
-                    .any((subgroup) => subgroup.id == widget.subgroupId)));
-      }
+        .where((timetableItem) => filterByTimetableType(timetableItem))
+        .toList();
 
-      if (widget.timetableType == TimetableType.Teacher) {
-        return timetableItem.activity.tutor.id == widget.id;
-      }
-      return false;
-    }).toList();
-
-    timetableItemUpdatesWithRightDate =
+    timetableItemUpdates =
         widget.timetableItemUpdates.where((timetableItemUpdate) {
       DateTime dateTime =
           DateTime.parse(timetableItemUpdate.date.replaceAll('/', '-'));
 
       if (widget.dateTime.asDate().isAtSameMomentAs(dateTime)) {
-        return true;
+        if (timetableItemUpdate.timetableItem == null ||
+            filterByTimetableType(timetableItemUpdate.timetableItem!)) {
+          return true;
+        }
       }
       return false;
     }).toList();
 
-    List<TimetableTabItem> activityTabItems = timetableItems
-        .map((timetableItem) => defaultTimetableTabItem(
-              updatableTimetableItem: createUpdatableItem(
-                  timetableItemUpdates: timetableItemUpdatesWithRightDate,
-                  timetableItem: timetableItem),
-            ))
+    List<UpdatableTimetableItem> updatableTimetableItems = timetableItems
+        .map(
+          (timetableItem) => createUpdatableItem(
+              timetableItemUpdates: timetableItemUpdates,
+              timetableItem: timetableItem),
+        )
         .toList();
 
-    List<TimetableTabItem> newActivityTabItems =
-        timetableItemUpdatesWithRightDate
+    List<UpdatableTimetableItem> newUpdatableTimetableItems =
+        timetableItemUpdates
             .where((timetableItemUpdate) => timetableItems.every(
                 (timetableItem) =>
                     timetableItem.activity.time.start !=
                         timetableItemUpdate.time &&
                     timetableItemUpdate.timetableItem != null))
-            .map((timetableItemUpdate) => defaultTimetableTabItem(
-                updatableTimetableItem: createUpdatableItem(
-                    timetableItemUpdates: [],
-                    timetableItemUpdate: timetableItemUpdate),
-                isNew: true))
+            .map((timetableItemUpdate) => createUpdatableItem(
+                timetableItemUpdates: [],
+                timetableItemUpdate: timetableItemUpdate))
             .toList();
 
-    activityTabItems.addAll(newActivityTabItems);
+    updatableTimetableItems.addAll(newUpdatableTimetableItems);
 
-    activityTabItems.sort((a, b) {
-      Activity aActivity = a.updatableTimetableItem.timetableItem != null
-          ? a.updatableTimetableItem.timetableItem!.activity
-          : a.updatableTimetableItem.timetableItemUpdate!.timetableItem!
-              .activity;
-      Activity bActivity = b.updatableTimetableItem.timetableItem != null
-          ? b.updatableTimetableItem.timetableItem!.activity
-          : b.updatableTimetableItem.timetableItemUpdate!.timetableItem!
-              .activity;
+    updatableTimetableItems.sort((a, b) => a.compareTo(b));
 
-      return aActivity.time.start.compareAsTimeTo(bActivity.time.start);
-    });
-
-    return activityTabItems
+    return updatableTimetableItems
+        .map((updatableTimetableItem) => TimetableTabItem(
+              updatableTimetableItem: updatableTimetableItem,
+              textLocalizer: widget.textLocalizer,
+              dateTime: widget.dateTime,
+            ))
         .expand((element) => [
               Divider(
                 height: 1,
