@@ -31,6 +31,8 @@ dependencies:
   push_notification:
     path: ./features/push_notification
   easy_localization: ^3.0.0
+  user_sync:
+    path: ./features/user_sync
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,5 @@
-name: push_notification
-description: Notifications via firebase messaging
+name: user_sync
+description: User synchronization package
 version: 0.0.1
 author: Softwine
 publish_to: none
@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_messaging: ^9.1.1
+  flutter_secure_storage: ^4.1.0
   rxdart: ^0.26.0
 
 dev_dependencies:

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-
-import 'package:google_authentication/google_authentication.dart';
-
-import 'package:error_bloc/error_bloc.dart';
-import 'package:push_notification/push_notification.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:google_authentication/google_authentication.dart';
+import 'package:error_bloc/error_bloc.dart';
+import 'package:push_notification/push_notification.dart';
+import 'package:user_sync/user_sync.dart' hide User;
+
+import 'package:zhytomyr_polytechnic/bl/firestore_repository.dart';
 
 class Dependencies extends StatelessWidget {
   final Widget child;
@@ -20,13 +22,19 @@ class Dependencies extends StatelessWidget {
   Widget build(BuildContext context) => MultiProvider(
         providers: [
           Provider<ErrorBloc>(create: getErrorBloc),
-          Provider<PushNotificationBloc>(create: getPushNotifications),
         ],
         child: MultiProvider(
           providers: [
-            Provider<AuthenticationBloc>(create: getUserBloc),
+            Provider<PushNotificationBloc>(create: getNotificationBloc)
           ],
-          child: child,
+          child: MultiProvider(
+            providers: [
+              Provider<UserSyncBloc>(create: getUserSyncBloc),
+            ],
+            child: MultiProvider(providers: [
+              Provider<AuthenticationBloc>(create: getUserBloc),
+            ], child: child),
+          ),
         ),
       );
 
@@ -43,8 +51,18 @@ class Dependencies extends StatelessWidget {
     });
 
   AuthenticationBloc getUserBloc(BuildContext context) =>
-      AuthenticationBloc(errorSink: context.read<ErrorBloc>().errorSink);
+      AuthenticationBloc(errorSink: context.read<ErrorBloc>().errorSink)
+        ..user
+            .where((user) => user != null)
+            .listen((user) => context.read<UserSyncBloc>().setData(user!.uid));
 
-  PushNotificationBloc getPushNotifications(BuildContext context) =>
+  UserSyncBloc getUserSyncBloc(BuildContext context) =>
+      UserSyncBloc(repository: FirestoreRepository())
+        ..loadUser()
+        ..mappedUser
+            .map((user) => user.toJson())
+            .listen(context.read<PushNotificationBloc>().subscribeToNew);
+
+  PushNotificationBloc getNotificationBloc(BuildContext context) =>
       PushNotificationBloc();
 }
