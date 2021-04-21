@@ -98,7 +98,7 @@ class _FacultyListState extends State<FacultyList> {
             );
           }
 
-          return Center(child: Center(child: CircularProgressIndicator()));
+          return Center(child: CircularProgressIndicator());
         },
       ),
     );

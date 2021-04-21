@@ -28,20 +28,22 @@ class Group {
   }
 
   factory Group.fromObject(dynamic object) {
-    return Group(id: object.id as String,
+    return Group(
+      id: object.id as String,
       name: object.name as String,
       year: object.year as int,
       facultyId: object.facultyId as String,
       subgroups: (object.subgroups as List<dynamic>)
           .map((subgroup) => Subgroup.fromObject(subgroup))
-          .toList(),);
+          .toList(),
+    );
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    'id': id,
-    'name': name,
-    'year': year,
-    'facultyId': facultyId,
-    'subgroups': subgroups.map((subgroup) => subgroup.toJson()).toList(),
-  };
+        'id': id,
+        'name': name,
+        'year': year,
+        'facultyId': facultyId,
+        'subgroups': subgroups.map((subgroup) => subgroup.toJson()).toList(),
+      };
 }
