@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:timetable/src/bl/abstractions/timetable_repository.dart';
+import 'package:timetable/src/bl/abstractions/group_repository.dart';
 import 'package:timetable/src/bl/models/models.dart';
 
 class TimetableBloc {
   final TimetableRepository timetableRepository;
+  final GroupRepository groupRepository;
   final StreamSink<String> errorSink;
 
   final StreamController<Timetable?> _timetableController =
@@ -16,6 +18,7 @@ class TimetableBloc {
 
   TimetableBloc({
     required this.timetableRepository,
+    required this.groupRepository,
     required this.errorSink,
   });
 
@@ -26,11 +29,11 @@ class TimetableBloc {
   Stream<List<TimetableItemUpdate>?> get timetableItemUpdates =>
       _timetableItemUpdatesController.stream;
 
-  void loadTimetable() {
+  void loadTimetable(String id) {
     _timetableController.add(null);
 
     timetableRepository
-        .loadTimetable()
+        .loadTimetableByReferenceId(id)
         .then((timetable) => _timetableController.add(timetable))
         .onError((error, _) => errorSink.add(error.toString()));
   }
@@ -38,7 +41,7 @@ class TimetableBloc {
   void loadGroup(String groupId) {
     _groupController.add(null);
 
-    timetableRepository
+    groupRepository
         .getGroupById(groupId)
         .then((group) => _groupController.add(group))
         .onError((error, _) => errorSink.add(error.toString()));
@@ -50,7 +53,7 @@ class TimetableBloc {
     timetableRepository
         .getTimetableItemUpdates()
         .then((timetableItemUpdates) =>
-        _timetableItemUpdatesController.add(timetableItemUpdates))
+            _timetableItemUpdatesController.add(timetableItemUpdates))
         .onError((error, _) => errorSink.add(error.toString()));
   }
 

@@ -9,17 +9,21 @@ import 'package:rxdart/rxdart.dart';
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/widgets/components/components.dart';
 import 'package:timetable/src/bl/bloc/timetable_bloc.dart';
-import 'package:timetable/src/bl/abstractions/timetable_repository.dart';
+import 'package:timetable/src/bl/abstractions/group_repository.dart';
 import 'package:timetable/src/bl/models/models.dart';
+import 'package:timetable/src/widgets/components/filters_bottom_sheet.dart';
+import 'package:timetable/timetable.dart';
 
 class TimetableScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
-  final TimetableRepository timetableLoader;
+  final TimetableRepositoryFactory timetableRepositoryFactory;
+  final GroupRepository groupRepository;
   final StreamSink<String> errorSink;
 
   TimetableScreen({
     required this.textLocalizer,
-    required this.timetableLoader,
+    required this.timetableRepositoryFactory,
+    required this.groupRepository,
     required this.errorSink,
   });
 
@@ -45,19 +49,11 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   void initState() {
-    timetableBloc = TimetableBloc(
-      timetableRepository: widget.timetableLoader,
-      errorSink: widget.errorSink,
-    );
-
     if (indexDayDateTime.hour >= 18) {
       isNextDay = true;
       initialIndex = (initialIndex + 1) % 6;
       indexDayDateTime = indexDayDateTime.add(Duration(days: 1));
     }
-
-    timetableBloc.loadTimetable();
-    timetableBloc.loadTimetableItemUpdates();
 
     weekNumber = _calculateWeekNumber();
 
@@ -76,15 +72,25 @@ class _TimetableScreenState extends State<TimetableScreen> {
       timetableType = timetableFilters.timetableType;
       initialIndex = timetableFilters.weekDayNumber - 1;
     } else {
-      id = (arguments)[1];
+      id = arguments[1];
 
-      if ((arguments)[0] == 'group') {
-        subgroupId = (arguments)[2];
-        timetableType = TimetableType.Group;
-      } else {
-        timetableType = TimetableType.Teacher;
+      timetableType = timetableTypeFromString(arguments[0] as String);
+
+      if (timetableType == TimetableType.Group) {
+        subgroupId = arguments[2];
       }
     }
+
+    timetableBloc = TimetableBloc(
+      timetableRepository: widget.timetableRepositoryFactory
+          .getTimetableRepository(timetableType),
+      errorSink: widget.errorSink,
+      groupRepository: widget.groupRepository,
+    );
+
+    timetableBloc.loadTimetableItemUpdates();
+
+    timetableBloc.loadTimetable(id);
 
     if (timetableType == TimetableType.Group) {
       timetableBloc.loadGroup(id);
@@ -211,14 +217,23 @@ class _TimetableScreenState extends State<TimetableScreen> {
   }
 }
 
-enum TimetableType { Group, Teacher }
+enum TimetableType { Unspecified, Group, Teacher }
+
+TimetableType timetableTypeFromString(String value) =>
+    TimetableType.values.firstWhere(
+        (e) =>
+            e.toString().split(".").last.toLowerCase() == value.toLowerCase(),
+        orElse: () => TimetableType.Unspecified);
 
 bool _isSnapshotHasData(
     AsyncSnapshot<List<dynamic>> snapshot, TimetableType timetableType) {
-  if (snapshot.hasData && snapshot.data != null && snapshot.data![0] != null && snapshot.data![2] != null) {
+  if (snapshot.hasData &&
+      snapshot.data != null &&
+      snapshot.data![0] != null &&
+      snapshot.data![2] != null) {
     if (timetableType == TimetableType.Group && snapshot.data![1] != null) {
       return true;
-    } else if (timetableType == TimetableType.Group) {
+    } else if (timetableType == TimetableType.Teacher) {
       return true;
     }
   }

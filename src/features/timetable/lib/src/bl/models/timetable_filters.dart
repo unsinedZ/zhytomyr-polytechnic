@@ -19,9 +19,7 @@ class TimetableFilters {
     return TimetableFilters(
       weekNumber: json['weekNumber'] as int,
       weekDayNumber: json['weekDayNumber'] as int,
-      timetableType: json['timetableType'] == 'group'
-          ? TimetableType.Group
-          : TimetableType.Teacher,
+      timetableType: timetableTypeFromString(json['timetableType'] as String),
       id: json['id'] as String,
       subgroupId: json['weekDayNumber'] as String?,
     );
