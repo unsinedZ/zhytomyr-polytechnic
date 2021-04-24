@@ -58,24 +58,22 @@ class FirestoreRepository
   }
 
   @override
-  Future<Map<String, dynamic>?> changeUserInfo(
-          String userId, Map<String, dynamic> data) =>
-      FirebaseFirestore.instance.runTransaction((transaction) async {
-        final snapshot = await FirebaseFirestore.instance
-            .collection("users")
-            .where("userId", isEqualTo: userId)
-            .get();
-        transaction.update(snapshot.docs.first.reference, data);
-        return (await FirebaseFirestore.instance
-            .collection("users")
-            .where("userId", isEqualTo: userId)
-            .get()).docs.first.data();
-      });
+  Future<void> changeUserInfo(
+          String userId, Map<String, dynamic> data) async =>
+      (await FirebaseFirestore.instance
+              .collection("users")
+              .where("userId", isEqualTo: userId)
+              .get())
+          .docs
+          .first.reference.update(data);
 
   @override
   Future<Map<String, dynamic>?> getUserInfo(String userId) async =>
       (await FirebaseFirestore.instance
-          .collection("users")
-          .where("userId", isEqualTo: userId)
-          .get()).docs.first.data();
+              .collection("users")
+              .where("userId", isEqualTo: userId)
+              .get())
+          .docs
+          .first
+          .data();
 }

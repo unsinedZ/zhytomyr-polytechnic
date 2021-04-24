@@ -2,12 +2,16 @@ class User {
   final String userId;
   final Map<String, dynamic> data;
 
-  User({this.userId = "", this.data = const {}});
+  User({required this.userId, required this.data});
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-      userId: json["userId"],
-      data: Map.fromIterable(
-      json.keys.where((k) => k !='userId'), key: (k) => k, value: (k) => json[k]));
+        userId: json["userId"],
+        data: Map.fromIterable(json.keys.where((k) => k != 'userId'),
+            key: (k) => k, value: (k) => json[k]),
+      );
+
+  factory User.fromStorage(Map<String, dynamic> json) =>
+      User(userId: json["userId"], data: json["data"]);
 
   Map<String, dynamic> toJson() => {
         'userId': userId,

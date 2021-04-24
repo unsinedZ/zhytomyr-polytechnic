@@ -32,7 +32,7 @@ class Dependencies extends StatelessWidget {
               Provider<UserSyncBloc>(create: getUserSyncBloc),
             ],
             child: MultiProvider(providers: [
-              Provider<AuthenticationBloc>(create: getUserBloc),
+              Provider<AuthenticationBloc>(create: getAuthenticationBloc),
             ], child: child),
           ),
         ),
@@ -50,7 +50,7 @@ class Dependencies extends StatelessWidget {
           fontSize: 16.0);
     });
 
-  AuthenticationBloc getUserBloc(BuildContext context) =>
+  AuthenticationBloc getAuthenticationBloc(BuildContext context) =>
       AuthenticationBloc(errorSink: context.read<ErrorBloc>().errorSink)
         ..user
             .where((user) => user != null)
@@ -60,7 +60,8 @@ class Dependencies extends StatelessWidget {
       UserSyncBloc(repository: FirestoreRepository())
         ..loadUser()
         ..mappedUser
-            .map((user) => user.toJson())
+            .where((user)=> !user!.isEmpty)
+            .map((user) => user!.toJson())
             .listen(context.read<PushNotificationBloc>().subscribeToNew);
 
   PushNotificationBloc getNotificationBloc(BuildContext context) =>
