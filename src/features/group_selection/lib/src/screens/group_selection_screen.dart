@@ -244,8 +244,8 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                   : () {
                       if (isMyGroup) {
                         widget.subscribeCallback({
-                          "group": group!.id,
-                          "subgroup": subgroup == null ? "" : subgroup!.id
+                          "groupId": group!.id,
+                          "subgroupId": subgroup == null ? "" : subgroup!.id
                         });
                       }
                       Navigator.pushNamed(context, '/timetable', arguments: [

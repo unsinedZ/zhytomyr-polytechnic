@@ -10,12 +10,15 @@ import 'package:user_sync/src/models/user.dart';
 class UserSyncBloc {
   final FlutterSecureStorage storage;
   final UserRepository repository;
-  StreamController<User?> _mappedUserController = StreamController.broadcast();
+  final StreamSink<String> errorSink;
+
+  BehaviorSubject<User?> _mappedUserController = BehaviorSubject();
   Stream<User?> get mappedUser => _mappedUserController.stream;
 
   UserSyncBloc({
     this.storage = const FlutterSecureStorage(),
     required this.repository,
+    required this.errorSink,
   });
 
   void loadUser() => getUserFromStorage()
@@ -39,18 +42,18 @@ class UserSyncBloc {
       .doOnData(_mappedUserController.add)
       .asyncMap((user) =>
           storage.write(key: "user", value: jsonEncode(user.toJson())))
+      .doOnError((error, _) => errorSink.add(error.toString()))
       .toList();
 
   void updateUserData(Map<String, dynamic> data) => mappedUser
-          .switchMap((user) => Stream.empty()
-              .asyncMap((_) => repository.changeUserInfo(user!.userId, data))
-              .asyncMap((_) => repository.getUserInfo(user!.userId)))
-          .map((userJson) => User.fromJson(userJson!))
-          .doOnData(_mappedUserController.add)
-          .asyncMap((user) =>
-              storage.write(key: "user", value: jsonEncode(user.toJson())))
-          .doOnError((error, stack) {
-        print(error);
-        print(stack);
-      }).toList();
+      .take(1)
+      .map((user) => User(data: data, userId: user!.userId))
+      .switchMap((dataNew) => Stream.value(null)
+          .asyncMap(
+              (_) => repository.changeUserInfo(dataNew.userId, dataNew.data))
+          .doOnData((_) => _mappedUserController.add(dataNew))
+          .asyncMap((_) =>
+              storage.write(key: "user", value: jsonEncode(dataNew.toJson()))))
+      .doOnError((error, _) => errorSink.add(error.toString()))
+      .toList();
 }

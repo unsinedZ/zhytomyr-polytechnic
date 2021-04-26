@@ -5,5 +5,5 @@ admin.initializeApp({});
 
 exports.api = auth.user().onCreate((user) => {
   const users = admin.firestore().collection("users");
-  users.add({userId: user.uid, groupId: "0", subgroupId: "0"});
+  users.add({userId: user.uid, groupId: "", subgroupId: ""});
 });

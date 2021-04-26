@@ -1,14 +1,14 @@
 class Group {
-  final String group;
-  final String subgroup;
+  final String groupId;
+  final String subgroupId;
 
-  Group({required this.group, required this.subgroup});
+  Group({required this.groupId, required this.subgroupId});
 
   factory Group.fromJson(Map<String, dynamic> json) => Group(
-        group: json['group'],
-        subgroup: json['subgroup'],
+        groupId: json['groupId'],
+        subgroupId: json['subgroupId'],
       );
 
   String get toTopic =>
-      "group.{$group}" + (subgroup.isNotEmpty ? ".{$subgroup}" : "");
+      "group." + groupId + (subgroupId.isNotEmpty ? "." + subgroupId : "");
 }

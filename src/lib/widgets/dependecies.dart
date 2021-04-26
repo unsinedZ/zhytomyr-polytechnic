@@ -57,13 +57,13 @@ class Dependencies extends StatelessWidget {
             .listen((user) => context.read<UserSyncBloc>().setData(user!.uid));
 
   UserSyncBloc getUserSyncBloc(BuildContext context) =>
-      UserSyncBloc(repository: FirestoreRepository())
+      UserSyncBloc(errorSink: context.read<ErrorBloc>().errorSink, repository: FirestoreRepository())
         ..loadUser()
         ..mappedUser
-            .where((user)=> !user!.isEmpty)
-            .map((user) => user!.toJson())
+            .where((user) => user != null && !user.isEmpty)
+            .map((user) => user!.data)
             .listen(context.read<PushNotificationBloc>().subscribeToNew);
 
   PushNotificationBloc getNotificationBloc(BuildContext context) =>
-      PushNotificationBloc();
+      PushNotificationBloc(errorSink: context.read<ErrorBloc>().errorSink);
 }
