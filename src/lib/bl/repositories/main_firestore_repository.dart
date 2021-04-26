@@ -1,18 +1,21 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'package:faculty_list/faculty_list.dart';
-
-import 'package:group_selection/group_selection.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:faculty_list/faculty_list.dart';
+import 'package:group_selection/group_selection.dart';
+import 'package:contacts/contacts.dart';
 import 'package:timetable/timetable.dart' as Timetable;
+
 import 'package:zhytomyr_polytechnic/bl/models/expirable.dart';
 
 class FirestoreRepository
-    implements FacultyRepository, GroupsRepository, Timetable.GroupRepository {
+    implements
+        FacultyRepository,
+        GroupsRepository,
+        Timetable.GroupRepository,
+        ContactsRepository {
   @override
   Stream<List<Faculty>> getFaculties() =>
       FirebaseFirestore.instance.collection('faculty').get().asStream().map(
@@ -99,5 +102,16 @@ class FirestoreRepository
     } else {
       await FirebaseFirestore.instance.collection('users').add(data);
     }
+  }
+
+  @override
+  Future<ContactsData> loadContactsData() async {
+    ContactsData contactsData = ContactsData.fromJson(
+        (await FirebaseFirestore.instance.collection('contacts').get())
+            .docs
+            .first
+            .data()!);
+
+    return contactsData;
   }
 }

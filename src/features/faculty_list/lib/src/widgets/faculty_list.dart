@@ -10,15 +10,15 @@ import 'package:faculty_list/src/widgets/components/faculty_icon.dart';
 
 class FacultyList extends StatefulWidget {
   final FacultyRepository facultyRepository;
-  final VoidCallback sidebarAction;
   final TextLocalizer textLocalizer;
   final StreamSink<String> errorSink;
+  final Widget drawer;
 
   FacultyList({
     required this.facultyRepository,
-    required this.sidebarAction,
     required this.textLocalizer,
     required this.errorSink,
+    required this.drawer,
   });
 
   _FacultyListState createState() => _FacultyListState();
@@ -47,18 +47,12 @@ class _FacultyListState extends State<FacultyList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Container(
-          decoration: BoxDecoration(shape: BoxShape.circle),
-          child: InkWell(
-            onTap: widget.sidebarAction,
-            child: Icon(Icons.menu),
-          ),
-        ),
         title: Text(
           widget.textLocalizer.localize("Faculty List"),
           style: Theme.of(context).textTheme.headline1,
         ),
       ),
+      drawer: widget.drawer,
       body: StreamBuilder<List<Faculty>>(
         stream: _facultyListBloc.faculties,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -97,7 +91,6 @@ class _FacultyListState extends State<FacultyList> {
               ),
             );
           }
-
           return Center(child: CircularProgressIndicator());
         },
       ),

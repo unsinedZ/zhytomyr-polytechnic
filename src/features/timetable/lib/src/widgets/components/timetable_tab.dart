@@ -164,6 +164,7 @@ class _TimetableTabState extends State<TimetableTab> {
     updatableTimetableItems.sort((a, b) => a.compareTo(b));
 
     return updatableTimetableItems
+        .where((updatableTimetableItem) => !updatableTimetableItem.isEmpty)
         .map((updatableTimetableItem) => TimetableTabItem(
               updatableTimetableItem: updatableTimetableItem,
               textLocalizer: widget.textLocalizer,

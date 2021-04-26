@@ -88,12 +88,10 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
                     activity: activityUpdate,
                     textLocalizer: widget.textLocalizer,
                   )
-                : !isEmpty
-                    ? ActivityCard.simple(
+                : ActivityCard.simple(
                         activity: mainActivity,
                         textLocalizer: widget.textLocalizer,
-                      )
-                    : Container(),
+                      ),
       ],
     );
   }
