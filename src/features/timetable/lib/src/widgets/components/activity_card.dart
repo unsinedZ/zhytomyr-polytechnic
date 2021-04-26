@@ -129,7 +129,7 @@ class ActivityCard extends StatelessWidget {
       case _ActivityCardType.Added:
         return Theme.of(context).selectedRowColor;
       case _ActivityCardType.Current:
-        return Theme.of(context).highlightColor;
+        return Theme.of(context).hoverColor;
     }
   }
 }
