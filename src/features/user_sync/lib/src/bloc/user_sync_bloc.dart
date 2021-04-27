@@ -28,7 +28,7 @@ class UserSyncBloc {
           _mappedUserController.add(null);
         }
       })
-      .where((userJson) => userJson!.isNotEmpty)
+      .where((userJson) => userJson != null && userJson.isNotEmpty)
       .map((userJson) => jsonDecode(userJson!))
       .map((userJson) => User.fromStorage(userJson))
       .doOnError((error, _) => errorSink.add(error.toString()))
@@ -58,4 +58,8 @@ class UserSyncBloc {
               storage.write(key: "user", value: jsonEncode(dataNew.toJson()))))
       .doOnError((error, _) => errorSink.add(error.toString()))
       .toList();
+
+  void cleanData() =>
+      storage.delete(key: "user").then((_) => _mappedUserController.add(null));
+      
 }
