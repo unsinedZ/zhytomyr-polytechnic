@@ -6,20 +6,21 @@ import 'package:rxdart/rxdart.dart';
 import 'package:logger/logger.dart';
 
 class AuthenticationBloc {
-  var logger = Logger(
-    printer: PrettyPrinter(),
-  );
-
   final StreamSink<String> errorSink;
 
   AuthenticationBloc({
     required this.errorSink,
   });
 
+  var _logger = Logger(
+    printer: PrettyPrinter(),
+  );
+
   final BehaviorSubject<User?> _userController = BehaviorSubject();
   final BehaviorSubject<bool> _isLoginNowController = BehaviorSubject();
 
   Stream<User?> get user => _userController.stream;
+
   Stream<bool> get isLoginNow => _isLoginNowController.stream;
 
   void loadUser() async {
@@ -52,8 +53,8 @@ class AuthenticationBloc {
       User? user =
           (await FirebaseAuth.instance.signInWithCredential(credential)).user;
 
-      logger.d('Signed in Google user');
-      logger.d(user);
+      _logger.d('Signed in Google user');
+      _logger.d(user);
 
       _userController.add(user);
     } catch (err) {
