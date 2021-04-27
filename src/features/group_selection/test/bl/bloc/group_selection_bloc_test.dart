@@ -7,7 +7,7 @@ import 'package:group_selection/src/bl/models/models.dart';
 
 import 'package:mockito/mockito.dart';
 
-class GroupsLoaderMock extends Mock implements GroupsRepository {
+class GroupsRepositoryMock extends Mock implements GroupsRepository {
   @override
   Future<List<Group>> getGroups(int? course, String? facultyId) =>
       super.noSuchMethod(Invocation.method(#getGroups, [course, facultyId]),
@@ -16,15 +16,16 @@ class GroupsLoaderMock extends Mock implements GroupsRepository {
 
 void main() {
   test('GroupSelectionBloc.getGroups work correctly', () async {
-    GroupsLoaderMock groupsLoaderMock = GroupsLoaderMock();
+    GroupsRepositoryMock groupsRepositoryMock = GroupsRepositoryMock();
 
-    GroupSelectionBloc groupSelectionBloc =
-        GroupSelectionBloc(groupsLoader: groupsLoaderMock, errorSink: StreamController<String>().sink);
+    GroupSelectionBloc groupSelectionBloc = GroupSelectionBloc(
+        groupsLoader: groupsRepositoryMock,
+        errorSink: StreamController<String>().sink);
 
-    when(groupsLoaderMock.getGroups(any, any))
+    when(groupsRepositoryMock.getGroups(any, any))
         .thenAnswer((_) => Future.value(<Group>[
               Group(name: 'SomeName', facultyId: '', id: '', year: 2),
-              Group(name: 'SomeName1', facultyId: '', year: 3, id: '')
+              Group(name: 'SomeName1', facultyId: '', id: '', year: 3),
             ]));
 
     List<List<Group>?> results = <List<Group>?>[];
@@ -37,6 +38,13 @@ void main() {
     expect(results[0], null);
     expect(results[1]!.length, 2);
     expect(results[1]![0].name, 'SomeName');
+    expect(results[1]![0].facultyId, '');
+    expect(results[1]![0].id, '');
+    expect(results[1]![0].year, 2);
+
     expect(results[1]![1].name, 'SomeName1');
+    expect(results[1]![1].facultyId, '');
+    expect(results[1]![1].id, '');
+    expect(results[1]![1].year, 3);
   });
 }

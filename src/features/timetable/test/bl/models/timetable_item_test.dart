@@ -7,7 +7,7 @@ import 'package:timetable/src/bl/models/models.dart';
 void main() {
   test('TimetableItem.fromJson work correctly', () {
     final TimetableItem timetableItem = TimetableItem.fromJson(jsonDecode(
-        '{"weekNumber" : 5, "activity" : {'
+        '{"weekNumber" : 5, "dayNumber" : 5, "activity" : {'
             '"id" : "id", '
             '"name" : "Name", '
             '"tutor" : {"id" : "id", "name" : "Name", "imageUrl" : "imageUrl"}, '
@@ -32,5 +32,6 @@ void main() {
             '}}'));
 
     expect(timetableItem.weekNumber, 5);
+    expect(timetableItem.dayNumber, 5);
   });
 }

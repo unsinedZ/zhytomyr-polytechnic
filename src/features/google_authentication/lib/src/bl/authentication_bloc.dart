@@ -6,6 +6,10 @@ import 'package:rxdart/rxdart.dart';
 import 'package:logger/logger.dart';
 
 class AuthenticationBloc {
+  var logger = Logger(
+    printer: PrettyPrinter(),
+  );
+
   final StreamSink<String> errorSink;
 
   AuthenticationBloc({
@@ -13,29 +17,27 @@ class AuthenticationBloc {
   });
 
   final BehaviorSubject<User?> _userController = BehaviorSubject();
-  var logger = Logger(
-    printer: PrettyPrinter(),
-  );
+  final BehaviorSubject<bool> _isLoginNowController = BehaviorSubject();
 
   Stream<User?> get user => _userController.stream;
+  Stream<bool> get isLoginNow => _isLoginNowController.stream;
 
   void loadUser() async {
     try {
-      _userController.add(null);
-
+      _isLoginNowController.add(true);
       if (await GoogleSignIn().isSignedIn()) {
         _userController.add(FirebaseAuth.instance.currentUser);
       }
     } catch (err) {
-      _userController.add(null);
       errorSink.add(err.toString());
+    } finally {
+      _isLoginNowController.add(false);
     }
   }
 
   Future<void> login() async {
-    _userController.add(null);
-
     try {
+      _isLoginNowController.add(true);
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
       final GoogleSignInAuthentication googleAuth =
@@ -56,6 +58,8 @@ class AuthenticationBloc {
     } catch (err) {
       errorSink.add(err.toString());
       _userController.add(null);
+    } finally {
+      _isLoginNowController.add(false);
     }
   }
 
@@ -68,5 +72,6 @@ class AuthenticationBloc {
 
   void dispose() {
     _userController.close();
+    _isLoginNowController.close();
   }
 }

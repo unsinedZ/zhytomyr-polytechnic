@@ -1,15 +1,19 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:google_authentication/src/bl/authentication_bloc.dart';
 
 class GoogleSignInButton extends StatefulWidget {
-  final Function(User)? authorizationCallback;
-  final AuthenticationBloc userBloc;
+  final Function(User) authorizationCallback;
+  final AuthenticationBloc authenticationBloc;
 
-  GoogleSignInButton({this.authorizationCallback, required this.userBloc})
-      : super();
+  GoogleSignInButton({
+    required this.authorizationCallback,
+    required this.authenticationBloc,
+  }) : super();
 
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
@@ -20,11 +24,11 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
   @override
   void initState() {
-    widget.userBloc.loadUser();
+    widget.authenticationBloc.loadUser();
 
-    _userSubscription = widget.userBloc.user.listen((user) {
+    _userSubscription = widget.authenticationBloc.user.listen((user) {
       if (user != null) {
-        widget.authorizationCallback!(user);
+        widget.authorizationCallback(user);
       }
     });
 
@@ -45,7 +49,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
           ),
         ),
         onPressed: () async {
-          widget.userBloc.login();
+          widget.authenticationBloc.login();
         },
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),

@@ -6,7 +6,15 @@ import 'package:group_selection/src/bl/models/models.dart';
 void main() {
   test('Group.fromJson work correctly', () {
     final Group group = Group.fromJson(jsonDecode(
-        '{"id" : "id", "facultyId" : "facultyId", "name" : "Name", "year" : 3, "subgroups" : [{"id" : "id", "name" : "Name"}, {"id" : "id", "name" : "Name"}]}'));
+        '{'
+          '"id" : "id", '
+          '"facultyId" : "facultyId", '
+          '"name" : "Name", "year" : 3, '
+          '"subgroups" : ['
+            '{"id" : "id", "name" : "Name"}, '
+            '{"id" : "id", "name" : "Name"}'
+          ']'
+        '}'));
 
     expect(group.id, "id");
     expect(group.name, "Name");

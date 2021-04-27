@@ -12,7 +12,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  mockito: ^5.0.3
+  mockito: ^5.0.5
 
 dev_dependencies:
   flutter_test:

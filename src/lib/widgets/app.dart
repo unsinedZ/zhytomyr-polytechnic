@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:google_authentication/google_authentication.dart';
 import 'package:provider/provider.dart';
 
+import 'package:google_authentication/google_authentication.dart';
 import 'package:terms_and_conditions/terms_and_conditions.dart';
 import 'package:timetable/timetable.dart' hide TextLocalizer;
 import 'package:faculty_list/faculty_list.dart' hide TextLocalizer;
@@ -15,6 +15,7 @@ import 'package:error_bloc/error_bloc.dart';
 import 'package:zhytomyr_polytechnic/bl/repositories/main_firestore_repository.dart';
 import 'package:zhytomyr_polytechnic/bl/repositories/timetable_firestore_repository_factory.dart';
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
+import 'package:zhytomyr_polytechnic/widgets/components/verify_authentication.dart';
 import 'package:zhytomyr_polytechnic/widgets/dependencies.dart';
 import 'package:zhytomyr_polytechnic/widgets/screens/authentication_screen.dart';
 
@@ -87,14 +88,17 @@ class App extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           '/authentication': (context) => AuthenticationScreen(),
           '/terms&conditions': (context) => TermsAndConditionsScreen(),
-          '/faculties': (context) => FacultyList(
-                facultyRepository: FirestoreRepository(),
-                textLocalizer: TextLocalizer(),
-                errorSink: context.read<ErrorBloc>().errorSink,
-                drawer: NavigationDrawer(
+          '/faculties': (context) => VerifyAuthentication(
+            child: FacultyList(
+                  facultyRepository: FirestoreRepository(),
                   textLocalizer: TextLocalizer(),
+                  errorSink: context.read<ErrorBloc>().errorSink,
+                  drawer: NavigationDrawer(
+                    onSignOut: context.read<AuthenticationBloc>().logout,
+                    textLocalizer: TextLocalizer(),
+                  ),
                 ),
-              ),
+          ),
           '/group': (context) => GroupSelectionScreen(
                 userIdStream: context
                     .read<AuthenticationBloc>()
