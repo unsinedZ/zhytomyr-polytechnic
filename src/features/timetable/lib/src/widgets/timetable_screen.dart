@@ -65,7 +65,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
     Object? arguments = ModalRoute.of(context)!.settings.arguments;
 
     if ((arguments as List<dynamic>).length > 3) {
-      TimetableFilters timetableFilters = arguments[3];
+      TimetableFilters timetableFilters = TimetableFilters.fromJson(arguments[3]);
       weekNumber = timetableFilters.weekNumber;
       id = timetableFilters.id;
       subgroupId = timetableFilters.subgroupId;

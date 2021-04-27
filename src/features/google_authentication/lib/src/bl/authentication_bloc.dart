@@ -12,31 +12,35 @@ class AuthenticationBloc {
     required this.errorSink,
   });
 
-  final BehaviorSubject<User?> _userController = BehaviorSubject();
-  var logger = Logger(
+  var _logger = Logger(
     printer: PrettyPrinter(),
   );
 
+  final BehaviorSubject<User?> _userController = BehaviorSubject();
+  final BehaviorSubject<bool> _isLoginNowController = BehaviorSubject();
+
   Stream<User?> get user => _userController.stream;
+
+  Stream<bool> get isLoginNow => _isLoginNowController.stream;
 
   void loadUser() async {
     try {
-      _userController.add(null);
-
+      _isLoginNowController.add(true);
       if (await GoogleSignIn().isSignedIn()) {
         _userController.add(FirebaseAuth.instance.currentUser);
       }
     } catch (err) {
-      _userController.add(null);
       errorSink.add(err.toString());
+    } finally {
+      _isLoginNowController.add(false);
     }
   }
 
   Future<void> login() async {
-    _userController.add(null);
-
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      _isLoginNowController.add(true);
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser!.authentication;
@@ -49,13 +53,15 @@ class AuthenticationBloc {
       User? user =
           (await FirebaseAuth.instance.signInWithCredential(credential)).user;
 
-      logger.d('Signed in Google user');
-      logger.d(user);
+      _logger.d('Signed in Google user');
+      _logger.d(user);
 
       _userController.add(user);
     } catch (err) {
       errorSink.add(err.toString());
       _userController.add(null);
+    } finally {
+      _isLoginNowController.add(false);
     }
   }
 
@@ -68,5 +74,6 @@ class AuthenticationBloc {
 
   void dispose() {
     _userController.close();
+    _isLoginNowController.close();
   }
 }

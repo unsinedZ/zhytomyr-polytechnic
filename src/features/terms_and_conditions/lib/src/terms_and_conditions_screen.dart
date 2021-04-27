@@ -9,7 +9,8 @@ import 'constants.dart';
 
 class TermsAndConditionsScreen extends StatefulWidget {
   @override
-  _TermsAndConditionsScreenState createState() => _TermsAndConditionsScreenState();
+  _TermsAndConditionsScreenState createState() =>
+      _TermsAndConditionsScreenState();
 }
 
 class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
@@ -35,7 +36,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
               onPressed: () {
                 Navigator.pop(context);
               }),
-          title: Text('Terms and conditions'),
+          title: Text('Terms and conditions', style: Theme.of(context).textTheme.headline1,),
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -62,6 +63,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
   }
 
   Future<String> loadTermsAndConditions() async {
-    return await rootBundle.loadString(getAssetPathPrefix() + 'assets/terms_and_conditions.md');
+    return await rootBundle
+        .loadString(getAssetPathPrefix() + 'assets/terms_and_conditions.md');
   }
 }

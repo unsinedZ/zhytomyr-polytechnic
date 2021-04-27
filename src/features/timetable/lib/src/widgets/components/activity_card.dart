@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 
+import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/bl/models/models.dart';
 import 'package:timetable/src/widgets/components/activity_info_dialog.dart';
 
@@ -129,7 +129,7 @@ class ActivityCard extends StatelessWidget {
       case _ActivityCardType.Added:
         return Theme.of(context).selectedRowColor;
       case _ActivityCardType.Current:
-        return Theme.of(context).accentColor;
+        return Theme.of(context).hoverColor;
     }
   }
 }

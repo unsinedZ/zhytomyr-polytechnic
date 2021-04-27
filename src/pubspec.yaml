@@ -28,6 +28,10 @@ dependencies:
     path: ./features/error_bloc
   timetable:
     path: ./features/timetable
+  navigation_drawer:
+    path: ./features/navigation_drawer
+  contacts:
+    path: ./features/contacts
   push_notification:
     path: ./features/push_notification
   easy_localization: ^3.0.0

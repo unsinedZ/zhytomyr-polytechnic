@@ -1,33 +1,23 @@
-import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import 'package:google_authentication/src/bl/authentication_bloc.dart';
 
 class GoogleSignInButton extends StatefulWidget {
-  final Function(User)? authorizationCallback;
-  final AuthenticationBloc userBloc;
+  final AuthenticationBloc authenticationBloc;
 
-  GoogleSignInButton({this.authorizationCallback, required this.userBloc})
-      : super();
+  GoogleSignInButton({
+    required this.authenticationBloc,
+  }) : super();
 
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
 }
 
 class _GoogleSignInButtonState extends State<GoogleSignInButton> {
-  late StreamSubscription _userSubscription;
 
   @override
   void initState() {
-    widget.userBloc.loadUser();
-
-    _userSubscription = widget.userBloc.user.listen((user) {
-      if (user != null) {
-        widget.authorizationCallback!(user);
-      }
-    });
-
+    widget.authenticationBloc.loadUser();
     super.initState();
   }
 
@@ -45,7 +35,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
           ),
         ),
         onPressed: () async {
-          widget.userBloc.login();
+          widget.authenticationBloc.login();
         },
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -74,12 +64,5 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _userSubscription.cancel();
-
-    super.dispose();
   }
 }

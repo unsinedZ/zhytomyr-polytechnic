@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:google_authentication/google_authentication.dart';
 import 'package:provider/provider.dart';
 
+import 'package:google_authentication/google_authentication.dart';
+import 'package:terms_and_conditions/terms_and_conditions.dart';
 import 'package:timetable/timetable.dart' hide TextLocalizer;
 import 'package:faculty_list/faculty_list.dart' hide TextLocalizer;
 import 'package:group_selection/group_selection.dart' hide TextLocalizer;
+import 'package:navigation_drawer/navigation_drawer.dart' hide TextLocalizer;
+import 'package:contacts/contacts.dart' hide TextLocalizer;
 import 'package:error_bloc/error_bloc.dart';
 import 'package:user_sync/user_sync.dart';
 
 import 'package:zhytomyr_polytechnic/bl/repositories/main_firestore_repository.dart';
 import 'package:zhytomyr_polytechnic/bl/repositories/timetable_firestore_repository_factory.dart';
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
+import 'package:zhytomyr_polytechnic/widgets/components/verify_authentication.dart';
 import 'package:zhytomyr_polytechnic/widgets/dependencies.dart';
 import 'package:zhytomyr_polytechnic/widgets/screens/authentication_screen.dart';
 
@@ -28,7 +32,7 @@ class App extends StatelessWidget {
           primaryColor: Color(0xff35b9ca),
           focusColor: Color(0xfff8eb4d),
           disabledColor: Color(0xffeeeeee),
-          accentColor: Color(0xfff8f3b3),
+          hoverColor: Color(0xfff8f3b3),
           selectedRowColor: Color(0xffd6ffde),
           primaryIconTheme: IconThemeData(
             color: Colors.white,
@@ -73,6 +77,10 @@ class App extends StatelessWidget {
               color: Colors.black,
               fontWeight: FontWeight.w700,
             ),
+            headline4: TextStyle(
+              fontSize: 14,
+              color: Color(0xff41c3fe),
+            ),
           ),
         ),
         locale: context.locale,
@@ -81,12 +89,18 @@ class App extends StatelessWidget {
         initialRoute: '/authentication',
         routes: <String, WidgetBuilder>{
           '/authentication': (context) => AuthenticationScreen(),
-          '/faculties': (context) => FacultyList(
-                facultyRepository: FirestoreRepository(),
-                sidebarAction: () {},
-                textLocalizer: TextLocalizer(),
-                errorSink: context.read<ErrorBloc>().errorSink,
-              ),
+          '/terms&conditions': (context) => TermsAndConditionsScreen(),
+          '/faculties': (context) => VerifyAuthentication(
+            child: FacultyList(
+                  facultyRepository: FirestoreRepository(),
+                  textLocalizer: TextLocalizer(),
+                  errorSink: context.read<ErrorBloc>().errorSink,
+                  drawer: NavigationDrawer(
+                    onSignOut: context.read<AuthenticationBloc>().logout,
+                    textLocalizer: TextLocalizer(),
+                  ),
+                ),
+          ),
           '/group': (context) => GroupSelectionScreen(
                 userIdStream: context
                     .read<AuthenticationBloc>()
@@ -104,6 +118,11 @@ class App extends StatelessWidget {
                 textLocalizer: TextLocalizer(),
                 errorSink: context.read<ErrorBloc>().errorSink,
                 groupRepository: FirestoreRepository(),
+              ),
+          '/contacts': (context) => ContactsScreen(
+                textLocalizer: TextLocalizer(),
+                contactsRepository: FirestoreRepository(),
+                errorSink: context.read<ErrorBloc>().errorSink,
               ),
         },
       ),

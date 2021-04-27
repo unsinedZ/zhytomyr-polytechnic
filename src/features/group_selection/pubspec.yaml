@@ -1,7 +1,7 @@
 name: group_selection
 description: A new Flutter package project.
 version: 0.0.1
-author:
+author: Softwine
 
 publish_to: none
 
@@ -12,7 +12,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  mockito: ^5.0.3
+  mockito: ^5.0.5
 
 dev_dependencies:
   flutter_test:
