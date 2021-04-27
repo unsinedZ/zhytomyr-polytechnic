@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 
 import 'package:easy_localization/easy_localization.dart';
-
+import 'package:google_authentication/google_authentication.dart';
 import 'package:provider/provider.dart';
 
 import 'package:timetable/timetable.dart' hide TextLocalizer;
-
 import 'package:faculty_list/faculty_list.dart' hide TextLocalizer;
-
 import 'package:group_selection/group_selection.dart' hide TextLocalizer;
-
 import 'package:error_bloc/error_bloc.dart';
 import 'package:user_sync/user_sync.dart';
 
-import 'package:zhytomyr_polytechnic/bl/firestore_repository.dart';
+import 'package:zhytomyr_polytechnic/bl/repositories/main_firestore_repository.dart';
+import 'package:zhytomyr_polytechnic/bl/repositories/timetable_firestore_repository_factory.dart';
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
+import 'package:zhytomyr_polytechnic/widgets/dependencies.dart';
 import 'package:zhytomyr_polytechnic/widgets/screens/authentication_screen.dart';
-
-import 'dependecies.dart';
 
 class App extends StatelessWidget {
   
@@ -31,8 +28,17 @@ class App extends StatelessWidget {
           primaryColor: Color(0xff35b9ca),
           focusColor: Color(0xfff8eb4d),
           disabledColor: Color(0xffeeeeee),
+          accentColor: Color(0xfff8f3b3),
+          selectedRowColor: Color(0xffd6ffde),
           primaryIconTheme: IconThemeData(
             color: Colors.white,
+          ),
+          iconTheme: IconThemeData(
+            color: Colors.white,
+          ),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: Color(0xff35b9ca),
+            foregroundColor: Colors.white,
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
@@ -53,7 +59,7 @@ class App extends StatelessWidget {
           ),
           textTheme: TextTheme(
             headline1: TextStyle(
-              fontSize: 25,
+              fontSize: 22,
               color: Colors.white,
               fontWeight: FontWeight.w500,
             ),
@@ -82,6 +88,10 @@ class App extends StatelessWidget {
                 errorSink: context.read<ErrorBloc>().errorSink,
               ),
           '/group': (context) => GroupSelectionScreen(
+                userIdStream: context
+                    .read<AuthenticationBloc>()
+                    .user
+                    .map((user) => user != null ? user.uid : null),
                 groupsLoader: FirestoreRepository(),
                 textLocalizer: TextLocalizer(),
                 errorSink: context.read<ErrorBloc>().errorSink,
@@ -89,9 +99,11 @@ class App extends StatelessWidget {
                     context.read<UserSyncBloc>().updateUserData,
               ),
           '/timetable': (context) => TimetableScreen(
-                timetableLoader: FirestoreRepository(),
+                timetableRepositoryFactory:
+                    TimetableFirestoreRepositoryFactory(),
                 textLocalizer: TextLocalizer(),
                 errorSink: context.read<ErrorBloc>().errorSink,
+                groupRepository: FirestoreRepository(),
               ),
         },
       ),

@@ -14,4 +14,10 @@ class Tutor {
         name: json['name'],
         imageUrl: json['imageUrl'],
       );
+
+  toJson() => <String, dynamic>{
+    'id': id,
+    'name': name,
+    'imageUrl': imageUrl,
+  };
 }

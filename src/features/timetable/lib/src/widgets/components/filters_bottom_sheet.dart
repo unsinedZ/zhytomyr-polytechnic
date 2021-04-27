@@ -77,8 +77,7 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
               ),
             ] +
             (widget.timetableType == TimetableType.Group &&
-                    widget.group!.subgroups != null &&
-                    widget.group!.subgroups!.isNotEmpty
+                    widget.group!.subgroups.isNotEmpty
                 ? [
                     SizedBox(
                       height: 15,
@@ -94,7 +93,7 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                       borderRadius: BorderRadius.all(Radius.circular(15.0)),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: widget.group!.subgroups!
+                        children: widget.group!.subgroups
                             .map<Widget>(
                               (subgroup) => _FilterButton(
                                 onPressed: currentSubgroupId == subgroup.id

@@ -1,12 +1,12 @@
 import 'package:timetable/src/bl/models/models.dart';
 
 class Timetable {
-  final List<TimetableItem>? items;
+  final List<TimetableItem> items;
   final String? expiresAt;
   final WeekDetermination weekDetermination;
 
   Timetable({
-    this.items,
+    required this.items,
     this.expiresAt,
     required this.weekDetermination,
   });
@@ -22,6 +22,12 @@ class Timetable {
           : WeekDetermination.Even),
     );
   }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'expiresAt': expiresAt,
+    'weekDetermination': weekDetermination == WeekDetermination.Odd ? 0 : 1,
+    'items': items.map((item) => item.toJson()).toList(),
+  };
 }
 
 enum WeekDetermination { Even, Odd }

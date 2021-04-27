@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:group_selection/src/bl/abstractions/groups_loader.dart';
+import 'package:group_selection/src/bl/abstractions/groups_repository.dart';
 import 'package:group_selection/src/bl/models/models.dart';
 
 class GroupSelectionBloc {
-  final GroupsLoader groupsLoader;
+  final GroupsRepository groupsLoader;
   final StreamSink<String> errorSink;
 
   StreamController<List<Group>?> _groupsController =

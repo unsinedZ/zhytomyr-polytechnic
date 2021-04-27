@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:group_selection/group_selection.dart';
+import 'package:group_selection/src/bl/abstractions/groups_repository.dart';
 import 'package:group_selection/src/bl/bloc/group_selection_bloc.dart';
+import 'package:group_selection/src/bl/models/models.dart';
 
 import 'package:mockito/mockito.dart';
 
-class GroupsLoaderMock extends Mock implements GroupsLoader {
+class GroupsLoaderMock extends Mock implements GroupsRepository {
   @override
   Future<List<Group>> getGroups(int? course, String? facultyId) =>
       super.noSuchMethod(Invocation.method(#getGroups, [course, facultyId]),

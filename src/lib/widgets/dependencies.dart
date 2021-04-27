@@ -8,8 +8,9 @@ import 'package:google_authentication/google_authentication.dart';
 import 'package:error_bloc/error_bloc.dart';
 import 'package:push_notification/push_notification.dart';
 import 'package:user_sync/user_sync.dart' hide User;
+import 'package:zhytomyr_polytechnic/bl/repositories/main_firestore_repository.dart';
 
-import 'package:zhytomyr_polytechnic/bl/firestore_repository.dart';
+import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 
 class Dependencies extends StatelessWidget {
   final Widget child;
@@ -22,6 +23,7 @@ class Dependencies extends StatelessWidget {
   Widget build(BuildContext context) => MultiProvider(
         providers: [
           Provider<ErrorBloc>(create: getErrorBloc),
+          Provider<TextLocalizer>(create: getTextLocalizer),
         ],
         child: MultiProvider(
           providers: [
@@ -66,4 +68,7 @@ class Dependencies extends StatelessWidget {
 
   PushNotificationBloc getNotificationBloc(BuildContext context) =>
       PushNotificationBloc(errorSink: context.read<ErrorBloc>().errorSink);
+
+  TextLocalizer getTextLocalizer(BuildContext context) => TextLocalizer();
+
 }
