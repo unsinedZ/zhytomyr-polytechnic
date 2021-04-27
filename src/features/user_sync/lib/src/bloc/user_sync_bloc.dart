@@ -13,7 +13,6 @@ class UserSyncBloc {
   final StreamSink<String> errorSink;
 
   BehaviorSubject<User?> _mappedUserController = BehaviorSubject();
-  Stream<User?> get mappedUser => _mappedUserController.stream;
 
   UserSyncBloc({
     this.storage = const FlutterSecureStorage(),
@@ -21,7 +20,9 @@ class UserSyncBloc {
     required this.errorSink,
   });
 
-  void loadUser() => getUserFromStorage()
+  Stream<User?> get mappedUser => _mappedUserController.stream;
+
+  void loadUser() => _getUserFromStorage()
       .doOnData((userJson) {
         if (userJson == null || userJson.isEmpty) {
           _mappedUserController.add(null);
@@ -32,7 +33,7 @@ class UserSyncBloc {
       .map((userJson) => User.fromStorage(userJson))
       .listen(_mappedUserController.add);
 
-  Stream<String?> getUserFromStorage() =>
+  Stream<String?> _getUserFromStorage() =>
       storage.readAll().asStream().map((values) => values['user']);
 
   void setData(String userId) => repository

@@ -2,7 +2,10 @@ class User {
   final String userId;
   final Map<String, dynamic> data;
 
-  User({required this.userId, required this.data});
+  User({
+    required this.userId,
+    required this.data,
+  });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         userId: json["userId"],

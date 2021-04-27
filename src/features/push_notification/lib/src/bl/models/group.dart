@@ -2,7 +2,10 @@ class Group {
   final String groupId;
   final String subgroupId;
 
-  Group({required this.groupId, required this.subgroupId});
+  Group({
+    required this.groupId,
+    required this.subgroupId,
+  });
 
   factory Group.fromJson(Map<String, dynamic> json) => Group(
         groupId: json['groupId'],
