@@ -11,6 +11,7 @@ import 'package:group_selection/group_selection.dart' hide TextLocalizer;
 import 'package:navigation_drawer/navigation_drawer.dart' hide TextLocalizer;
 import 'package:contacts/contacts.dart' hide TextLocalizer;
 import 'package:error_bloc/error_bloc.dart';
+import 'package:user_sync/user_sync.dart';
 
 import 'package:zhytomyr_polytechnic/bl/repositories/main_firestore_repository.dart';
 import 'package:zhytomyr_polytechnic/bl/repositories/timetable_firestore_repository_factory.dart';
@@ -20,6 +21,7 @@ import 'package:zhytomyr_polytechnic/widgets/dependencies.dart';
 import 'package:zhytomyr_polytechnic/widgets/screens/authentication_screen.dart';
 
 class App extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
     return Dependencies(
@@ -107,6 +109,8 @@ class App extends StatelessWidget {
                 groupsLoader: FirestoreRepository(),
                 textLocalizer: TextLocalizer(),
                 errorSink: context.read<ErrorBloc>().errorSink,
+                subscribeCallback:
+                    context.read<UserSyncBloc>().updateUserData,
               ),
           '/timetable': (context) => TimetableScreen(
                 timetableRepositoryFactory:

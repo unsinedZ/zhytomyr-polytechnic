@@ -32,9 +32,12 @@ dependencies:
     path: ./features/navigation_drawer
   contacts:
     path: ./features/contacts
-
+  push_notification:
+    path: ./features/push_notification
   easy_localization: ^3.0.0
   shared_preferences: ^2.0.5
+  user_sync:
+    path: ./features/user_sync
 
 dev_dependencies:
   flutter_test:

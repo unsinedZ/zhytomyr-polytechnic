@@ -7,6 +7,7 @@ import 'package:faculty_list/faculty_list.dart';
 import 'package:group_selection/group_selection.dart';
 import 'package:contacts/contacts.dart';
 import 'package:timetable/timetable.dart' as Timetable;
+import 'package:user_sync/user_sync.dart';
 
 import 'package:zhytomyr_polytechnic/bl/models/expirable.dart';
 
@@ -15,7 +16,8 @@ class FirestoreRepository
         FacultyRepository,
         GroupsRepository,
         Timetable.GroupRepository,
-        ContactsRepository {
+        ContactsRepository,
+        UserRepository {
   @override
   Stream<List<Faculty>> getFaculties() =>
       FirebaseFirestore.instance.collection('faculty').get().asStream().map(
@@ -114,4 +116,24 @@ class FirestoreRepository
 
     return contactsData;
   }
+
+  Future<void> changeUserInfo(String userId, Map<String, dynamic> data) async =>
+      (await FirebaseFirestore.instance
+              .collection("users")
+              .where("userId", isEqualTo: userId)
+              .get())
+          .docs
+          .first
+          .reference
+          .update(data);
+
+  @override
+  Future<Map<String, dynamic>?> getUserInfo(String userId) async =>
+      (await FirebaseFirestore.instance
+              .collection("users")
+              .where("userId", isEqualTo: userId)
+              .get())
+          .docs
+          .first
+          .data();
 }
