@@ -28,9 +28,10 @@ class UserSyncBloc {
           _mappedUserController.add(null);
         }
       })
-      .where((userJson) => userJson?.isNotEmpty == true)
+      .where((userJson) => userJson!.isNotEmpty)
       .map((userJson) => jsonDecode(userJson!))
       .map((userJson) => User.fromStorage(userJson))
+      .doOnError((error, _) => errorSink.add(error.toString()))
       .listen(_mappedUserController.add);
 
   Stream<String?> _getUserFromStorage() =>

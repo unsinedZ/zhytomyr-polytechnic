@@ -13,8 +13,10 @@ class User {
             key: (k) => k, value: (k) => json[k]),
       );
 
-  factory User.fromStorage(Map<String, dynamic> json) =>
-      User(userId: json["userId"], data: json["data"]);
+  factory User.fromStorage(Map<String, dynamic> json) => User(
+        userId: json["userId"],
+        data: json["data"],
+      );
 
   Map<String, dynamic> toJson() => {
         'userId': userId,
