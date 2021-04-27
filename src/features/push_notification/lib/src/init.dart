@@ -1,6 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-FirebaseMessaging get initNotification => FirebaseMessaging.instance
+FirebaseMessaging initNotification() => FirebaseMessaging.instance
     ..requestPermission(
       alert: true,
       announcement: true,

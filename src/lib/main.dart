@@ -22,6 +22,6 @@ Future<void> initLocalizationAsync() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp();
-  initNotification;
+  initNotification();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }
