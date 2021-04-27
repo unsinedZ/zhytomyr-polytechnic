@@ -1,20 +1,44 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:google_authentication/google_authentication.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'package:provider/provider.dart';
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 
-class AuthenticationScreen extends StatelessWidget {
+class AuthenticationScreen extends StatefulWidget {
+  @override
+  _AuthenticationScreenState createState() => _AuthenticationScreenState();
+}
+
+class _AuthenticationScreenState extends State<AuthenticationScreen> {
   final TextLocalizer textLocalizer = TextLocalizer();
+  late StreamSubscription _userSubscription;
+
+  @override
+  void initState() {
+    _userSubscription = context.read<AuthenticationBloc>().user.listen((user) {
+      if (user != null) {
+        Navigator.of(context).pushReplacementNamed('/faculties');
+      }
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) => SafeArea(
         child: Scaffold(
-          body: StreamBuilder<bool>(
-            stream: context.read<AuthenticationBloc>().isLoginNow,
+          body: StreamBuilder<List<dynamic>>(
+            stream: Rx.combineLatest2(
+                context.read<AuthenticationBloc>().isLoginNow,
+                context.read<AuthenticationBloc>().user,
+                (a, b) => [a, b]),
             builder: (context, snapshot) {
-              if (snapshot.hasData && snapshot.data == true) {
+              if (snapshot.hasData &&
+                  (snapshot.data![0] == true || snapshot.data![1] != null)) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
@@ -52,8 +76,6 @@ class AuthenticationScreen extends StatelessWidget {
                           height: 10,
                         ),
                         GoogleSignInButton(
-                          authorizationCallback: (_) => Navigator.of(context)
-                              .pushReplacementNamed('/faculties'),
                           authenticationBloc:
                               context.read<AuthenticationBloc>(),
                         ),
@@ -66,4 +88,10 @@ class AuthenticationScreen extends StatelessWidget {
           ),
         ),
       );
+
+  @override
+  void dispose() {
+    _userSubscription.cancel();
+    super.dispose();
+  }
 }

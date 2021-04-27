@@ -37,8 +37,9 @@ class AuthenticationBloc {
 
   Future<void> login() async {
     try {
-      _isLoginNowController.add(true);
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      _isLoginNowController.add(true);
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser!.authentication;
