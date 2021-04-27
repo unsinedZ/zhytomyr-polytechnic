@@ -1,0 +1,1 @@
+node index.js --file [file] --group [group]

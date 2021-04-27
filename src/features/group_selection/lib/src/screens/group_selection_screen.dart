@@ -12,12 +12,14 @@ class GroupSelectionScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
   final GroupsRepository groupsLoader;
   final StreamSink<String> errorSink;
+  final ValueChanged<Map<String, dynamic>> subscribeCallback;
 
   GroupSelectionScreen({
     required this.userIdStream,
     required this.textLocalizer,
     required this.groupsLoader,
     required this.errorSink,
+    required this.subscribeCallback,
   });
 
   @override
@@ -251,6 +253,14 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                               group!.id,
                               subgroup != null ? subgroup!.id : '',
                             );
+
+                            if (isMyGroup) {
+                              widget.subscribeCallback({
+                                "groupId": group!.id,
+                                "subgroupId":
+                                    subgroup == null ? "" : subgroup!.id
+                              });
+                            }
 
                             Navigator.pushNamed(context, '/timetable',
                                 arguments: [

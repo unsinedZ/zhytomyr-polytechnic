@@ -9,10 +9,11 @@ import 'package:group_selection/group_selection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:timetable/timetable.dart' as Timetable;
+import 'package:user_sync/user_sync.dart';
 import 'package:zhytomyr_polytechnic/bl/models/expirable.dart';
 
 class FirestoreRepository
-    implements FacultyRepository, GroupsRepository, Timetable.GroupRepository {
+    implements FacultyRepository, GroupsRepository, Timetable.GroupRepository, UserRepository {
   @override
   Stream<List<Faculty>> getFaculties() =>
       FirebaseFirestore.instance.collection('faculty').get().asStream().map(
@@ -100,4 +101,25 @@ class FirestoreRepository
       await FirebaseFirestore.instance.collection('users').add(data);
     }
   }
+
+  @override
+  Future<void> changeUserInfo(String userId, Map<String, dynamic> data) async =>
+      (await FirebaseFirestore.instance
+              .collection("users")
+              .where("userId", isEqualTo: userId)
+              .get())
+          .docs
+          .first
+          .reference
+          .update(data);
+
+  @override
+  Future<Map<String, dynamic>?> getUserInfo(String userId) async =>
+      (await FirebaseFirestore.instance
+              .collection("users")
+              .where("userId", isEqualTo: userId)
+              .get())
+          .docs
+          .first
+          .data();
 }

@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:timetable/timetable.dart';
 
 import 'package:zhytomyr_polytechnic/bl/models/expirable.dart';

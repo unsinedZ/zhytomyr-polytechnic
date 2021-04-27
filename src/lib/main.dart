@@ -4,8 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:zhytomyr_polytechnic/app_constants.dart';
+import 'package:push_notification/push_notification.dart';
 import 'package:zhytomyr_polytechnic/widgets/app.dart';
 
 Future<void> main() async {
@@ -13,7 +12,7 @@ Future<void> main() async {
   runApp(
     EasyLocalization(
         supportedLocales: [Locale('uk'), Locale('en')],
-        path: AppConstants.translationPath,
+        path: "assets/translations",
         fallbackLocale: Locale('en'),
         child: App()),
   );
@@ -23,5 +22,6 @@ Future<void> initLocalizationAsync() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp();
+  initNotification();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }
