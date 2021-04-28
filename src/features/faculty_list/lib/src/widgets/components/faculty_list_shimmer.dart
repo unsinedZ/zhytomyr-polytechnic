@@ -21,19 +21,9 @@ class FacultyListShimmer extends StatelessWidget {
           child: Wrap(
             spacing: 20,
             alignment: WrapAlignment.center,
-            children: getFacultyIconShimmers(5),
+            children: List.generate(5, (index) => FacultyIconShimmer()),
           ),
         ),
       ],
     );
-
-  List<Widget> getFacultyIconShimmers(int count) {
-    List<Widget> widgets = [];
-
-    for (int i = 0; i < count; i++) {
-      widgets.add(FacultyIconShimmer());
-    }
-
-    return widgets;
-  }
 }

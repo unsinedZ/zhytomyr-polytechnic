@@ -44,7 +44,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
   late TimetableType timetableType;
   late int weekNumber;
   late String id;
-  late Stream<List<dynamic>> stream;
+  late Stream<List<dynamic>> dataStream;
 
   StreamSubscription? groupStreamSubscription;
   String? subgroupId;
@@ -107,7 +107,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
       });
     }
 
-    stream = Rx.combineLatest2(
+    dataStream = Rx.combineLatest2(
       timetableBloc.timetable,
       timetableBloc.timetableItemUpdates,
           (a, b) => <dynamic>[a, b],
@@ -179,7 +179,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
           child: Icon(Icons.filter_alt_outlined),
         ),
         body: StreamBuilder<List<dynamic>>(
-          stream: stream,
+          stream: dataStream,
           builder: (context, snapshot) {
             if (_isSnapshotHasData(snapshot)) {
               Timetable timetable = snapshot.data![0];
