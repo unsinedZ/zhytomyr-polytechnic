@@ -9,8 +9,8 @@ class TeacherTimetableFirestoreRepository
     extends BaseTimetableFirestoreRepository implements TimetableRepository {
   final FirebaseFirestore firebaseFirestoreInstance;
 
-  TeacherTimetableFirestoreRepository(
-      {required this.firebaseFirestoreInstance});
+  TeacherTimetableFirestoreRepository({required this.firebaseFirestoreInstance})
+      : super(firebaseFirestoreInstance: firebaseFirestoreInstance);
 
   @override
   Future<Timetable> loadTimetableByReferenceId(String referenceId) async {

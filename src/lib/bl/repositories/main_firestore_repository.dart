@@ -18,6 +18,7 @@ class FirestoreRepository
         Timetable.GroupRepository,
         ContactsRepository,
         UserRepository {
+
   @override
   Stream<List<Faculty>> getFaculties() =>
       FirebaseFirestore.instance.collection('faculty').get().asStream().map(

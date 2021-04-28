@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 
-import 'package:shimmer/shimmer.dart';
+import 'default_shimmer.dart';
 
 class FacultyIconShimmer extends StatelessWidget {
-  const FacultyIconShimmer();
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         DefaultShimmer(
-          baseColor: Theme.of(context).disabledColor,
-          highlightColor: Theme.of(context).canvasColor,
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-            ),
+                borderRadius: BorderRadius.circular(100),
+                color: Theme.of(context).disabledColor),
             width: 150,
             height: 150,
           ),
@@ -24,10 +20,11 @@ class FacultyIconShimmer extends StatelessWidget {
           padding: EdgeInsets.all(8.0),
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
+              borderRadius: BorderRadius.circular(5),
+              color: Theme.of(context).disabledColor,
             ),
-            width: 150,
-            height: 150,
+            width: 45,
+            height: 23,
           ),
         ),
       ],

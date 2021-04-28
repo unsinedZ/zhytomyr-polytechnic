@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -40,6 +41,8 @@ class Dependencies extends StatelessWidget {
         ),
       );
 
+  FirebaseFirestore getFirebaseFirestore() => FirebaseFirestore.instance;
+
   ErrorBloc getErrorBloc(BuildContext context) => ErrorBloc()
     ..error.debounceTime(Duration(milliseconds: 500)).listen((errorMessage) {
       Fluttertoast.showToast(
@@ -58,17 +61,17 @@ class Dependencies extends StatelessWidget {
             .where((user) => user != null)
             .listen((user) => context.read<UserSyncBloc>().setData(user!.uid));
 
-  UserSyncBloc getUserSyncBloc(BuildContext context) =>
-      UserSyncBloc(errorSink: context.read<ErrorBloc>().errorSink, repository: FirestoreRepository())
-        ..loadUser()
-        ..mappedUser
-            .where((user) => user != null && !user.isEmpty)
-            .map((user) => user!.data)
-            .listen(context.read<PushNotificationBloc>().subscribeToNew);
+  UserSyncBloc getUserSyncBloc(BuildContext context) => UserSyncBloc(
+      errorSink: context.read<ErrorBloc>().errorSink,
+      repository: FirestoreRepository())
+    ..loadUser()
+    ..mappedUser
+        .where((user) => user != null && !user.isEmpty)
+        .map((user) => user!.data)
+        .listen(context.read<PushNotificationBloc>().subscribeToNew);
 
   PushNotificationBloc getNotificationBloc(BuildContext context) =>
       PushNotificationBloc(errorSink: context.read<ErrorBloc>().errorSink);
 
   TextLocalizer getTextLocalizer(BuildContext context) => TextLocalizer();
-
 }

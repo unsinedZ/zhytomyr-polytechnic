@@ -16,6 +16,7 @@ dependencies:
   easy_localization: ^3.0.0
   mockito: ^5.0.3
   rxdart: ^0.26.0
+  shimmer: ^2.0.0
 
 dev_dependencies:
   flutter_test:

@@ -14,9 +14,10 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
   final Future<SharedPreferences> sharedPreferences;
   final FirebaseFirestore firebaseFirestoreInstance;
 
-  GroupTimetableFirestoreRepository(
-      {required this.sharedPreferences,
-      required this.firebaseFirestoreInstance});
+  GroupTimetableFirestoreRepository({
+    required this.sharedPreferences,
+    required this.firebaseFirestoreInstance,
+  }) : super(firebaseFirestoreInstance: firebaseFirestoreInstance);
 
   @override
   Future<Timetable> loadTimetableByReferenceId(String referenceId) async {
@@ -28,10 +29,12 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
     Timetable? timetable;
 
     if (prefs.containsKey('timetable.group.my') && userGroupId == referenceId) {
-      Map<String, dynamic> json = jsonDecode(prefs.getString('timetable')!);
+      Map<String, dynamic> json =
+          jsonDecode(prefs.getString('timetable.group.my')!);
       json['data'] = (json['data'] as Map<String, dynamic>);
 
-      Expirable<Map<String, dynamic>> expirableTimetableJson = (Expirable<Map<String, dynamic>>.fromJson(json));
+      Expirable<Map<String, dynamic>> expirableTimetableJson =
+          (Expirable<Map<String, dynamic>>.fromJson(json));
 
       if (expirableTimetableJson.expireAt.isAfter(DateTime.now())) {
         timetable = Timetable.fromJson(expirableTimetableJson.data);
@@ -56,8 +59,9 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
         expiresAt: timetable.expiresAt,
       );
 
-      if(userGroupId == referenceId) {
-        Expirable<Map<String, dynamic>> expirableTimetableJson = Expirable<Map<String, dynamic>>(
+      if (userGroupId == referenceId) {
+        Expirable<Map<String, dynamic>> expirableTimetableJson =
+            Expirable<Map<String, dynamic>>(
           duration: Duration(days: 30),
           data: timetable.toJson(),
         );

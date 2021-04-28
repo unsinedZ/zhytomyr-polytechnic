@@ -12,6 +12,7 @@ import 'package:timetable/src/bl/bloc/timetable_bloc.dart';
 import 'package:timetable/src/bl/abstractions/group_repository.dart';
 import 'package:timetable/src/bl/models/models.dart';
 import 'package:timetable/src/widgets/components/filters_bottom_sheet.dart';
+import 'package:timetable/src/widgets/components/timetable_tab_shimmer.dart';
 import 'package:timetable/timetable.dart';
 
 class TimetableScreen extends StatefulWidget {
@@ -34,7 +35,6 @@ class TimetableScreen extends StatefulWidget {
 class _TimetableScreenState extends State<TimetableScreen> {
   List<String> _weekDaysNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-  MediaQueryData get mediaQuery => MediaQuery.of(context);
   DateTime indexDayDateTime = DateTime.now();
   int initialIndex = (DateTime.now().weekday - 1) % 6;
   bool isWeekChanged = false;
@@ -44,8 +44,13 @@ class _TimetableScreenState extends State<TimetableScreen> {
   late TimetableType timetableType;
   late int weekNumber;
   late String id;
+  late Stream<List<dynamic>> stream;
 
+  StreamSubscription? groupStreamSubscription;
   String? subgroupId;
+  Group? group;
+
+  MediaQueryData get mediaQuery => MediaQuery.of(context);
 
   @override
   void initState() {
@@ -65,7 +70,8 @@ class _TimetableScreenState extends State<TimetableScreen> {
     Object? arguments = ModalRoute.of(context)!.settings.arguments;
 
     if ((arguments as List<dynamic>).length > 3) {
-      TimetableFilters timetableFilters = TimetableFilters.fromJson(arguments[3]);
+      TimetableFilters timetableFilters =
+          TimetableFilters.fromJson(arguments[3]);
       weekNumber = timetableFilters.weekNumber;
       id = timetableFilters.id;
       subgroupId = timetableFilters.subgroupId;
@@ -94,7 +100,18 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
     if (timetableType == TimetableType.Group) {
       timetableBloc.loadGroup(id);
+      timetableBloc.group.listen((group) {
+        setState(() {
+          this.group = group;
+        });
+      });
     }
+
+    stream = Rx.combineLatest2(
+      timetableBloc.timetable,
+      timetableBloc.timetableItemUpdates,
+          (a, b) => <dynamic>[a, b],
+    );
 
     super.didChangeDependencies();
   }
@@ -104,52 +121,33 @@ class _TimetableScreenState extends State<TimetableScreen> {
     return DefaultTabController(
       initialIndex: initialIndex,
       length: 6,
-      child: StreamBuilder<List<dynamic>>(
-        stream: Rx.combineLatest3(
-            timetableBloc.timetable,
-            timetableBloc.group,
-            timetableBloc.timetableItemUpdates,
-            (a, b, c) => <dynamic>[a, b, c]),
-        builder: (context, snapshot) {
-          if (_isSnapshotHasData(snapshot, timetableType)) {
-            Timetable timetable = snapshot.data![0];
-            Group? group = snapshot.data![1];
-            List<TimetableItemUpdate> timetableItemUpdates = snapshot.data![2];
-
-            if ((weekNumber.isEven &&
-                    timetable.weekDetermination == WeekDetermination.Even) ||
-                (weekNumber.isOdd &&
-                    timetable.weekDetermination == WeekDetermination.Odd)) {
-              weekNumber = 1;
-            } else {
-              weekNumber = 2;
-            }
-
-            return Scaffold(
-              appBar: AppBar(
-                bottom: TabBar(
-                  indicatorColor: Colors.amberAccent,
-                  labelColor: Colors.white,
-                  unselectedLabelColor: Color(0xc3ffffff),
-                  tabs: _weekDaysNames
-                      .map((weekDay) => Tab(
-                            text: widget.textLocalizer.localize(weekDay),
-                          ))
-                      .toList(),
-                ),
-                leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                title: Text(
-                  widget.textLocalizer.localize('Timetable'),
-                  style: Theme.of(context).textTheme.headline1,
-                ),
-              ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
+      child: Scaffold(
+        appBar: AppBar(
+          bottom: TabBar(
+            indicatorColor: Colors.amberAccent,
+            labelColor: Colors.white,
+            unselectedLabelColor: Color(0xc3ffffff),
+            tabs: _weekDaysNames
+                .map((weekDay) => Tab(
+                      text: widget.textLocalizer.localize(weekDay),
+                    ))
+                .toList(),
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: Text(
+            widget.textLocalizer.localize('Timetable'),
+            style: Theme.of(context).textTheme.headline1,
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: (group == null && timetableType == TimetableType.Group)
+              ? null
+              : () {
                   showModalBottomSheet(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
@@ -178,42 +176,65 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     ),
                   );
                 },
-                child: Icon(Icons.filter_alt_outlined),
-              ),
-              body: TabBarView(
+          child: Icon(Icons.filter_alt_outlined),
+        ),
+        body: StreamBuilder<List<dynamic>>(
+          stream: stream,
+          builder: (context, snapshot) {
+            if (_isSnapshotHasData(snapshot)) {
+              Timetable timetable = snapshot.data![0];
+              List<TimetableItemUpdate> timetableItemUpdates =
+                  snapshot.data![1];
+
+              if ((weekNumber.isEven &&
+                      timetable.weekDetermination == WeekDetermination.Even) ||
+                  (weekNumber.isOdd &&
+                      timetable.weekDetermination == WeekDetermination.Odd)) {
+                weekNumber = 1;
+              } else {
+                weekNumber = 2;
+              }
+
+              return TabBarView(
                 children: _weekDaysNames
                     .asMap()
                     .keys
-                    .map<Widget>((index) => TimetableTab(
-                          textLocalizer: widget.textLocalizer,
-                          timetable: timetable,
-                          timetableItemUpdates: timetableItemUpdates,
-                          weekNumber: weekNumber,
-                          dayOfWeekNumber: index + 1,
-                          dateTime: indexDayDateTime.add(Duration(
-                              days: -initialIndex +
-                                  index +
-                                  (isWeekChanged ? 7 : 0))),
-                          id: id,
-                          subgroupId: subgroupId,
-                          timetableType: timetableType,
-                          isTomorrow: initialIndex == index &&
-                                  isNextDay == true &&
-                                  isWeekChanged == false
-                              ? true
-                              : false,
-                        ))
+                    .map<Widget>(
+                      (index) => TimetableTab(
+                        textLocalizer: widget.textLocalizer,
+                        timetable: timetable,
+                        timetableItemUpdates: timetableItemUpdates,
+                        weekNumber: weekNumber,
+                        dayOfWeekNumber: index + 1,
+                        dateTime: indexDayDateTime.add(Duration(
+                            days: -initialIndex +
+                                index +
+                                (isWeekChanged ? 7 : 0))),
+                        id: id,
+                        subgroupId: subgroupId,
+                        timetableType: timetableType,
+                        isTomorrow: initialIndex == index &&
+                                isNextDay == true &&
+                                isWeekChanged == false
+                            ? true
+                            : false,
+                      ),
+                    )
                     .toList(),
-              ),
-            );
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+              );
+            } else
+              return TimetableTabShimmer();
+          },
+        ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    groupStreamSubscription?.cancel();
+
+    super.dispose();
   }
 }
 
@@ -226,16 +247,12 @@ TimetableType timetableTypeFromString(String value) =>
         orElse: () => TimetableType.Unspecified);
 
 bool _isSnapshotHasData(
-    AsyncSnapshot<List<dynamic>> snapshot, TimetableType timetableType) {
+    AsyncSnapshot<List<dynamic>> snapshot) {
   if (snapshot.hasData &&
       snapshot.data != null &&
       snapshot.data![0] != null &&
-      snapshot.data![2] != null) {
-    if (timetableType == TimetableType.Group && snapshot.data![1] != null) {
-      return true;
-    } else if (timetableType == TimetableType.Teacher) {
-      return true;
-    }
+      snapshot.data![1] != null) {
+    return true;
   }
 
   return false;
