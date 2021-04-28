@@ -40,7 +40,7 @@ class UserSyncBloc {
   void setData(String? userId) => Stream.value(userId)
       .doOnData((userId) {
         if (userId == null) {
-          _mappedUserController.add(User.empty());
+          _mappedUserController.add(null);
         }
       })
       .where((user) => userId != null)

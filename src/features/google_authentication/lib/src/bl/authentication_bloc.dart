@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_authentication/src/models/google_user.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:logger/logger.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+import 'package:google_authentication/src/models/google_user.dart';
 
 class GoogleAuthenticationBloc {
   final StreamSink<String> errorSink;
@@ -27,7 +28,7 @@ class GoogleAuthenticationBloc {
         _userController
             .add(GoogleUser.fromLogin(FirebaseAuth.instance.currentUser!));
       } else {
-        _userController.add(null);
+        _userController.add(GoogleUser.empty());
       }
     } catch (err) {
       errorSink.add(err.toString());
@@ -36,11 +37,14 @@ class GoogleAuthenticationBloc {
 
   Future<void> login() async {
     try {
+
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
       if (googleUser == null) {
         return;
       }
+
+      _userController.add(null);
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
@@ -59,7 +63,7 @@ class GoogleAuthenticationBloc {
       _userController.add(GoogleUser.fromLogin(user!));
     } catch (err) {
       errorSink.add(err.toString());
-      _userController.add(null);
+      _userController.add(GoogleUser.empty());
     }
   }
 
