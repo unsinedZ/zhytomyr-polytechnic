@@ -18,10 +18,16 @@ class User {
         data: json["data"],
       );
 
+  factory User.empty() => User(
+        userId: "",
+        data: {},
+      );
+
   Map<String, dynamic> toJson() => {
         'userId': userId,
         'data': data,
       };
+
 
   bool get isEmpty => userId.isEmpty && data.isEmpty;
 }
