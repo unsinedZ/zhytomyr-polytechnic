@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:contacts/src/bl/abstractions/text_localizer.dart';
 import 'package:contacts/src/bl/abstractions/contacts_repository.dart';
 import 'package:contacts/src/bl/models/contacts_data.dart';
+import 'package:contacts/src/widgets/components/contacts_screen_shimmer.dart';
 import 'package:contacts/src/widgets/components/prefixed_container.dart';
 import 'package:contacts/src/widgets/components/social_network_container.dart';
 import 'package:contacts/src/bl/bloc/contacts_screen_bloc.dart';
@@ -84,9 +85,7 @@ class ContactsScreen extends StatelessWidget {
                 ],
               );
             } else
-              return Center(
-                child: CircularProgressIndicator(),
-              );
+              return ContactsScreenShimmer();
           }),
     );
   }

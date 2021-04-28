@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -39,6 +40,8 @@ class Dependencies extends StatelessWidget {
           ),
         ),
       );
+
+  FirebaseFirestore getFirebaseFirestore() => FirebaseFirestore.instance;
 
   ErrorBloc getErrorBloc(BuildContext context) => ErrorBloc()
     ..error.debounceTime(Duration(milliseconds: 500)).listen((errorMessage) {

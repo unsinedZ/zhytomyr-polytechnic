@@ -14,9 +14,10 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
   final Future<SharedPreferences> sharedPreferences;
   final FirebaseFirestore firebaseFirestoreInstance;
 
-  GroupTimetableFirestoreRepository(
-      {required this.sharedPreferences,
-      required this.firebaseFirestoreInstance});
+  GroupTimetableFirestoreRepository({
+    required this.sharedPreferences,
+    required this.firebaseFirestoreInstance,
+  }) : super(firebaseFirestoreInstance: firebaseFirestoreInstance);
 
   @override
   Future<Timetable> loadTimetableByReferenceId(String referenceId) async {

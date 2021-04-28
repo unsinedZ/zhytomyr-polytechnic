@@ -32,29 +32,31 @@ class TimetableBloc {
   void loadTimetable(String id) {
     _timetableController.add(null);
 
-    timetableRepository
-        .loadTimetableByReferenceId(id)
-        .then((timetable) => _timetableController.add(timetable))
-        .onError((error, _) => errorSink.add(error.toString()));
+    timetableRepository.loadTimetableByReferenceId(id).then((timetable) {
+      _timetableController.add(timetable);
+    }).onError((error, _) {
+      errorSink.add(error.toString());
+    });
   }
 
   void loadGroup(String groupId) {
     _groupController.add(null);
 
-    groupRepository
-        .getGroupById(groupId)
-        .then((group) => _groupController.add(group))
-        .onError((error, _) => errorSink.add(error.toString()));
+    groupRepository.getGroupById(groupId).then((group) {
+      _groupController.add(group);
+    }).onError((error, _) {
+      errorSink.add(error.toString());
+    });
   }
 
   void loadTimetableItemUpdates() {
     _timetableItemUpdatesController.add(null);
 
-    timetableRepository
-        .getTimetableItemUpdates()
-        .then((timetableItemUpdates) =>
-            _timetableItemUpdatesController.add(timetableItemUpdates))
-        .onError((error, _) => errorSink.add(error.toString()));
+    timetableRepository.getTimetableItemUpdates().then((timetableItemUpdates) {
+      _timetableItemUpdatesController.add(timetableItemUpdates);
+    }).onError((error, _) {
+      errorSink.add(error.toString());
+    });
   }
 
   void dispose() {
