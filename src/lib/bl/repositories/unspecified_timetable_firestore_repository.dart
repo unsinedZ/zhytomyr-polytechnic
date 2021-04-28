@@ -10,5 +10,4 @@ class UnspecifiedTimetableFirestoreRepository implements TimetableRepository {
   Future<List<TimetableItemUpdate>> getTimetableItemUpdates() {
     throw UnimplementedError('Wrong parameters');
   }
-
 }
