@@ -96,16 +96,12 @@ class App extends StatelessWidget {
                   textLocalizer: TextLocalizer(),
                   errorSink: context.read<ErrorBloc>().errorSink,
                   drawer: NavigationDrawer(
-                    onSignOut: context.read<AuthenticationBloc>().logout,
+                    onSignOut: context.read<GoogleAuthenticationBloc>().logout,
                     textLocalizer: TextLocalizer(),
                   ),
                 ),
           ),
           '/group': (context) => GroupSelectionScreen(
-                userIdStream: context
-                    .read<AuthenticationBloc>()
-                    .user
-                    .map((user) => user != null ? user.uid : null),
                 groupsLoader: FirestoreRepository(),
                 textLocalizer: TextLocalizer(),
                 errorSink: context.read<ErrorBloc>().errorSink,

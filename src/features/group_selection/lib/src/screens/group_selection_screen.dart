@@ -8,14 +8,12 @@ import 'package:group_selection/src/bl/bloc/group_selection_bloc.dart';
 import 'package:group_selection/src/bl/models/models.dart';
 
 class GroupSelectionScreen extends StatefulWidget {
-  final Stream<String?> userIdStream;
   final TextLocalizer textLocalizer;
   final GroupsRepository groupsLoader;
   final StreamSink<String> errorSink;
   final ValueChanged<Map<String, dynamic>> subscribeCallback;
 
   GroupSelectionScreen({
-    required this.userIdStream,
     required this.textLocalizer,
     required this.groupsLoader,
     required this.errorSink,
@@ -234,51 +232,38 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
               ),
             ),
           ),
-          StreamBuilder<String?>(
-              stream: widget.userIdStream,
-              builder: (context, snapshot) {
-                return Container(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: snapshot.data == null ||
-                            course == null ||
-                            group == null ||
-                            (group!.subgroups != null &&
-                                group!.subgroups!.length > 0 &&
-                                subgroup == null)
-                        ? null
-                        : () {
-                            widget.groupsLoader.saveUserGroup(
-                              snapshot.data!,
-                              group!.id,
-                              subgroup != null ? subgroup!.id : '',
-                            );
+          Container(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: course == null ||
+                      group == null ||
+                      (group!.subgroups != null &&
+                          group!.subgroups!.length > 0 &&
+                          subgroup == null)
+                  ? null
+                  : () {
+                      if (isMyGroup) {
+                        widget.subscribeCallback({
+                          "groupId": group!.id,
+                          "subgroupId": subgroup == null ? "" : subgroup!.id
+                        });
+                      }
 
-                            if (isMyGroup) {
-                              widget.subscribeCallback({
-                                "groupId": group!.id,
-                                "subgroupId":
-                                    subgroup == null ? "" : subgroup!.id
-                              });
-                            }
-
-                            Navigator.pushNamed(context, '/timetable',
-                                arguments: [
-                                  'group',
-                                  group!.id,
-                                  subgroup == null ? null : subgroup!.id
-                                ]);
-                          },
-                    child: Padding(
-                      padding: const EdgeInsets.all(17.0),
-                      child: Text(
-                        widget.textLocalizer.localize('Continue'),
-                        textScaleFactor: 1.3,
-                      ),
-                    ),
-                  ),
-                );
-              })
+                      Navigator.pushNamed(context, '/timetable', arguments: [
+                        'group',
+                        group!.id,
+                        subgroup == null ? null : subgroup!.id
+                      ]);
+                    },
+              child: Padding(
+                padding: const EdgeInsets.all(17.0),
+                child: Text(
+                  widget.textLocalizer.localize('Continue'),
+                  textScaleFactor: 1.3,
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );

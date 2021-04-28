@@ -3,18 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:google_authentication/src/bl/authentication_bloc.dart';
 
 class GoogleSignInButton extends StatefulWidget {
-  final AuthenticationBloc authenticationBloc;
+  final GoogleAuthenticationBloc authenticationBloc;
 
   GoogleSignInButton({
     required this.authenticationBloc,
-  }) : super();
+  });
 
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
 }
 
 class _GoogleSignInButtonState extends State<GoogleSignInButton> {
-
   @override
   void initState() {
     widget.authenticationBloc.loadUser();

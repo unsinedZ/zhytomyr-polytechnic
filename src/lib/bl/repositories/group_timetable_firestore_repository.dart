@@ -21,9 +21,7 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
 
   @override
   Future<Timetable> loadTimetableByReferenceId(String referenceId) async {
-    late SharedPreferences prefs;
-    await sharedPreferences
-        .then((sharedPreferences) => prefs = sharedPreferences);
+    final SharedPreferences prefs = await sharedPreferences;
 
     String? userGroupId = prefs.getString('userGroup');
     Timetable? timetable;
@@ -34,7 +32,7 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
       json['data'] = (json['data'] as Map<String, dynamic>);
 
       Expirable<Map<String, dynamic>> expirableTimetableJson =
-          (Expirable<Map<String, dynamic>>.fromJson(json));
+          Expirable<Map<String, dynamic>>.fromJson(json);
 
       if (expirableTimetableJson.expireAt.isAfter(DateTime.now())) {
         timetable = Timetable.fromJson(expirableTimetableJson.data);

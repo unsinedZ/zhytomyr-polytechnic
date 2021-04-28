@@ -35,7 +35,7 @@ class Dependencies extends StatelessWidget {
               Provider<UserSyncBloc>(create: getUserSyncBloc),
             ],
             child: MultiProvider(providers: [
-              Provider<AuthenticationBloc>(create: getAuthenticationBloc),
+              Provider<GoogleAuthenticationBloc>(create: getAuthenticationBloc),
             ], child: child),
           ),
         ),
@@ -55,11 +55,14 @@ class Dependencies extends StatelessWidget {
           fontSize: 16.0);
     });
 
-  AuthenticationBloc getAuthenticationBloc(BuildContext context) =>
-      AuthenticationBloc(errorSink: context.read<ErrorBloc>().errorSink)
-        ..user
-            .where((user) => user != null)
-            .listen((user) => context.read<UserSyncBloc>().setData(user!.uid));
+  GoogleAuthenticationBloc getAuthenticationBloc(BuildContext context) =>
+      GoogleAuthenticationBloc(errorSink: context.read<ErrorBloc>().errorSink)
+        ..user.listen((user) {
+          if (user != null && user.uid == "") {
+            return context.read<UserSyncBloc>().cleanData();
+          }
+          context.read<UserSyncBloc>().setData(user == null ? null : user.uid);
+        });
 
   UserSyncBloc getUserSyncBloc(BuildContext context) => UserSyncBloc(
       errorSink: context.read<ErrorBloc>().errorSink,

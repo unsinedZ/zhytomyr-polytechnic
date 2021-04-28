@@ -1,14 +1,16 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:logger/logger.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-class AuthenticationBloc {
+import 'package:google_authentication/src/models/google_user.dart';
+
+class GoogleAuthenticationBloc {
   final StreamSink<String> errorSink;
 
-  AuthenticationBloc({
+  GoogleAuthenticationBloc({
     required this.errorSink,
   });
 
@@ -16,34 +18,36 @@ class AuthenticationBloc {
     printer: PrettyPrinter(),
   );
 
-  final BehaviorSubject<User?> _userController = BehaviorSubject();
-  final BehaviorSubject<bool> _isLoginNowController = BehaviorSubject();
+  final BehaviorSubject<GoogleUser?> _userController = BehaviorSubject();
 
-  Stream<User?> get user => _userController.stream;
-
-  Stream<bool> get isLoginNow => _isLoginNowController.stream;
+  Stream<GoogleUser?> get user => _userController.stream;
 
   void loadUser() async {
     try {
-      _isLoginNowController.add(true);
       if (await GoogleSignIn().isSignedIn()) {
-        _userController.add(FirebaseAuth.instance.currentUser);
+        _userController
+            .add(GoogleUser.fromLogin(FirebaseAuth.instance.currentUser!));
+      } else {
+        _userController.add(GoogleUser.empty());
       }
     } catch (err) {
       errorSink.add(err.toString());
-    } finally {
-      _isLoginNowController.add(false);
     }
   }
 
   Future<void> login() async {
     try {
+
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-      _isLoginNowController.add(true);
+      if (googleUser == null) {
+        return;
+      }
+
+      _userController.add(null);
 
       final GoogleSignInAuthentication googleAuth =
-          await googleUser!.authentication;
+          await googleUser.authentication;
 
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -56,12 +60,10 @@ class AuthenticationBloc {
       _logger.d('Signed in Google user');
       _logger.d(user);
 
-      _userController.add(user);
+      _userController.add(GoogleUser.fromLogin(user!));
     } catch (err) {
       errorSink.add(err.toString());
-      _userController.add(null);
-    } finally {
-      _isLoginNowController.add(false);
+      _userController.add(GoogleUser.empty());
     }
   }
 
@@ -69,11 +71,10 @@ class AuthenticationBloc {
     await FirebaseAuth.instance.signOut();
     await GoogleSignIn().signOut();
 
-    _userController.add(null);
+    _userController.add(GoogleUser.empty());
   }
 
   void dispose() {
     _userController.close();
-    _isLoginNowController.close();
   }
 }
