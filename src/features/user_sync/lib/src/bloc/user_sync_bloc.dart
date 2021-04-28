@@ -25,10 +25,10 @@ class UserSyncBloc {
   void loadUser() => _getUserFromStorage()
       .doOnData((userJson) {
         if (userJson == null || userJson.isEmpty) {
-          _mappedUserController.add(null);
+          _mappedUserController.add(User.empty());
         }
       })
-      .where((userJson) => userJson!.isNotEmpty)
+      .where((userJson) => userJson != null && userJson.isNotEmpty)
       .map((userJson) => jsonDecode(userJson!))
       .map((userJson) => User.fromStorage(userJson))
       .doOnError((error, _) => errorSink.add(error.toString()))
@@ -37,14 +37,21 @@ class UserSyncBloc {
   Stream<String?> _getUserFromStorage() =>
       storage.readAll().asStream().map((values) => values['user']);
 
-  void setData(String userId) => repository
-      .getUserInfo(userId)
-      .asStream()
-      .map((userJson) => User.fromJson(userJson!))
-      .doOnData(_mappedUserController.add)
-      .asyncMap((user) =>
-          storage.write(key: "user", value: jsonEncode(user.toJson())))
-      .doOnError((error, _) => errorSink.add(error.toString()))
+  void setData(String? userId) => Stream.value(userId)
+      .doOnData((userId) {
+        if (userId == null) {
+          _mappedUserController.add(null);
+        }
+      })
+      .where((user) => userId != null)
+      .switchMap((value) => repository
+          .getUserInfo(userId!)
+          .asStream()
+          .map((userJson) => User.fromJson(userJson!))
+          .doOnData(_mappedUserController.add)
+          .asyncMap((user) =>
+              storage.write(key: "user", value: jsonEncode(user.toJson())))
+          .doOnError((error, _) => errorSink.add(error.toString())))
       .toList();
 
   void updateUserData(Map<String, dynamic> data) => mappedUser
@@ -58,4 +65,8 @@ class UserSyncBloc {
               storage.write(key: "user", value: jsonEncode(dataNew.toJson()))))
       .doOnError((error, _) => errorSink.add(error.toString()))
       .toList();
+
+  void cleanData() => storage
+      .delete(key: "user")
+      .then((_) => _mappedUserController.add(User.empty()));
 }

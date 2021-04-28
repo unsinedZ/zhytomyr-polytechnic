@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:google_authentication/google_authentication.dart';
+import 'package:user_sync/user_sync.dart';
 
 class VerifyAuthentication extends StatefulWidget {
   final Widget child;
@@ -22,13 +24,14 @@ class _VerifyAuthenticationState extends State<VerifyAuthentication> {
 
   @override
   void initState() {
-    final authenticationBloc = context.read<AuthenticationBloc>();
+    final authenticationBloc = context.read<UserSyncBloc>();
 
-    _authSubscription = authenticationBloc.user
-        .where((user) => user == null)
+    _authSubscription = authenticationBloc.mappedUser
+        .where((user) => user != null && user.isEmpty)
+        .asyncMap(
+            (_) async => await (await SharedPreferences.getInstance()).clear())
         .listen((_) {
-      Navigator.popUntil(context, (route) => route.isFirst);
-      Navigator.pushReplacementNamed(context, '/authentication');
+      Phoenix.rebirth(context);
     });
 
     super.initState();
