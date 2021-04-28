@@ -4,8 +4,7 @@ import 'default_shimmer.dart';
 
 class FacultyIconShimmer extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       children: [
         DefaultShimmer(
           child: Container(
@@ -29,5 +28,4 @@ class FacultyIconShimmer extends StatelessWidget {
         ),
       ],
     );
-  }
 }

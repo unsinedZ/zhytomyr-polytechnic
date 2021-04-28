@@ -5,8 +5,7 @@ import 'default_shimmer.dart';
 
 class TimetableTabShimmer extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       children: [
         Padding(
           padding: const EdgeInsets.all(5.0),
@@ -23,5 +22,4 @@ class TimetableTabShimmer extends StatelessWidget {
         ActivityCardShimmer(),
       ],
     );
-  }
 }

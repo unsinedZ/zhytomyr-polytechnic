@@ -8,11 +8,9 @@ class DefaultShimmer extends StatelessWidget {
   DefaultShimmer({required this.child});
 
   @override
-  Widget build(BuildContext context) {
-    return Shimmer.fromColors(
+  Widget build(BuildContext context) => Shimmer.fromColors(
       baseColor: Theme.of(context).disabledColor,
       highlightColor: Theme.of(context).canvasColor,
       child: child,
     );
-  }
 }

@@ -4,8 +4,7 @@ import 'container_shimmer.dart';
 
 class ContactsScreenShimmer extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ContainerShimmer(),
@@ -18,5 +17,4 @@ class ContactsScreenShimmer extends StatelessWidget {
         ContainerShimmer(),
       ],
     );
-  }
 }

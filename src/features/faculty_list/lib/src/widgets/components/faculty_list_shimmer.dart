@@ -5,8 +5,7 @@ import 'default_shimmer.dart';
 
 class FacultyListShimmer extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -27,7 +26,6 @@ class FacultyListShimmer extends StatelessWidget {
         ),
       ],
     );
-  }
 
   List<Widget> getFacultyIconShimmers(int count) {
     List<Widget> widgets = [];
