@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:faculty_list/src/bl/bloc/faculty_list_bloc.dart';
 import 'package:faculty_list/src/bl/models/faculty.dart';
-import 'package:faculty_list/src/bl/astractions/faculty_repository.dart';
+import 'package:faculty_list/src/bl/abstractions/faculty_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class FacultyRepositoryMock extends FacultyRepository {
