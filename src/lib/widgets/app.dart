@@ -117,11 +117,11 @@ class App extends StatelessWidget {
                   textLocalizer: TextLocalizer(),
                   errorSink: context.read<ErrorBloc>().errorSink,
                   groupRepository: FirestoreRepository(),
-                  userJsonStream: context
+              userDataStream: context
                       .read<UserSyncBloc>()
                       .mappedUser
                       .where((user) => user != null && !user.isEmpty)
-                      .map((user) => user!.toJson()),
+                      .map((user) => user!.data),
                 ),
             '/my-timetable': (context) => MyTimetableScreen(
               timetableRepositoryFactory:
@@ -129,11 +129,11 @@ class App extends StatelessWidget {
               textLocalizer: TextLocalizer(),
               errorSink: context.read<ErrorBloc>().errorSink,
               groupRepository: FirestoreRepository(),
-              userJsonStream: context
+              userDataStream: context
                   .read<UserSyncBloc>()
                   .mappedUser
                   .where((user) => user != null && !user.isEmpty)
-                  .map((user) => user!.toJson()),
+                  .map((user) => user!.data),
             ),
             '/contacts': (context) => ContactsScreen(
                   textLocalizer: TextLocalizer(),
