@@ -20,12 +20,14 @@ class TimetableScreen extends StatefulWidget {
   final TimetableRepositoryFactory timetableRepositoryFactory;
   final GroupRepository groupRepository;
   final StreamSink<String> errorSink;
+  final Stream<Map<String, dynamic>> userJsonStream;
 
   TimetableScreen({
     required this.textLocalizer,
     required this.timetableRepositoryFactory,
     required this.groupRepository,
     required this.errorSink,
+    required this.userJsonStream,
   });
 
   @override
@@ -96,7 +98,11 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
     timetableBloc.loadTimetableItemUpdates();
 
-    timetableBloc.loadTimetable(id);
+    widget.userJsonStream.listen((userJson) {
+      User user = User.fromStorage(userJson);
+      timetableBloc.loadTimetable(id, user.data['groupId']);
+    });
+
 
     if (timetableType == TimetableType.Group) {
       timetableBloc.loadGroup(id);

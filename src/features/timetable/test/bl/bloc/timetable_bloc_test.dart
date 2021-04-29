@@ -11,9 +11,9 @@ import 'package:timetable/src/bl/models/models.dart';
 
 class TimetableLoaderMock extends Mock implements TimetableRepository {
   @override
-  Future<Timetable> loadTimetableByReferenceId(String? referenceId) =>
+  Future<Timetable> loadTimetableByReferenceId(String? referenceId, [String? userGroupId]) =>
       super.noSuchMethod(
-          Invocation.method(#loadTimetableByReferenceId, [referenceId]),
+          Invocation.method(#loadTimetableByReferenceId, [referenceId, userGroupId]),
           returnValue: Future.value(
               Timetable(weekDetermination: WeekDetermination.Even, items: [])));
 
@@ -37,7 +37,7 @@ void main() {
       groupRepository: groupRepositoryMock,
     );
 
-    when(timetableLoaderMock.loadTimetableByReferenceId(any)).thenAnswer((_) =>
+    when(timetableLoaderMock.loadTimetableByReferenceId(any, any)).thenAnswer((_) =>
         Future.value(
             Timetable(weekDetermination: WeekDetermination.Even, items: [])));
 

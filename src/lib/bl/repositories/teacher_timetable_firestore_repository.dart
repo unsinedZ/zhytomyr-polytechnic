@@ -13,7 +13,7 @@ class TeacherTimetableFirestoreRepository
       : super(firebaseFirestoreInstance: firebaseFirestoreInstance);
 
   @override
-  Future<Timetable> loadTimetableByReferenceId(String referenceId) async {
+  Future<Timetable> loadTimetableByReferenceId(String referenceId, [String? userGroupId]) async {
     Expirable<Map<String, dynamic>>? expirableTimetableJson;
 
     Timetable timetable = Timetable.fromJson(

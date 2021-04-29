@@ -21,7 +21,6 @@ import 'package:zhytomyr_polytechnic/widgets/dependencies.dart';
 import 'package:zhytomyr_polytechnic/widgets/screens/authentication_screen.dart';
 
 class App extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
     return Dependencies(
@@ -91,22 +90,26 @@ class App extends StatelessWidget {
           '/authentication': (context) => AuthenticationScreen(),
           '/terms&conditions': (context) => TermsAndConditionsScreen(),
           '/faculties': (context) => VerifyAuthentication(
-            child: FacultyList(
+                child: FacultyList(
                   facultyRepository: FirestoreRepository(),
                   textLocalizer: TextLocalizer(),
                   errorSink: context.read<ErrorBloc>().errorSink,
                   drawer: NavigationDrawer(
                     onSignOut: context.read<GoogleAuthenticationBloc>().logout,
                     textLocalizer: TextLocalizer(),
+                    userJsonStream: context
+                        .read<UserSyncBloc>()
+                        .mappedUser
+                        .where((user) => user != null && !user.isEmpty)
+                        .map((user) => user!.toJson()),
                   ),
                 ),
-          ),
+              ),
           '/group': (context) => GroupSelectionScreen(
                 groupsLoader: FirestoreRepository(),
                 textLocalizer: TextLocalizer(),
                 errorSink: context.read<ErrorBloc>().errorSink,
-                subscribeCallback:
-                    context.read<UserSyncBloc>().updateUserData,
+                subscribeCallback: context.read<UserSyncBloc>().updateUserData,
               ),
           '/timetable': (context) => TimetableScreen(
                 timetableRepositoryFactory:
@@ -114,6 +117,11 @@ class App extends StatelessWidget {
                 textLocalizer: TextLocalizer(),
                 errorSink: context.read<ErrorBloc>().errorSink,
                 groupRepository: FirestoreRepository(),
+                userJsonStream: context
+                    .read<UserSyncBloc>()
+                    .mappedUser
+                    .where((user) => user != null && !user.isEmpty)
+                    .map((user) => user!.toJson()),
               ),
           '/contacts': (context) => ContactsScreen(
                 textLocalizer: TextLocalizer(),

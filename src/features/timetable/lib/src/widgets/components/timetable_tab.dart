@@ -107,6 +107,7 @@ class _TimetableTabState extends State<TimetableTab> {
           group.id == widget.id &&
           (group.subgroups.length <= 1 ||
               widget.subgroupId == null ||
+              widget.subgroupId == '' ||
               group.subgroups
                   .any((subgroup) => subgroup.id == widget.subgroupId)));
     }
