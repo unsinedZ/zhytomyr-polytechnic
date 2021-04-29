@@ -1,12 +1,12 @@
-import 'package:error_bloc/error_bloc.dart';
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_authentication/google_authentication.dart';
-import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:push_notification/push_notification.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
+import 'package:error_bloc/error_bloc.dart';
+import 'package:google_authentication/google_authentication.dart';
+import 'package:push_notification/push_notification.dart';
 import 'package:user_sync/user_sync.dart';
 
 class WithStartupActions extends StatefulWidget {
