@@ -28,6 +28,5 @@ class User {
         'data': data,
       };
 
-
   bool get isEmpty => userId.isEmpty && data.isEmpty;
 }
