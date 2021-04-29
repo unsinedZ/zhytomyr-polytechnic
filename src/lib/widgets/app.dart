@@ -102,6 +102,7 @@ class App extends StatelessWidget {
                         .mappedUser
                         .where((user) => user != null && !user.isEmpty)
                         .map((user) => user!.toJson()),
+                    errorSink: context.read<ErrorBloc>().errorSink,
                   ),
                 ),
               ),

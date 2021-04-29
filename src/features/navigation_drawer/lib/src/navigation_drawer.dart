@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:navigation_drawer/src/bl/abstractions/text_localizer.dart';
@@ -7,11 +9,13 @@ class NavigationDrawer extends StatefulWidget {
   final TextLocalizer textLocalizer;
   final VoidCallback onSignOut;
   final Stream<Map<String, dynamic>> userJsonStream;
+  final StreamSink<String> errorSink;
 
   NavigationDrawer({
     required this.textLocalizer,
     required this.onSignOut,
     required this.userJsonStream,
+    required this.errorSink,
   });
 
   @override
@@ -54,7 +58,8 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 : () {
                     if (user!.data['groupId'] == null ||
                         user!.data['groupId'] == '') {
-                      Navigator.pushNamed(context, '/faculties');
+                      widget.errorSink.add(widget.textLocalizer
+                          .localize('You have not yet selected a group'));
                     } else {
                       Navigator.pushNamed(
                         context,
