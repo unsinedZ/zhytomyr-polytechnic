@@ -35,8 +35,12 @@ class _DeepLinkState extends State<DeepLink> {
       widget.links.forEach((link) {
         if (dynamicLink.link.path == link.link) {
           if (link.isNamed) {
-            Navigator.pushNamed(context, link.link,
-                arguments: dynamicLink.link.queryParameters);
+            Navigator.pushNamed(
+              context,
+              link.link,
+              arguments: dynamicLink.link.queryParameters,
+            );
+            return;
           }
 
           if (link.route == null) {
@@ -46,9 +50,11 @@ class _DeepLinkState extends State<DeepLink> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => link.route!,
-                  settings: RouteSettings(
-                      arguments: dynamicLink.link.queryParameters)));
+                builder: (context) => link.route!,
+                settings: RouteSettings(
+                  arguments: dynamicLink.link.queryParameters,
+                ),
+              ));
         }
       });
     }, onError: (Object error, StackTrace stack) => widget.fallbackCallback);
