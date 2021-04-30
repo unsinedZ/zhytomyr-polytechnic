@@ -99,7 +99,8 @@ class App extends StatelessWidget {
                     textLocalizer: TextLocalizer(),
                     errorSink: context.read<ErrorBloc>().errorSink,
                     drawer: NavigationDrawer(
-                      onSignOut: context.read<GoogleAuthenticationBloc>().logout,
+                      onSignOut:
+                          context.read<GoogleAuthenticationBloc>().logout,
                       textLocalizer: TextLocalizer(),
                       errorSink: context.read<ErrorBloc>().errorSink,
                     ),
@@ -109,7 +110,8 @@ class App extends StatelessWidget {
                   groupsLoader: FirestoreRepository(),
                   textLocalizer: TextLocalizer(),
                   errorSink: context.read<ErrorBloc>().errorSink,
-                  subscribeCallback: context.read<UserSyncBloc>().updateUserData,
+                  subscribeCallback:
+                      context.read<UserSyncBloc>().updateUserData,
                 ),
             '/timetable': (context) => TimetableScreen(
                   timetableRepositoryFactory:
@@ -117,21 +119,21 @@ class App extends StatelessWidget {
                   textLocalizer: TextLocalizer(),
                   errorSink: context.read<ErrorBloc>().errorSink,
                   groupRepository: FirestoreRepository(),
-              userDataStream: context
+                  userDataStream: context
                       .read<UserSyncBloc>()
                       .mappedUser
                       .where((user) => user != null && !user.isEmpty)
                       .map((user) => user!.data),
                 ),
             '/my-timetable': (context) => MyTimetableScreen(
-              textLocalizer: TextLocalizer(),
-              errorSink: context.read<ErrorBloc>().errorSink,
-              userDataStream: context
-                  .read<UserSyncBloc>()
-                  .mappedUser
-                  .where((user) => user != null && !user.isEmpty)
-                  .map((user) => user!.data),
-            ),
+                  textLocalizer: TextLocalizer(),
+                  errorSink: context.read<ErrorBloc>().errorSink,
+                  userDataStream: context
+                      .read<UserSyncBloc>()
+                      .mappedUser
+                      .where((user) => user != null && !user.isEmpty)
+                      .map((user) => user!.data),
+                ),
             '/contacts': (context) => ContactsScreen(
                   textLocalizer: TextLocalizer(),
                   contactsRepository: FirestoreRepository(),

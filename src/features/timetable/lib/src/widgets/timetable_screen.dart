@@ -69,9 +69,9 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   void didChangeDependencies() {
-    Object? arguments = ModalRoute.of(context)!.settings.arguments;
+    final arguments = (ModalRoute.of(context)!.settings.arguments) as Map<String, dynamic>;
 
-    if ((arguments as List<dynamic>).length > 3) {
+    if (arguments.length > 3) {
       TimetableFilters timetableFilters =
           TimetableFilters.fromJson(arguments[3]);
       weekNumber = timetableFilters.weekNumber;
@@ -80,12 +80,12 @@ class _TimetableScreenState extends State<TimetableScreen> {
       timetableType = timetableFilters.timetableType;
       initialIndex = timetableFilters.weekDayNumber - 1;
     } else {
-      id = arguments[1];
+      id = arguments['groupId'];
 
-      timetableType = timetableTypeFromString(arguments[0] as String);
+      timetableType = timetableTypeFromString(arguments['type'] as String);
 
       if (timetableType == TimetableType.Group) {
-        subgroupId = arguments[2];
+        subgroupId = arguments['subgroupId'];
       }
     }
 
