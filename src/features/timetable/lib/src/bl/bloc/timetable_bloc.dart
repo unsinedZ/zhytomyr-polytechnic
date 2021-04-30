@@ -29,12 +29,14 @@ class TimetableBloc {
   Stream<List<TimetableItemUpdate>?> get timetableItemUpdates =>
       _timetableItemUpdatesController.stream;
 
-  void loadTimetable(String id) {
+  void loadTimetable(String id, [String? groupId]) {
     _timetableController.add(null);
 
-    timetableRepository.loadTimetableByReferenceId(id).then((timetable) {
+    timetableRepository.loadTimetableByReferenceId(id, groupId).then((timetable) {
       _timetableController.add(timetable);
-    }).onError((error, _) {
+    }).onError((error, stack) {
+      print(error);
+      print(stack);
       errorSink.add(error.toString());
     });
   }

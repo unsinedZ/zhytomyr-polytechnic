@@ -43,7 +43,7 @@ class UserSyncBloc {
           _mappedUserController.add(null);
         }
       })
-      .where((user) => userId != null)
+      .where((userId) => userId != null)
       .switchMap((value) => repository
           .getUserInfo(userId!)
           .asStream()
@@ -56,6 +56,7 @@ class UserSyncBloc {
 
   void updateUserData(Map<String, dynamic> data) => mappedUser
       .take(1)
+      .where((user) => user != null && json.encode(user.data) != json.encode(data))
       .map((user) => User(data: data, userId: user!.userId))
       .switchMap((dataNew) => Stream.value(null)
           .asyncMap(

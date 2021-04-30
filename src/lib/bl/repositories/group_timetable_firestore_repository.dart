@@ -20,10 +20,9 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
   }) : super(firebaseFirestoreInstance: firebaseFirestoreInstance);
 
   @override
-  Future<Timetable> loadTimetableByReferenceId(String referenceId) async {
+  Future<Timetable> loadTimetableByReferenceId(String referenceId, [String? userGroupId]) async {
     final SharedPreferences prefs = await sharedPreferences;
 
-    String? userGroupId = prefs.getString('userGroup');
     Timetable? timetable;
 
     if (prefs.containsKey('timetable.group.my') && userGroupId == referenceId) {
@@ -40,7 +39,7 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
     }
 
     if (timetable == null) {
-      Timetable timetable = Timetable.fromJson(
+      timetable = Timetable.fromJson(
           (await firebaseFirestoreInstance.collection('timetable').get())
               .docs
               .map((doc) => doc.data()!)
@@ -69,6 +68,6 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
       }
     }
 
-    return timetable!;
+    return timetable;
   }
 }

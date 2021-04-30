@@ -18,7 +18,6 @@ class FirestoreRepository
         Timetable.GroupRepository,
         ContactsRepository,
         UserRepository {
-
   @override
   Stream<List<Faculty>> getFaculties() =>
       FirebaseFirestore.instance.collection('faculty').get().asStream().map(
@@ -81,33 +80,6 @@ class FirestoreRepository
   }
 
   @override
-  Future<void> saveUserGroup(
-      String userId, String groupId, String subgroupId) async {
-    SharedPreferences sharedPreferences =
-        (await SharedPreferences.getInstance());
-
-    sharedPreferences.setString('userGroup', groupId);
-
-    Map<String, dynamic> data = {
-      'userId': userId,
-      'groupId': groupId,
-      'subgroupId': subgroupId,
-    };
-
-    List<QueryDocumentSnapshot> documents =
-        (await FirebaseFirestore.instance.collection('users').get())
-            .docs
-            .where((element) => element.data()!['userId'] == userId)
-            .toList();
-
-    if (documents.isNotEmpty) {
-      documents.first.reference.set(data);
-    } else {
-      await FirebaseFirestore.instance.collection('users').add(data);
-    }
-  }
-
-  @override
   Future<ContactsData> loadContactsData() async {
     ContactsData contactsData = ContactsData.fromJson(
         (await FirebaseFirestore.instance.collection('contacts').get())
@@ -118,15 +90,22 @@ class FirestoreRepository
     return contactsData;
   }
 
-  Future<void> changeUserInfo(String userId, Map<String, dynamic> data) async =>
-      (await FirebaseFirestore.instance
-              .collection("users")
-              .where("userId", isEqualTo: userId)
-              .get())
-          .docs
-          .first
-          .reference
-          .update(data);
+  Future<void> changeUserInfo(String userId, Map<String, dynamic> data) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    if (sharedPreferences.containsKey('timetable.group.my')) {
+      sharedPreferences.remove('timetable.group.my');
+    }
+
+    return (await FirebaseFirestore.instance
+            .collection("users")
+            .where("userId", isEqualTo: userId)
+            .get())
+        .docs
+        .first
+        .reference
+        .update(data);
+  }
 
   @override
   Future<Map<String, dynamic>?> getUserInfo(String userId) async =>
