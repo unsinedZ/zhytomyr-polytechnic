@@ -24,14 +24,19 @@ class _DeepLinkState extends State<DeepLink> {
   void initState() {
     FirebaseDynamicLinks.instance.getInitialLink().then(
         (PendingDynamicLinkData? dynamicLink) async {
-      if (dynamicLink == null || widget.links.isEmpty) {
+      if (dynamicLink == null) {
         return;
       }
 
+      if (widget.links.isEmpty) {
+        throw Exception("Links list is empty");
+      }
+
       widget.links.forEach((link) {
-        if (dynamicLink.link.path.contains(link.link)) {
+        if (dynamicLink.link.path == link.link) {
           if (link.isNamed) {
-            Navigator.pushNamed(context, link.link);
+            Navigator.pushNamed(context, link.link,
+                arguments: dynamicLink.link.queryParameters);
           }
 
           if (link.route == null) {
@@ -39,7 +44,11 @@ class _DeepLinkState extends State<DeepLink> {
           }
 
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => link.route!));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => link.route!,
+                  settings: RouteSettings(
+                      arguments: dynamicLink.link.queryParameters)));
         }
       });
     }, onError: (Object error, StackTrace stack) => widget.fallbackCallback);

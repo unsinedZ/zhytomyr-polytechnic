@@ -34,10 +34,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   @override
   Widget build(BuildContext context) => DeepLink(
         fallbackCallback: (err, _) {
-          Navigator.pushNamed(context, "/");
+          Navigator.pushNamed(context, "/authentication");
         },
         links: [
-          Link(link: "/contacts", isNamed: true),
+          Link(link: "/timetable", isNamed: true),
         ],
         child: SafeArea(
           child: Scaffold(
