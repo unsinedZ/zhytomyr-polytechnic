@@ -7,15 +7,11 @@ import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 
 class MyTimetableScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
-  final TimetableRepositoryFactory timetableRepositoryFactory;
-  final GroupRepository groupRepository;
   final StreamSink<String> errorSink;
   final Stream<Map<String, dynamic>> userDataStream;
 
   MyTimetableScreen({
     required this.textLocalizer,
-    required this.timetableRepositoryFactory,
-    required this.groupRepository,
     required this.errorSink,
     required this.userDataStream,
   });

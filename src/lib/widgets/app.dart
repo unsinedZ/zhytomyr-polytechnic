@@ -124,11 +124,8 @@ class App extends StatelessWidget {
                       .map((user) => user!.data),
                 ),
             '/my-timetable': (context) => MyTimetableScreen(
-              timetableRepositoryFactory:
-              TimetableFirestoreRepositoryFactory(),
               textLocalizer: TextLocalizer(),
               errorSink: context.read<ErrorBloc>().errorSink,
-              groupRepository: FirestoreRepository(),
               userDataStream: context
                   .read<UserSyncBloc>()
                   .mappedUser
