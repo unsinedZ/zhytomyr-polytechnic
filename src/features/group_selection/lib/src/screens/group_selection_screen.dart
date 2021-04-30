@@ -249,11 +249,11 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                         });
                       }
 
-                      Navigator.pushNamed(context, '/timetable', arguments: [
-                        'group',
-                        group!.id,
-                        subgroup == null ? null : subgroup!.id
-                      ]);
+                      Navigator.pushNamed(context, '/timetable', arguments: {
+                        'type': 'group',
+                        'groupId': group!.id,
+                        'subgroupId': subgroup == null ? null : subgroup!.id
+                      });
                     },
               child: Padding(
                 padding: const EdgeInsets.all(17.0),
