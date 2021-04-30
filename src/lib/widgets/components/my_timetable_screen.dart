@@ -34,11 +34,11 @@ class _MyTimetableScreenState extends State<MyTimetableScreen> {
         Navigator.pushReplacementNamed(
           context,
           '/timetable',
-          arguments: [
-            'group',
-            userData['groupId'],
-            userData['subgroupId'],
-          ],
+          arguments: {
+            'type': 'group',
+            'groupId': userData['groupId'],
+            'subgroupId': userData['subgroupId']
+          },
         );
       }
     }).onError((_, __) => Navigator.pop(context));
