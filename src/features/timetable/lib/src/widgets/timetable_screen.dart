@@ -99,8 +99,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
     timetableBloc.loadTimetableItemUpdates();
 
     widget.userDataStream.listen((userDataJson) {
-      UserData user = UserData.fromJson(userDataJson);
-      timetableBloc.loadTimetable(id, user.data['groupId']);
+      timetableBloc.loadTimetable(id, userDataJson['groupId']);
     });
 
 

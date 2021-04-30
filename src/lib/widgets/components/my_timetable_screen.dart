@@ -25,9 +25,8 @@ class _MyTimetableScreenState extends State<MyTimetableScreen> {
   @override
   void initState() {
     widget.userDataStream.listen((userData) {
-      UserData user = UserData.fromJson(userData);
-      if (user.data['groupId'] == null ||
-          user.data['groupId'] == '') {
+      if (userData['groupId'] == null ||
+          userData['groupId'] == '') {
         widget.errorSink.add(widget.textLocalizer
             .localize('You have not yet selected a group'));
         Navigator.pop(context);
@@ -37,8 +36,8 @@ class _MyTimetableScreenState extends State<MyTimetableScreen> {
           '/timetable',
           arguments: [
             'group',
-            user.data['groupId'],
-            user.data['subgroupId'],
+            userData['groupId'],
+            userData['subgroupId'],
           ],
         );
       }

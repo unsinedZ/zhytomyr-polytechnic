@@ -8,4 +8,3 @@ export 'timetable_item.dart';
 export 'timetable_filters.dart';
 export 'timetable_item_update.dart';
 export 'updatable_timetable_item.dart';
-export 'user_data.dart';
