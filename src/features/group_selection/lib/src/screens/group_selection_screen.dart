@@ -29,6 +29,7 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
   Group? group;
   Subgroup? subgroup;
   late String facultyId;
+  late String facultyName;
   late GroupSelectionBloc groupSelectionBloc;
   bool isMyGroup = false;
 
@@ -65,7 +66,10 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
 
   @override
   void didChangeDependencies() {
-    facultyId = ModalRoute.of(context)!.settings.arguments.toString();
+    facultyId = (ModalRoute.of(context)!.settings.arguments
+        as Map<String, dynamic>)['facultyId'].toString();
+    facultyName = (ModalRoute.of(context)!.settings.arguments
+        as Map<String, dynamic>)['facultyName'];
     super.didChangeDependencies();
   }
 
@@ -79,7 +83,7 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
               Navigator.pop(context);
             }),
         title: Text(
-          widget.textLocalizer.localize('Schedule'),
+          facultyName,
           style: Theme.of(context).textTheme.headline1,
         ),
       ),

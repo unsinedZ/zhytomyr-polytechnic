@@ -6,25 +6,29 @@ import 'package:mockito/mockito.dart';
 
 import 'package:timetable/src/bl/abstractions/timetable_repository.dart';
 import 'package:timetable/src/bl/abstractions/group_repository.dart';
+import 'package:timetable/src/bl/abstractions/tutor_repository.dart';
 import 'package:timetable/src/bl/bloc/timetable_bloc.dart';
 import 'package:timetable/src/bl/models/models.dart';
 
 class TimetableLoaderMock extends Mock implements TimetableRepository {
   @override
-  Future<Timetable> loadTimetableByReferenceId(String? referenceId, [String? userGroupId]) =>
+  Future<Timetable> loadTimetableByReferenceId(String? referenceId,
+          [String? userGroupId]) =>
       super.noSuchMethod(
-          Invocation.method(#loadTimetableByReferenceId, [referenceId, userGroupId]),
+          Invocation.method(
+              #loadTimetableByReferenceId, [referenceId, userGroupId]),
           returnValue: Future.value(
               Timetable(weekDetermination: WeekDetermination.Even, items: [])));
 
   @override
   Future<List<TimetableItemUpdate>> getTimetableItemUpdates() =>
-      super.noSuchMethod(
-          Invocation.method(#getTimetableItemUpdates, []),
+      super.noSuchMethod(Invocation.method(#getTimetableItemUpdates, []),
           returnValue: Future.value(<TimetableItemUpdate>[]));
 }
 
 class GroupRepositoryMock extends Mock implements GroupRepository {}
+
+class TutorRepositoryMock extends Mock implements TutorRepository {}
 
 void main() {
   test('TimetableBloc.loadTimetable work correctly', () async {
@@ -35,10 +39,11 @@ void main() {
       timetableRepository: timetableLoaderMock,
       errorSink: StreamController<String>().sink,
       groupRepository: groupRepositoryMock,
+      tutorRepository: TutorRepositoryMock(),
     );
 
-    when(timetableLoaderMock.loadTimetableByReferenceId(any, any)).thenAnswer((_) =>
-        Future.value(
+    when(timetableLoaderMock.loadTimetableByReferenceId(any, any)).thenAnswer(
+        (_) => Future.value(
             Timetable(weekDetermination: WeekDetermination.Even, items: [])));
 
     List<Timetable?> results = <Timetable?>[];
@@ -61,6 +66,7 @@ void main() {
       timetableRepository: timetableLoaderMock,
       errorSink: StreamController<String>().sink,
       groupRepository: groupRepositoryMock,
+      tutorRepository: TutorRepositoryMock(),
     );
 
     when(timetableLoaderMock.getTimetableItemUpdates())
@@ -71,7 +77,8 @@ void main() {
 
     List<List<TimetableItemUpdate>?> results = <List<TimetableItemUpdate>?>[];
 
-    timetableBloc.timetableItemUpdates.listen((timetableItemUpdates) => results.add(timetableItemUpdates));
+    timetableBloc.timetableItemUpdates
+        .listen((timetableItemUpdates) => results.add(timetableItemUpdates));
     timetableBloc.loadTimetableItemUpdates();
 
     await Future.delayed(const Duration());

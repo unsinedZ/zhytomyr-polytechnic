@@ -124,6 +124,7 @@ class App extends StatelessWidget {
                       .mappedUser
                       .where((user) => user != null && !user.isEmpty)
                       .map((user) => user!.data),
+                  tutorRepository: FirestoreRepository(),
                 ),
             '/my-timetable': (context) => MyTimetableScreen(
                   textLocalizer: TextLocalizer(),

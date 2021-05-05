@@ -2,12 +2,21 @@ import 'dart:async';
 
 import 'package:timetable/src/bl/abstractions/timetable_repository.dart';
 import 'package:timetable/src/bl/abstractions/group_repository.dart';
+import 'package:timetable/src/bl/abstractions/tutor_repository.dart';
 import 'package:timetable/src/bl/models/models.dart';
 
 class TimetableBloc {
   final TimetableRepository timetableRepository;
   final GroupRepository groupRepository;
   final StreamSink<String> errorSink;
+  final TutorRepository tutorRepository;
+
+  TimetableBloc({
+    required this.timetableRepository,
+    required this.groupRepository,
+    required this.errorSink,
+    required this.tutorRepository,
+  });
 
   final StreamController<Timetable?> _timetableController =
       StreamController.broadcast();
@@ -15,12 +24,8 @@ class TimetableBloc {
       StreamController.broadcast();
   final StreamController<List<TimetableItemUpdate>?>
       _timetableItemUpdatesController = StreamController.broadcast();
-
-  TimetableBloc({
-    required this.timetableRepository,
-    required this.groupRepository,
-    required this.errorSink,
-  });
+  final StreamController<Tutor?> _tutorController =
+      StreamController.broadcast();
 
   Stream<Timetable?> get timetable => _timetableController.stream;
 
@@ -29,10 +34,14 @@ class TimetableBloc {
   Stream<List<TimetableItemUpdate>?> get timetableItemUpdates =>
       _timetableItemUpdatesController.stream;
 
+  Stream<Tutor?> get tutor => _tutorController.stream;
+
   void loadTimetable(String id, [String? groupId]) {
     _timetableController.add(null);
 
-    timetableRepository.loadTimetableByReferenceId(id, groupId).then((timetable) {
+    timetableRepository
+        .loadTimetableByReferenceId(id, groupId)
+        .then((timetable) {
       _timetableController.add(timetable);
     }).onError((error, stack) {
       print(error);
@@ -61,9 +70,20 @@ class TimetableBloc {
     });
   }
 
+  void loadTutor(String tutorId) {
+    _tutorController.add(null);
+
+    tutorRepository.getTutorById(tutorId).then((tutor) {
+      _tutorController.add(tutor);
+    }).onError((error, _) {
+      errorSink.add(error.toString());
+    });
+  }
+
   void dispose() {
     _timetableController.close();
     _groupController.close();
     _timetableItemUpdatesController.close();
+    _tutorController.close();
   }
 }
