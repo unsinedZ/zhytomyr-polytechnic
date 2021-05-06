@@ -6,7 +6,7 @@ import 'package:rxdart/rxdart.dart';
 class DeepLinkBloc {
   final StreamSink<String> errorSink;
 
-  StreamController<Uri?> _dynamicLinkController = StreamController();
+  BehaviorSubject<Uri?> _dynamicLinkController = BehaviorSubject();
 
   DeepLinkBloc({required this.errorSink});
 
@@ -15,22 +15,23 @@ class DeepLinkBloc {
   void initLink(List<String> links) => FirebaseDynamicLinks.instance
       .getInitialLink()
       .asStream()
-      .doOnData((link) {
+      .doOnData((deepLink) {
         if (links.length == 0) {
           throw Exception("Links list is empty");
         }
       })
       .where((_) => links.length != 0)
-      .doOnData((dynamicLink) {
-        if (dynamicLink == null) {
+      .doOnData((deepLink) {
+        if (deepLink == null || !links.contains(deepLink.link)) {
           _dynamicLinkController.add(null);
         }
       })
-      .where((link) => link != null)
-      .doOnError((error, _) => errorSink.add(error.toString()))
-      .listen((initedLink) => links
-          .where((link) => initedLink!.link.path == link)
-          .forEach((link) => _dynamicLinkController.add(initedLink!.link)));
+      .where((deepLink) => deepLink != null && links.contains(deepLink.link))
+      .doOnError((error, _) {
+        errorSink.add(error.toString());
+        _dynamicLinkController.add(null);
+      })
+      .listen((deepLink) => _dynamicLinkController.add(deepLink!.link));
 
   void dispose() {
     _dynamicLinkController.close();
