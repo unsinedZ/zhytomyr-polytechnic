@@ -1,4 +1,3 @@
 library deep_links;
 
-export 'src/deep_link.dart';
-export 'src/models/link.dart';
+export 'src/bloc/deep_link_bloc.dart';
