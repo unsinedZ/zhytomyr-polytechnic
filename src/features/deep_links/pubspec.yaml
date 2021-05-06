@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   firebase_dynamic_links: ^2.0.2
+  rxdart: ^0.26.0
 
 dev_dependencies:
   flutter_test:

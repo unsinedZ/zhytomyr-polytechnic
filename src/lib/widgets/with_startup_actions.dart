@@ -48,10 +48,12 @@ class _WithStartupActionsState extends State<WithStartupActions> {
     });
 
     context.read<GoogleAuthenticationBloc>().user.listen((user) {
-      if (user != null && user.uid == "") {
-        return context.read<UserSyncBloc>().cleanData();
+      if (user?.uid == "") {
+        context.read<UserSyncBloc>().cleanData();
+        return;
       }
-      context.read<UserSyncBloc>().setData(user == null ? null : user.uid);
+      
+      context.read<UserSyncBloc>().setData(user?.uid);
     });
 
     super.initState();

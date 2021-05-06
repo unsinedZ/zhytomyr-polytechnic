@@ -1,3 +1,4 @@
+import 'package:deep_links/deep_links.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -21,6 +22,7 @@ class Dependencies extends StatelessWidget {
   Widget build(BuildContext context) => MultiProvider(
         providers: [
           Provider<ErrorBloc>(create: getErrorBloc),
+          Provider<DeepLinkBloc>(create: getDeepLinkBloc),
           Provider<TextLocalizer>(create: getTextLocalizer),
         ],
         child: MultiProvider(
@@ -49,6 +51,9 @@ class Dependencies extends StatelessWidget {
 
   PushNotificationBloc getNotificationBloc(BuildContext context) =>
       PushNotificationBloc(errorSink: context.read<ErrorBloc>().errorSink);
+
+  DeepLinkBloc getDeepLinkBloc(BuildContext context) =>
+      DeepLinkBloc(errorSink: context.read<ErrorBloc>().errorSink)..initLink(['/timetable']);
 
   TextLocalizer getTextLocalizer(BuildContext context) => TextLocalizer();
 }
