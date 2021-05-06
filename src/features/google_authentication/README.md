@@ -1,4 +1,4 @@
-# google_apple_authentication
+# google_authentication
 
 A new flutter plugin project.
 
