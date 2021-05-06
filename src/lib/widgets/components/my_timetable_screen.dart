@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:timetable/timetable.dart' hide TextLocalizer;
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 
 class MyTimetableScreen extends StatefulWidget {

@@ -10,6 +10,7 @@ import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/widgets/components/components.dart';
 import 'package:timetable/src/bl/bloc/timetable_bloc.dart';
 import 'package:timetable/src/bl/abstractions/group_repository.dart';
+import 'package:timetable/src/bl/abstractions/tutor_repository.dart';
 import 'package:timetable/src/bl/models/models.dart';
 import 'package:timetable/src/widgets/components/filters_bottom_sheet.dart';
 import 'package:timetable/src/widgets/components/timetable_tab_shimmer.dart';
@@ -19,6 +20,7 @@ class TimetableScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
   final TimetableRepositoryFactory timetableRepositoryFactory;
   final GroupRepository groupRepository;
+  final TutorRepository tutorRepository;
   final StreamSink<String> errorSink;
   final Stream<Map<String, dynamic>> userDataStream;
 
@@ -26,6 +28,7 @@ class TimetableScreen extends StatefulWidget {
     required this.textLocalizer,
     required this.timetableRepositoryFactory,
     required this.groupRepository,
+    required this.tutorRepository,
     required this.errorSink,
     required this.userDataStream,
   });
@@ -51,8 +54,15 @@ class _TimetableScreenState extends State<TimetableScreen> {
   StreamSubscription? groupStreamSubscription;
   String? subgroupId;
   Group? group;
+  Tutor? tutor;
 
   MediaQueryData get mediaQuery => MediaQuery.of(context);
+
+  String get title => timetableType == TimetableType.Group
+      ? (group == null ? '' : group!.name)
+      : timetableType == TimetableType.Teacher
+          ? (tutor == null ? '' : tutor!.name)
+          : '';
 
   @override
   void initState() {
@@ -69,7 +79,8 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   void didChangeDependencies() {
-    final arguments = (ModalRoute.of(context)!.settings.arguments) as Map<String, dynamic>;
+    final arguments =
+        (ModalRoute.of(context)!.settings.arguments) as Map<String, dynamic>;
 
     if (arguments.length > 3) {
       TimetableFilters timetableFilters =
@@ -94,6 +105,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
           .getTimetableRepository(timetableType),
       errorSink: widget.errorSink,
       groupRepository: widget.groupRepository,
+      tutorRepository: widget.tutorRepository,
     );
 
     timetableBloc.loadTimetableItemUpdates();
@@ -102,7 +114,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
       timetableBloc.loadTimetable(id, userDataJson['groupId']);
     });
 
-
     if (timetableType == TimetableType.Group) {
       timetableBloc.loadGroup(id);
       timetableBloc.group.listen((group) {
@@ -110,12 +121,19 @@ class _TimetableScreenState extends State<TimetableScreen> {
           this.group = group;
         });
       });
+    } else if (timetableType == TimetableType.Teacher) {
+      timetableBloc.loadTutor(id);
+      timetableBloc.tutor.listen((group) {
+        setState(() {
+          this.tutor = group;
+        });
+      });
     }
 
     dataStream = Rx.combineLatest2(
       timetableBloc.timetable,
       timetableBloc.timetableItemUpdates,
-          (a, b) => <dynamic>[a, b],
+      (a, b) => <dynamic>[a, b],
     );
 
     super.didChangeDependencies();
@@ -145,7 +163,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
             },
           ),
           title: Text(
-            widget.textLocalizer.localize('Timetable'),
+            title,
             style: Theme.of(context).textTheme.headline1,
           ),
         ),
@@ -251,8 +269,7 @@ TimetableType timetableTypeFromString(String value) =>
             e.toString().split(".").last.toLowerCase() == value.toLowerCase(),
         orElse: () => TimetableType.Unspecified);
 
-bool _isSnapshotHasData(
-    AsyncSnapshot<List<dynamic>> snapshot) {
+bool _isSnapshotHasData(AsyncSnapshot<List<dynamic>> snapshot) {
   if (snapshot.hasData &&
       snapshot.data != null &&
       snapshot.data![0] != null &&

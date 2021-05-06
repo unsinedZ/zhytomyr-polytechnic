@@ -17,7 +17,8 @@ class FirestoreRepository
         GroupsRepository,
         Timetable.GroupRepository,
         ContactsRepository,
-        UserRepository {
+        UserRepository,
+        Timetable.TutorRepository {
   @override
   Stream<List<Faculty>> getFaculties() =>
       FirebaseFirestore.instance.collection('faculty').get().asStream().map(
@@ -110,10 +111,25 @@ class FirestoreRepository
   @override
   Future<Map<String, dynamic>?> getUserInfo(String userId) async =>
       (await FirebaseFirestore.instance
-              .collection("users")
-              .where("userId", isEqualTo: userId)
-              .get())
-          .docs
-          .first
-          .data();
+          .collection("users")
+          .where("userId", isEqualTo: userId)
+          .get())
+      .docs
+      .first
+      .data();
+
+  @override
+  Future<Timetable.Tutor?> getTutorById(String teacherId) async {
+    List<Timetable.Tutor> tutors = (await FirebaseFirestore.instance
+        .collection("tutors")
+        .where("id", isEqualTo: teacherId)
+        .get())
+        .docs.map((doc) => Timetable.Tutor.fromJson(doc.data()!)).toList();
+
+    if(tutors.isNotEmpty) {
+      return tutors.first;
+    } else {
+      return null;
+    }
+  }
 }

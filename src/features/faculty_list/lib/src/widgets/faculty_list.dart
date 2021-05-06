@@ -49,7 +49,7 @@ class _FacultyListState extends State<FacultyList> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.textLocalizer.localize("Faculty List"),
+          widget.textLocalizer.localize("Faculties"),
           style: Theme.of(context).textTheme.headline1,
         ),
       ),
