@@ -53,7 +53,7 @@ class Dependencies extends StatelessWidget {
       PushNotificationBloc(errorSink: context.read<ErrorBloc>().errorSink);
 
   DeepLinkBloc getDeepLinkBloc(BuildContext context) =>
-      DeepLinkBloc()..initLink(['/timetable']);
+      DeepLinkBloc(errorSink: context.read<ErrorBloc>().errorSink)..initLink(['/timetable']);
 
   TextLocalizer getTextLocalizer(BuildContext context) => TextLocalizer();
 }

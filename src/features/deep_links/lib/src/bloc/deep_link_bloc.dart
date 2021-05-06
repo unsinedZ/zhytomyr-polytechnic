@@ -4,7 +4,11 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:rxdart/rxdart.dart';
 
 class DeepLinkBloc {
+  final StreamSink<String> errorSink;
+
   StreamController<Uri?> _dynamicLinkController = StreamController();
+
+  DeepLinkBloc({required this.errorSink});
 
   Stream<Uri?> get dynamicLink => _dynamicLinkController.stream;
 
@@ -23,6 +27,7 @@ class DeepLinkBloc {
         }
       })
       .where((link) => link != null)
+      .doOnError((error, _) => errorSink.add(error.toString()))
       .listen((initedLink) => links
           .where((link) => initedLink!.link.path == link)
           .forEach((link) => _dynamicLinkController.add(initedLink!.link)));
