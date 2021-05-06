@@ -443,7 +443,6 @@ DEPENDENCIES:
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - google_authentication (from `.symlinks/plugins/google_authentication/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
-  - GoogleSignIn (~> 5.0-M1)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
@@ -554,6 +553,6 @@ SPEC CHECKSUMS:
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
-PODFILE CHECKSUM: ead9175bc2872a472a0c672664cc19c2704f2b58
+PODFILE CHECKSUM: e635f7edc87b7e781729b695c6747a977e99e419
 
 COCOAPODS: 1.10.1
