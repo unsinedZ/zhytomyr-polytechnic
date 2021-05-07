@@ -8,6 +8,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'constants.dart';
 
 class TermsAndConditionsScreen extends StatefulWidget {
+  final Widget Function({required Widget child}) bodyWrapper;
+
+  TermsAndConditionsScreen({required this.bodyWrapper});
+
   @override
   _TermsAndConditionsScreenState createState() =>
       _TermsAndConditionsScreenState();
@@ -38,22 +42,24 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
               }),
           title: Text('Terms and conditions', style: Theme.of(context).textTheme.headline1,),
         ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  MarkdownBody(
-                    data: text ?? '',
-                    selectable: true,
-                    onTapLink: (_, uri, ___) async {
-                      await launch(uri!);
-                    },
-                  ),
-                ],
+        body: widget.bodyWrapper(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    MarkdownBody(
+                      data: text ?? '',
+                      selectable: true,
+                      onTapLink: (_, uri, ___) async {
+                        await launch(uri!);
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

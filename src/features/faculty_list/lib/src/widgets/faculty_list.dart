@@ -14,12 +14,14 @@ class FacultyList extends StatefulWidget {
   final TextLocalizer textLocalizer;
   final StreamSink<String> errorSink;
   final Widget drawer;
+  final Widget Function({required Widget child}) bodyWrapper;
 
   FacultyList({
     required this.facultyRepository,
     required this.textLocalizer,
     required this.errorSink,
     required this.drawer,
+    required this.bodyWrapper,
   });
 
   _FacultyListState createState() => _FacultyListState();
@@ -54,46 +56,48 @@ class _FacultyListState extends State<FacultyList> {
         ),
       ),
       drawer: widget.drawer,
-      body: StreamBuilder<List<Faculty>>(
-        stream: _facultyListBloc.faculties,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return RefreshIndicator(
-              onRefresh: () => _facultyListBloc.loadList(),
-              child: SingleChildScrollView(
-                physics: AlwaysScrollableScrollPhysics(),
-                child: Container(
-                  width: double.infinity,
-                  child: Column(
-                    children: [
-                      Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(15),
-                          child: Text(
-                            widget.textLocalizer.localize("Choose faculty"),
-                            style: Theme.of(context).textTheme.headline6,
+      body: widget.bodyWrapper(
+        child: StreamBuilder<List<Faculty>>(
+          stream: _facultyListBloc.faculties,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData) {
+              return RefreshIndicator(
+                onRefresh: () => _facultyListBloc.loadList(),
+                child: SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: Container(
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Text(
+                              widget.textLocalizer.localize("Choose faculty"),
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
                           ),
                         ),
-                      ),
-                      Wrap(
-                        spacing: 20,
-                        alignment: WrapAlignment.center,
-                        children: (snapshot.data as List<Faculty>)
-                            .map(
-                              (facultyList) => FacultyIcon(
-                                faculty: facultyList,
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ],
+                        Wrap(
+                          spacing: 20,
+                          alignment: WrapAlignment.center,
+                          children: (snapshot.data as List<Faculty>)
+                              .map(
+                                (facultyList) => FacultyIcon(
+                                  faculty: facultyList,
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          }
-          return FacultyListShimmer();
-        },
+              );
+            }
+            return FacultyListShimmer();
+          },
+        ),
       ),
     );
   }

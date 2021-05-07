@@ -17,11 +17,14 @@ class ContactsScreen extends StatelessWidget {
   final TextLocalizer textLocalizer;
   final ContactsRepository contactsRepository;
   final StreamSink<String> errorSink;
+  final Widget Function({required Widget child}) bodyWrapper;
 
-  ContactsScreen(
-      {required this.textLocalizer,
-      required this.contactsRepository,
-      required this.errorSink});
+  ContactsScreen({
+    required this.textLocalizer,
+    required this.contactsRepository,
+    required this.errorSink,
+    required this.bodyWrapper,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,54 +42,57 @@ class ContactsScreen extends StatelessWidget {
           style: Theme.of(context).textTheme.headline1,
         ),
       ),
-      body: StreamBuilder<ContactsData?>(
-          stream: contactsScreenBloc.contactsData,
-          builder: (context, snapshot) {
-            if (snapshot.hasData && snapshot.data != null) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  PrefixedContainer(
-                    title: textLocalizer.localize("Number"),
-                    text: snapshot.data!.phoneNumber,
-                    onTap: () => _launchURL("tel:${snapshot.data!.phoneNumber}"),
-                  ),
-                  PrefixedContainer(
-                    title: textLocalizer.localize("Address"),
-                    text: snapshot.data!.address,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  SocialNetworkContainer(
-                    icon: FaIcon(
-                      FontAwesomeIcons.instagram,
-                      color: Theme.of(context).primaryColor,
+      body: bodyWrapper(
+        child: StreamBuilder<ContactsData?>(
+            stream: contactsScreenBloc.contactsData,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data != null) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    PrefixedContainer(
+                      title: textLocalizer.localize("Number"),
+                      text: snapshot.data!.phoneNumber,
+                      onTap: () =>
+                          _launchURL("tel:${snapshot.data!.phoneNumber}"),
                     ),
-                    text: "@instagram",
-                    onTap: () => _launchURL(snapshot.data!.instagramUrl),
-                  ),
-                  SocialNetworkContainer(
-                    icon: FaIcon(
-                      FontAwesomeIcons.telegram,
-                      color: Theme.of(context).primaryColor,
+                    PrefixedContainer(
+                      title: textLocalizer.localize("Address"),
+                      text: snapshot.data!.address,
                     ),
-                    text: "@telegram",
-                    onTap: () => _launchURL(snapshot.data!.telegramUrl),
-                  ),
-                  SocialNetworkContainer(
-                    icon: FaIcon(
-                      FontAwesomeIcons.facebook,
-                      color: Theme.of(context).primaryColor,
+                    SizedBox(
+                      height: 20,
                     ),
-                    text: "@facebook",
-                    onTap: () => _launchURL(snapshot.data!.facebookUrl),
-                  ),
-                ],
-              );
-            } else
-              return ContactsScreenShimmer();
-          }),
+                    SocialNetworkContainer(
+                      icon: FaIcon(
+                        FontAwesomeIcons.instagram,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      text: "@instagram",
+                      onTap: () => _launchURL(snapshot.data!.instagramUrl),
+                    ),
+                    SocialNetworkContainer(
+                      icon: FaIcon(
+                        FontAwesomeIcons.telegram,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      text: "@telegram",
+                      onTap: () => _launchURL(snapshot.data!.telegramUrl),
+                    ),
+                    SocialNetworkContainer(
+                      icon: FaIcon(
+                        FontAwesomeIcons.facebook,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      text: "@facebook",
+                      onTap: () => _launchURL(snapshot.data!.facebookUrl),
+                    ),
+                  ],
+                );
+              } else
+                return ContactsScreenShimmer();
+            }),
+      ),
     );
   }
 

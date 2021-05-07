@@ -41,6 +41,10 @@ dependencies:
   deep_links:
     path: ./features/deep_links
   flutter_phoenix: ^1.0.0
+  update_check:
+    path: ./features/update_check
+  url_launcher: ^6.0.3
+
 
 dev_dependencies:
   flutter_test:

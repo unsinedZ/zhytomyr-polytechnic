@@ -17,11 +17,11 @@ import 'package:zhytomyr_polytechnic/bl/repositories/main_firestore_repository.d
 import 'package:zhytomyr_polytechnic/bl/repositories/timetable_firestore_repository_factory.dart';
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 import 'package:zhytomyr_polytechnic/widgets/components/verify_authentication.dart';
+import 'package:zhytomyr_polytechnic/widgets/components/body_wrapper.dart';
+import 'package:zhytomyr_polytechnic/widgets/components/my_timetable_screen.dart';
 import 'package:zhytomyr_polytechnic/widgets/dependencies.dart';
 import 'package:zhytomyr_polytechnic/widgets/screens/authentication_screen.dart';
 import 'package:zhytomyr_polytechnic/widgets/with_startup_actions.dart';
-
-import 'components/my_timetable_screen.dart';
 
 class App extends StatelessWidget {
   @override
@@ -91,8 +91,14 @@ class App extends StatelessWidget {
           localizationsDelegates: context.localizationDelegates,
           initialRoute: '/authentication',
           routes: <String, WidgetBuilder>{
-            '/authentication': (context) => AuthenticationScreen(),
-            '/terms&conditions': (context) => TermsAndConditionsScreen(),
+            '/authentication': (context) => AuthenticationScreen(
+                  bodyWrapper: ({required Widget child}) =>
+                      BodyWrapper(child: child),
+                ),
+            '/terms&conditions': (context) => TermsAndConditionsScreen(
+                  bodyWrapper: ({required Widget child}) =>
+                      BodyWrapper(child: child),
+                ),
             '/faculties': (context) => VerifyAuthentication(
                   child: FacultyList(
                     facultyRepository: FirestoreRepository(),
@@ -104,9 +110,13 @@ class App extends StatelessWidget {
                       textLocalizer: TextLocalizer(),
                       errorSink: context.read<ErrorBloc>().errorSink,
                     ),
+                    bodyWrapper: ({required Widget child}) =>
+                        BodyWrapper(child: child),
                   ),
                 ),
             '/group': (context) => GroupSelectionScreen(
+                  bodyWrapper: ({required Widget child}) =>
+                      BodyWrapper(child: child),
                   groupsLoader: FirestoreRepository(),
                   textLocalizer: TextLocalizer(),
                   errorSink: context.read<ErrorBloc>().errorSink,
@@ -114,6 +124,8 @@ class App extends StatelessWidget {
                       context.read<UserSyncBloc>().updateUserData,
                 ),
             '/timetable': (context) => TimetableScreen(
+                  bodyWrapper: ({required Widget child}) =>
+                      BodyWrapper(child: child),
                   timetableRepositoryFactory:
                       TimetableFirestoreRepositoryFactory(),
                   textLocalizer: TextLocalizer(),
@@ -139,11 +151,12 @@ class App extends StatelessWidget {
                   textLocalizer: TextLocalizer(),
                   contactsRepository: FirestoreRepository(),
                   errorSink: context.read<ErrorBloc>().errorSink,
+                  bodyWrapper: ({required Widget child}) =>
+                      BodyWrapper(child: child),
                 ),
           },
         ),
       ),
     );
   }
-
 }

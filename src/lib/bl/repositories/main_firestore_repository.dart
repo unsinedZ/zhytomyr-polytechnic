@@ -8,6 +8,7 @@ import 'package:group_selection/group_selection.dart';
 import 'package:contacts/contacts.dart';
 import 'package:timetable/timetable.dart' as Timetable;
 import 'package:user_sync/user_sync.dart';
+import 'package:update_check/update_check.dart';
 
 import 'package:zhytomyr_polytechnic/bl/models/expirable.dart';
 
@@ -18,7 +19,8 @@ class FirestoreRepository
         Timetable.GroupRepository,
         ContactsRepository,
         UserRepository,
-        Timetable.TutorRepository {
+        Timetable.TutorRepository,
+        VersionsRepository {
   @override
   Stream<List<Faculty>> getFaculties() =>
       FirebaseFirestore.instance.collection('faculty').get().asStream().map(
@@ -131,5 +133,20 @@ class FirestoreRepository
     } else {
       return null;
     }
+  }
+
+  @override
+  Future<Version> loadLastVersion(String platformOS) async {
+    List<Version> versions = (await FirebaseFirestore.instance
+        .collection("versions")
+        .where("os", isEqualTo: platformOS)
+        .get())
+        .docs.map((doc) => Version.fromJson(doc.data())).toList();
+
+    if(versions.isNotEmpty) {
+      return versions.first;
+    }
+
+    throw ArgumentError('No data in database');
   }
 }
