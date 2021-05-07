@@ -1,9 +1,9 @@
 #
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html.
-# Run `pod lib lint google_apple_authentication.podspec` to validate before publishing.
+# Run `pod lib lint google_authentication.podspec` to validate before publishing.
 #
 Pod::Spec.new do |s|
-  s.name             = 'google_apple_authentication'
+  s.name             = 'google_authentication'
   s.version          = '0.0.1'
   s.summary          = 'A new flutter plugin project.'
   s.description      = <<-DESC

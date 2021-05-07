@@ -1,4 +1,4 @@
-group 'com.example.google_apple_authentication'
+group 'com.example.google_authentication'
 version '1.0-SNAPSHOT'
 
 buildscript {

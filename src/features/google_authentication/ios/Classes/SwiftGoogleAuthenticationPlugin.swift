@@ -1,10 +1,10 @@
 import Flutter
 import UIKit
 
-public class SwiftGoogleAppleAuthenticationPlugin: NSObject, FlutterPlugin {
+public class SwiftGoogleAuthenticationPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "google_apple_authentication", binaryMessenger: registrar.messenger())
-    let instance = SwiftGoogleAppleAuthenticationPlugin()
+    let channel = FlutterMethodChannel(name: "google_authentication", binaryMessenger: registrar.messenger())
+    let instance = SwiftGoogleAuthenticationPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
 

@@ -16,7 +16,7 @@ dependencies:
   cloud_firestore: ^1.0.3
   rxdart: ^0.26.0
   fluttertoast: ^8.0.3
-  firebase_core: ^1.0.2
+  firebase_core: ^1.1.0
   faculty_list: 
     path: features/faculty_list
   provider: ^5.0.0
