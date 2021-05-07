@@ -24,7 +24,7 @@ class FirestoreRepository
       FirebaseFirestore.instance.collection('faculty').get().asStream().map(
             (facultyListJson) => facultyListJson.docs
                 .map(
-                  (facultyJson) => Faculty.fromJson(facultyJson.data()!),
+                  (facultyJson) => Faculty.fromJson(facultyJson.data()),
                 )
                 .toList(),
           );
@@ -53,7 +53,7 @@ class FirestoreRepository
           duration: Duration(days: 30),
           data: (await FirebaseFirestore.instance.collection('group').get())
               .docs
-              .map((doc) => doc.data()!)
+              .map((doc) => doc.data())
               .toList());
 
       prefs.setString('groups', jsonEncode(expirableGroupsJson));
@@ -86,7 +86,7 @@ class FirestoreRepository
         (await FirebaseFirestore.instance.collection('contacts').get())
             .docs
             .first
-            .data()!);
+            .data());
 
     return contactsData;
   }
@@ -124,7 +124,7 @@ class FirestoreRepository
         .collection("tutors")
         .where("id", isEqualTo: teacherId)
         .get())
-        .docs.map((doc) => Timetable.Tutor.fromJson(doc.data()!)).toList();
+        .docs.map((doc) => Timetable.Tutor.fromJson(doc.data())).toList();
 
     if(tutors.isNotEmpty) {
       return tutors.first;
