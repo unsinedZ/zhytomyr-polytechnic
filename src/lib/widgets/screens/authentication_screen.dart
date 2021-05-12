@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:google_authentication/google_authentication.dart';
+import 'package:sign_in_with_facebook/sign_in_with_facebook.dart';
 import 'package:user_sync/user_sync.dart';
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 
@@ -82,8 +83,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                     .localize('By authorize you agree to ')),
                                 InkWell(
                                   child: Text(
-                                    textLocalizer.localize('terms & conditions.'),
-                                    style: Theme.of(context).textTheme.headline4,
+                                    textLocalizer
+                                        .localize('terms & conditions.'),
+                                    style:
+                                        Theme.of(context).textTheme.headline4,
                                   ),
                                   onTap: () => Navigator.pushNamed(
                                       context, '/terms&conditions'),
@@ -96,6 +99,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             GoogleSignInButton(
                               authenticationBloc:
                                   context.read<GoogleAuthenticationBloc>(),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            SignInWithFacebookButton(
+                              authenticationBloc:
+                                context.read<FacebookAuthenticationBloc>(),
                             ),
                           ],
                         ),
