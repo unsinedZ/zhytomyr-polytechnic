@@ -45,6 +45,7 @@ class _SignInWithFacebookButtonState extends State<SignInWithFacebookButton> {
             children: <Widget>[
               FaIcon(
                 FontAwesomeIcons.facebook,
+                size: 33,
                 color: Theme.of(context).primaryColor,
               ),
               Padding(
