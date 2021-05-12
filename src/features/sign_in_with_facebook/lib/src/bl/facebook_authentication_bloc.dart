@@ -28,19 +28,15 @@ class FacebookAuthenticationBloc {
 
       _userController
           .add(FacebookUser.fromLogin(FirebaseAuth.instance.currentUser!));
-    } catch (err) {
-      //errorSink.add(err.toString());
-    }
+    } catch (_) {}
   }
 
   Future<void> login() async {
     try {
-      _logger.d('start');
       final LoginResult result = await FacebookAuth.instance.login();
 
       if (result.status == LoginStatus.cancelled ||
           result.status == LoginStatus.failed) {
-        _logger.d('return');
         return;
       }
 
@@ -57,17 +53,13 @@ class FacebookAuthenticationBloc {
       _logger.d(user);
 
       _userController.add(FacebookUser.fromLogin(user!));
-    } catch (err, stack) {
-      _logger.e('error');
-      _logger.e(err);
-      _logger.e(stack);
+    } catch (err) {
       errorSink.add(err.toString());
       _userController.add(FacebookUser.empty());
     }
   }
 
   Future<void> logout() async {
-    _logger.d('F logout');
     await FirebaseAuth.instance.signOut();
     await FacebookAuth.instance.logOut();
 

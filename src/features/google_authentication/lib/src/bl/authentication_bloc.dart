@@ -27,8 +27,6 @@ class GoogleAuthenticationBloc {
       if (await GoogleSignIn().isSignedIn()) {
         _userController
             .add(GoogleUser.fromLogin(FirebaseAuth.instance.currentUser!));
-      } else {
-        _userController.add(GoogleUser.empty());
       }
     } catch (err) {
       errorSink.add(err.toString());
@@ -37,7 +35,6 @@ class GoogleAuthenticationBloc {
 
   Future<void> login() async {
     try {
-
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
       if (googleUser == null) {
