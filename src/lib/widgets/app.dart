@@ -25,15 +25,11 @@ import 'package:zhytomyr_polytechnic/widgets/screens/authentication_screen.dart'
 import 'package:zhytomyr_polytechnic/widgets/with_startup_actions.dart';
 
 class App extends StatelessWidget {
-  static const String applicationName = "Zhytomyr Polytechnic";
-
   @override
   Widget build(BuildContext context) {
     return Dependencies(
       child: WithStartupActions(
         child: MaterialApp(
-          title: applicationName,
-          onGenerateTitle: (_) => applicationName.tr(),
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             canvasColor: Colors.white,
