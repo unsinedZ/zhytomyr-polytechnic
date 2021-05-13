@@ -40,6 +40,8 @@ dependencies:
     path: ./features/user_sync
   deep_links:
     path: ./features/deep_links
+  apple_authentication:
+    path: ./features/apple_authentication
   flutter_phoenix: ^1.0.0
 
 dev_dependencies:

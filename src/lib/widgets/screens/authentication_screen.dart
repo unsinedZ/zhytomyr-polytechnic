@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:apple_authentication/apple_authentication.dart';
 import 'package:deep_links/deep_links.dart';
 import 'package:flutter/material.dart';
 
@@ -40,6 +42,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       }
       Navigator.of(context).pushReplacementNamed('/faculties');
     });
+
+    print(Platform.operatingSystem);
 
     super.initState();
   }
@@ -92,6 +96,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             authenticationBloc:
                                 context.read<GoogleAuthenticationBloc>(),
                           ),
+                          AppleSignInButton(),
                         ],
                       ),
                     ),
