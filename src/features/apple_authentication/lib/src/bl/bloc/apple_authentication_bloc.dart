@@ -65,6 +65,8 @@ class AppleAuthenticationBloc {
         nonce: nonce,
       );
 
+      print('appleCredential');
+
       final oauthCredential = OAuthProvider("apple.com").credential(
         idToken: appleCredential.identityToken,
         rawNonce: rawNonce,
@@ -79,7 +81,11 @@ class AppleAuthenticationBloc {
 
       _userController.add(AppleUser.fromLogin(user!));
     } catch (err) {
-      print(err.runtimeType.toString());
+      if (err is SignInWithAppleAuthorizationException &&
+          err.code.toString() == 'AuthorizationErrorCode.canceled') {
+        return;
+      }
+
       errorSink.add(err.toString());
     }
   }
