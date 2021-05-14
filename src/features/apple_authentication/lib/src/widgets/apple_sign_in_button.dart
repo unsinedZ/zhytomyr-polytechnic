@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-class AppleSignInButton extends StatefulWidget {
+import 'package:apple_authentication/src/bl/bloc/apple_authentication_bloc.dart';
 
+class AppleSignInButton extends StatefulWidget {
+  final AppleAuthenticationBloc appleAuthenticationBloc;
+
+  AppleSignInButton({required this.appleAuthenticationBloc});
 
   @override
   _AppleSignInButtonState createState() => _AppleSignInButtonState();
@@ -12,28 +16,17 @@ class AppleSignInButton extends StatefulWidget {
 class _AppleSignInButtonState extends State<AppleSignInButton> {
   @override
   void initState() {
+    //widget.appleAuthenticationBloc.loadUser();
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: SignInWithAppleButton(
-        onPressed: () async {
-          final credential = await SignInWithApple.getAppleIDCredential(
-            scopes: [
-              AppleIDAuthorizationScopes.email,
-              AppleIDAuthorizationScopes.fullName,
-            ],
-          );
-
-          print(credential);
-
-          // Now send the credential (especially `credential.authorizationCode`) to your server to create a session
-          // after en validated with Apple (see `Integration` section for more information on how to do this)
-        },
-      ),
+    return SignInWithAppleButton(
+      onPressed: () {
+        widget.appleAuthenticationBloc.login();
+      },
     );
   }
 }

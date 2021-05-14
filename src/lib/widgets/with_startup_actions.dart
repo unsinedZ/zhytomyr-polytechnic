@@ -1,3 +1,4 @@
+import 'package:apple_authentication/apple_authentication.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rxdart/rxdart.dart';
@@ -53,6 +54,15 @@ class _WithStartupActionsState extends State<WithStartupActions> {
         return;
       }
       
+      context.read<UserSyncBloc>().setData(user?.uid);
+    });
+
+    context.read<AppleAuthenticationBloc>().user.listen((user) {
+      if (user?.uid == "") {
+        context.read<UserSyncBloc>().cleanData();
+        return;
+      }
+
       context.read<UserSyncBloc>().setData(user?.uid);
     });
 

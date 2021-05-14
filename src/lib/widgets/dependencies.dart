@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:google_authentication/google_authentication.dart';
 import 'package:error_bloc/error_bloc.dart';
 import 'package:push_notification/push_notification.dart';
+import 'package:apple_authentication/apple_authentication.dart';
 import 'package:user_sync/user_sync.dart' hide User;
 import 'package:zhytomyr_polytechnic/bl/repositories/main_firestore_repository.dart';
 
@@ -27,7 +28,8 @@ class Dependencies extends StatelessWidget {
         ],
         child: MultiProvider(
           providers: [
-            Provider<PushNotificationBloc>(create: getNotificationBloc)
+            Provider<PushNotificationBloc>(create: getNotificationBloc),
+            Provider<AppleAuthenticationBloc>(create: getAppleAuthenticationBloc)
           ],
           child: MultiProvider(
             providers: [
@@ -51,6 +53,9 @@ class Dependencies extends StatelessWidget {
 
   PushNotificationBloc getNotificationBloc(BuildContext context) =>
       PushNotificationBloc(errorSink: context.read<ErrorBloc>().errorSink);
+
+  AppleAuthenticationBloc getAppleAuthenticationBloc(BuildContext context) =>
+      AppleAuthenticationBloc(errorSink: context.read<ErrorBloc>().errorSink);
 
   DeepLinkBloc getDeepLinkBloc(BuildContext context) =>
       DeepLinkBloc(errorSink: context.read<ErrorBloc>().errorSink)..initLink(['/timetable']);

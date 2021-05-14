@@ -12,10 +12,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  firebase_auth: ^1.1.4
+  rxdart: ^0.26.0
+  logger: ^1.0.0
+  firebase_core: ^1.1.0
+  crypto: ^3.0.0
+  sign_in_with_apple: ^3.0.0
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  sign_in_with_apple: ^3.0.0
 
 flutter:

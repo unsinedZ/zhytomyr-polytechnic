@@ -43,8 +43,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       Navigator.of(context).pushReplacementNamed('/faculties');
     });
 
-    print(Platform.operatingSystem);
-
     super.initState();
   }
 
@@ -96,7 +94,15 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             authenticationBloc:
                                 context.read<GoogleAuthenticationBloc>(),
                           ),
-                          AppleSignInButton(),
+                          if (Platform.isIOS) ...[
+                            SizedBox(
+                              height: 10,
+                            ),
+                            AppleSignInButton(
+                              appleAuthenticationBloc:
+                                  context.read<AppleAuthenticationBloc>(),
+                            ),
+                          ],
                         ],
                       ),
                     ),
