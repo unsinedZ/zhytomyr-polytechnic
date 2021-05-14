@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:logger/logger.dart';
 
-import 'package:sign_in_with_facebook/src/bl/models/facebook_user.dart';
+import 'package:facebook_authentication/src/bl/models/facebook_user.dart';
 
 class FacebookAuthenticationBloc {
   final StreamSink<String> errorSink;

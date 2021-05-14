@@ -197,6 +197,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  facebook_authentication:
+    dependency: "direct main"
+    description:
+      path: "features/facebook_authentication"
+      relative: true
+    source: path
+    version: "0.0.1"
   faculty_list:
     dependency: "direct main"
     description:
@@ -707,13 +714,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  sign_in_with_facebook:
-    dependency: "direct main"
-    description:
-      path: "features/sign_in_with_facebook"
-      relative: true
-    source: path
-    version: "0.0.1"
   sky_engine:
     dependency: transitive
     description: flutter

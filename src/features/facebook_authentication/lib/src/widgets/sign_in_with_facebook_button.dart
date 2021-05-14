@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'package:sign_in_with_facebook/src/bl/facebook_authentication_bloc.dart';
+import 'package:facebook_authentication/src/bl/facebook_authentication_bloc.dart';
 
 class SignInWithFacebookButton extends StatefulWidget {
   final FacebookAuthenticationBloc authenticationBloc;

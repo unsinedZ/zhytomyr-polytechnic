@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 
 import 'package:google_authentication/google_authentication.dart';
-import 'package:sign_in_with_facebook/sign_in_with_facebook.dart';
+import 'package:facebook_authentication/facebook_authentication.dart';
 import 'package:terms_and_conditions/terms_and_conditions.dart';
 import 'package:timetable/timetable.dart' hide TextLocalizer;
 import 'package:faculty_list/faculty_list.dart' hide TextLocalizer;

@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:google_authentication/google_authentication.dart';
-import 'package:sign_in_with_facebook/sign_in_with_facebook.dart';
+import 'package:facebook_authentication/facebook_authentication.dart';
 import 'package:user_sync/user_sync.dart';
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 

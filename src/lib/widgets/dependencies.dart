@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:deep_links/deep_links.dart';
 import 'package:google_authentication/google_authentication.dart';
-import 'package:sign_in_with_facebook/sign_in_with_facebook.dart';
+import 'package:facebook_authentication/facebook_authentication.dart';
 import 'package:error_bloc/error_bloc.dart';
 import 'package:push_notification/push_notification.dart';
 import 'package:update_check/update_check.dart';
