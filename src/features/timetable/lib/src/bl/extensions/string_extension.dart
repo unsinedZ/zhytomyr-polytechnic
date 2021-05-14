@@ -12,6 +12,7 @@ extension StringExtensions on String {
 
     while(index + 1 < 2 && result == 0){
       result = time[index].compareTo(anotherTime[index]);
+      index++;
     }
 
     return result;

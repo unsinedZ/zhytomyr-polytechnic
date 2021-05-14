@@ -42,7 +42,7 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
       timetable = Timetable.fromJson(
           (await firebaseFirestoreInstance.collection('timetable').get())
               .docs
-              .map((doc) => doc.data()!)
+              .map((doc) => doc.data())
               .first);
 
       List<TimetableItem> items = timetable.items

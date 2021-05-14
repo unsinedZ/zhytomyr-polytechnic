@@ -38,6 +38,12 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
     currentWeekNumber = widget.currentWeekNumber;
     currentSubgroupId = widget.currentSubgroupId;
 
+    if (widget.group != null &&
+        widget.group!.subgroups.length > 1 &&
+        currentSubgroupId == null) {
+      currentSubgroupId = widget.group!.subgroups.first.id;
+    }
+
     super.initState();
   }
 

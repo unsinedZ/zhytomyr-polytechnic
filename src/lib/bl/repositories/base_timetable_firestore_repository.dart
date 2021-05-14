@@ -16,7 +16,7 @@ class BaseTimetableFirestoreRepository {
         .then((timetableItemUpdateListJson) => timetableItemUpdateListJson.docs
         .map(
           (timetableItemUpdateJson) =>
-          TimetableItemUpdate.fromJson(timetableItemUpdateJson.data()!),
+          TimetableItemUpdate.fromJson(timetableItemUpdateJson.data()),
     )
         .toList());
   }
