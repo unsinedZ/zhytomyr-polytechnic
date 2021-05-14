@@ -12,6 +12,7 @@ import 'package:user_sync/user_sync.dart' hide User;
 import 'package:zhytomyr_polytechnic/bl/repositories/main_firestore_repository.dart';
 
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
+import 'package:zhytomyr_polytechnic/bl/repositories/main_firestore_repository.dart';
 
 class Dependencies extends StatelessWidget {
   final Widget child;
@@ -31,8 +32,10 @@ class Dependencies extends StatelessWidget {
           providers: [
             Provider<PushNotificationBloc>(create: getNotificationBloc),
             Provider<UpdateCheckBloc>(create: getUpdateCheckBloc),
-            Provider<GoogleAuthenticationBloc>(create: getGoogleAuthenticationBloc),
-            Provider<FacebookAuthenticationBloc>(create: getFacebookAuthenticationBloc),
+            Provider<GoogleAuthenticationBloc>(
+                create: getGoogleAuthenticationBloc),
+            Provider<FacebookAuthenticationBloc>(
+                create: getFacebookAuthenticationBloc),
           ],
           child: MultiProvider(
             providers: [
@@ -48,8 +51,10 @@ class Dependencies extends StatelessWidget {
   GoogleAuthenticationBloc getGoogleAuthenticationBloc(BuildContext context) =>
       GoogleAuthenticationBloc(errorSink: context.read<ErrorBloc>().errorSink);
 
-  FacebookAuthenticationBloc getFacebookAuthenticationBloc(BuildContext context) =>
-      FacebookAuthenticationBloc(errorSink: context.read<ErrorBloc>().errorSink);
+  FacebookAuthenticationBloc getFacebookAuthenticationBloc(
+          BuildContext context) =>
+      FacebookAuthenticationBloc(
+          errorSink: context.read<ErrorBloc>().errorSink);
 
   UserSyncBloc getUserSyncBloc(BuildContext context) => UserSyncBloc(
       errorSink: context.read<ErrorBloc>().errorSink,

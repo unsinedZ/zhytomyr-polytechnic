@@ -105,7 +105,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             ),
                             SignInWithFacebookButton(
                               authenticationBloc:
-                                context.read<FacebookAuthenticationBloc>(),
+                                  context.read<FacebookAuthenticationBloc>(),
                             ),
                           ],
                         ),

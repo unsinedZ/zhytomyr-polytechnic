@@ -54,7 +54,7 @@ class _WithStartupActionsState extends State<WithStartupActions> {
         context.read<UserSyncBloc>().cleanData();
         return;
       }
-      
+
       context.read<UserSyncBloc>().setData(user?.uid, AuthProvider.Google);
     });
 

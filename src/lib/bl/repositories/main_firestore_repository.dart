@@ -24,13 +24,12 @@ class FirestoreRepository
   @override
   Stream<List<Faculty>> getFaculties() =>
       FirebaseFirestore.instance.collection('faculty').get().asStream().map(
-            (facultyListJson) =>
-            facultyListJson.docs
+            (facultyListJson) => facultyListJson.docs
                 .map(
                   (facultyJson) => Faculty.fromJson(facultyJson.data()),
-            )
+                )
                 .toList(),
-      );
+          );
 
   Future<List<Group>> getAllGroups() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -44,7 +43,7 @@ class FirestoreRepository
           .toList();
 
       expirableGroupsJson =
-      (Expirable<List<Map<String, dynamic>>>.fromJson(json));
+          (Expirable<List<Map<String, dynamic>>>.fromJson(json));
 
       if (expirableGroupsJson.expireAt.isBefore(DateTime.now())) {
         expirableGroupsJson = null;
@@ -65,7 +64,7 @@ class FirestoreRepository
     return expirableGroupsJson.data
         .map(
           (groupJson) => Group.fromJson(groupJson),
-    )
+        )
         .toList();
   }
 
@@ -102,9 +101,9 @@ class FirestoreRepository
     }
 
     return (await FirebaseFirestore.instance
-        .collection("users")
-        .where("userId", isEqualTo: userId)
-        .get())
+            .collection("users")
+            .where("userId", isEqualTo: userId)
+            .get())
         .docs
         .first
         .reference
@@ -113,17 +112,14 @@ class FirestoreRepository
 
   @override
   Future<Map<String, dynamic>> getUserInfo(String userId) async {
-    final docs =
-        (await FirebaseFirestore.instance
+    final docs = (await FirebaseFirestore.instance
             .collection("users")
             .where("userId", isEqualTo: userId)
             .get())
-            .docs;
+        .docs;
 
     if (docs.isNotEmpty) {
-      return docs
-          .first
-          .data();
+      return docs.first.data();
     } else {
       return {"userId": userId};
     }
@@ -132,9 +128,9 @@ class FirestoreRepository
   @override
   Future<Timetable.Tutor?> getTutorById(String teacherId) async {
     List<Timetable.Tutor> tutors = (await FirebaseFirestore.instance
-        .collection("tutors")
-        .where("id", isEqualTo: teacherId)
-        .get())
+            .collection("tutors")
+            .where("id", isEqualTo: teacherId)
+            .get())
         .docs
         .map((doc) => Timetable.Tutor.fromJson(doc.data()))
         .toList();
@@ -149,9 +145,9 @@ class FirestoreRepository
   @override
   Future<Version> loadLastVersion(String platformOS) async {
     List<Version> versions = (await FirebaseFirestore.instance
-        .collection("versions")
-        .where("os", isEqualTo: platformOS)
-        .get())
+            .collection("versions")
+            .where("os", isEqualTo: platformOS)
+            .get())
         .docs
         .map((doc) => Version.fromJson(doc.data()))
         .toList();
