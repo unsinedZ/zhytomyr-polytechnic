@@ -25,13 +25,17 @@ class AppleAuthenticationBloc {
 
   Stream<AppleUser?> get user => _userController.stream;
 
+  String get providerId => "facebook.com";
+
   void loadUser() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
-
-      _userController
-          .add(AppleUser.fromLogin(FirebaseAuth.instance.currentUser!));
-    } catch (_) {}
+      if (user != null && user.providerData.last.providerId == providerId) {
+        _userController.add(AppleUser.fromLogin(user));
+      }
+    } catch (err) {
+      errorSink.add(err.toString());
+    }
   }
 
   String _generateNonce([int length = 32]) {

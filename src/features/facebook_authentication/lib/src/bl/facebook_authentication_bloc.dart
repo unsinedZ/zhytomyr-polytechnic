@@ -22,13 +22,17 @@ class FacebookAuthenticationBloc {
 
   Stream<FacebookUser?> get user => _userController.stream;
 
+  String get providerId => "facebook.com";
+
   void loadUser() async {
     try {
-      await FacebookAuth.instance.getUserData();
-
-      _userController
-          .add(FacebookUser.fromLogin(FirebaseAuth.instance.currentUser!));
-    } catch (_) {}
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null && user.providerData.last.providerId == providerId) {
+        _userController.add(FacebookUser.fromLogin(user));
+      }
+    } catch (err) {
+      errorSink.add(err.toString());
+    }
   }
 
   Future<void> login() async {

@@ -21,14 +21,14 @@ class GoogleAuthenticationBloc {
   final BehaviorSubject<GoogleUser?> _userController = BehaviorSubject();
 
   Stream<GoogleUser?> get user => _userController.stream;
+
   String get providerId => "google.com";
 
   void loadUser() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
-      if (user != null && user.providerData.last.providerId == "google.com") {
-        _userController
-            .add(GoogleUser.fromLogin(user));
+      if (user != null && user.providerData.last.providerId == providerId) {
+        _userController.add(GoogleUser.fromLogin(user));
       }
     } catch (err) {
       errorSink.add(err.toString());
