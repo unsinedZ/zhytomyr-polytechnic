@@ -8,7 +8,9 @@ import 'package:provider/provider.dart';
 import 'package:error_bloc/error_bloc.dart';
 import 'package:google_authentication/google_authentication.dart';
 import 'package:push_notification/push_notification.dart';
+import 'package:facebook_authentication/facebook_authentication.dart';
 import 'package:user_sync/user_sync.dart';
+import 'package:update_check/update_check.dart';
 
 class WithStartupActions extends StatefulWidget {
   final Widget child;
@@ -53,8 +55,17 @@ class _WithStartupActionsState extends State<WithStartupActions> {
         context.read<UserSyncBloc>().cleanData();
         return;
       }
-      
-      context.read<UserSyncBloc>().setData(user?.uid);
+
+      context.read<UserSyncBloc>().setData(user?.uid, AuthProvider.Google);
+    });
+
+    context.read<FacebookAuthenticationBloc>().user.listen((user) {
+      if (user?.uid == "") {
+        context.read<UserSyncBloc>().cleanData();
+        return;
+      }
+
+      context.read<UserSyncBloc>().setData(user?.uid, AuthProvider.Facebook);
     });
 
     context.read<AppleAuthenticationBloc>().user.listen((user) {
@@ -63,8 +74,10 @@ class _WithStartupActionsState extends State<WithStartupActions> {
         return;
       }
 
-      context.read<UserSyncBloc>().setData(user?.uid);
+      context.read<UserSyncBloc>().setData(user?.uid, AuthProvider.Apple);
     });
+
+    context.read<UpdateCheckBloc>().checkForUpdates();
 
     super.initState();
   }

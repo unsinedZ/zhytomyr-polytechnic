@@ -13,7 +13,7 @@ dependencies:
   terms_and_conditions:
     path: ./features/terms_and_conditions
   cupertino_icons: ^1.0.2
-  cloud_firestore: ^1.0.3
+  cloud_firestore: ^2.0.0
   rxdart: ^0.26.0
   fluttertoast: ^8.0.3
   firebase_core: ^1.1.0
@@ -43,6 +43,11 @@ dependencies:
   apple_authentication:
     path: ./features/apple_authentication
   flutter_phoenix: ^1.0.0
+  update_check:
+    path: ./features/update_check
+  url_launcher: ^6.0.3
+  facebook_authentication:
+    path: ./features/facebook_authentication
 
 dev_dependencies:
   flutter_test:

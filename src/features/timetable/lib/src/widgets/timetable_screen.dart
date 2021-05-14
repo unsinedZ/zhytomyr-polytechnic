@@ -23,6 +23,7 @@ class TimetableScreen extends StatefulWidget {
   final TutorRepository tutorRepository;
   final StreamSink<String> errorSink;
   final Stream<Map<String, dynamic>> userDataStream;
+  final Widget Function({required Widget child}) bodyWrapper;
 
   TimetableScreen({
     required this.textLocalizer,
@@ -31,6 +32,7 @@ class TimetableScreen extends StatefulWidget {
     required this.tutorRepository,
     required this.errorSink,
     required this.userDataStream,
+    required this.bodyWrapper,
   });
 
   @override
@@ -201,53 +203,55 @@ class _TimetableScreenState extends State<TimetableScreen> {
                 },
           child: Icon(Icons.filter_alt_outlined),
         ),
-        body: StreamBuilder<List<dynamic>>(
-          stream: dataStream,
-          builder: (context, snapshot) {
-            if (_isSnapshotHasData(snapshot)) {
-              Timetable timetable = snapshot.data![0];
-              List<TimetableItemUpdate> timetableItemUpdates =
-                  snapshot.data![1];
+        body: widget.bodyWrapper(
+          child: StreamBuilder<List<dynamic>>(
+            stream: dataStream,
+            builder: (context, snapshot) {
+              if (_isSnapshotHasData(snapshot)) {
+                Timetable timetable = snapshot.data![0];
+                List<TimetableItemUpdate> timetableItemUpdates =
+                    snapshot.data![1];
 
-              if ((weekNumber.isEven &&
-                      timetable.weekDetermination == WeekDetermination.Even) ||
-                  (weekNumber.isOdd &&
-                      timetable.weekDetermination == WeekDetermination.Odd)) {
-                weekNumber = 1;
-              } else {
-                weekNumber = 2;
-              }
+                if ((weekNumber.isEven &&
+                        timetable.weekDetermination == WeekDetermination.Even) ||
+                    (weekNumber.isOdd &&
+                        timetable.weekDetermination == WeekDetermination.Odd)) {
+                  weekNumber = 1;
+                } else {
+                  weekNumber = 2;
+                }
 
-              return TabBarView(
-                children: _weekDaysNames
-                    .asMap()
-                    .keys
-                    .map<Widget>(
-                      (index) => TimetableTab(
-                        textLocalizer: widget.textLocalizer,
-                        timetable: timetable,
-                        timetableItemUpdates: timetableItemUpdates,
-                        weekNumber: weekNumber,
-                        dayOfWeekNumber: index + 1,
-                        dateTime: indexDayDateTime.add(Duration(
-                            days: -initialIndex +
-                                index +
-                                (isWeekChanged ? 7 : 0))),
-                        id: id,
-                        subgroupId: subgroupId,
-                        timetableType: timetableType,
-                        isTomorrow: initialIndex == index &&
-                                isNextDay == true &&
-                                isWeekChanged == false
-                            ? true
-                            : false,
-                      ),
-                    )
-                    .toList(),
-              );
-            } else
-              return TimetableTabShimmer();
-          },
+                return TabBarView(
+                  children: _weekDaysNames
+                      .asMap()
+                      .keys
+                      .map<Widget>(
+                        (index) => TimetableTab(
+                          textLocalizer: widget.textLocalizer,
+                          timetable: timetable,
+                          timetableItemUpdates: timetableItemUpdates,
+                          weekNumber: weekNumber,
+                          dayOfWeekNumber: index + 1,
+                          dateTime: indexDayDateTime.add(Duration(
+                              days: -initialIndex +
+                                  index +
+                                  (isWeekChanged ? 7 : 0))),
+                          id: id,
+                          subgroupId: subgroupId,
+                          timetableType: timetableType,
+                          isTomorrow: initialIndex == index &&
+                                  isNextDay == true &&
+                                  isWeekChanged == false
+                              ? true
+                              : false,
+                        ),
+                      )
+                      .toList(),
+                );
+              } else
+                return TimetableTabShimmer();
+            },
+          ),
         ),
       ),
     );

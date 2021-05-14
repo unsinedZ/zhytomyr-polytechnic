@@ -54,9 +54,7 @@ class _TimetableTabState extends State<TimetableTab> {
   @override
   void didUpdateWidget(covariant TimetableTab oldWidget) {
     setState(() {
-      setState(() {
-        widgets = stateToWidgets();
-      });
+      widgets = stateToWidgets();
     });
 
     super.didUpdateWidget(oldWidget);
@@ -71,10 +69,9 @@ class _TimetableTabState extends State<TimetableTab> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               (widget.isTomorrow == true
-                      ? widget.textLocalizer.localize('Tomorrow ')
-                      : '') +
-                  DateFormat('d MMMM', context.locale.toString())
-                      .format(widget.dateTime),
+                  ? widget.textLocalizer.localize('Tomorrow ')
+                  : DateFormat('d MMMM', context.locale.toString())
+                      .format(widget.dateTime)),
             ),
           ),
           ...widgets,
@@ -105,7 +102,7 @@ class _TimetableTabState extends State<TimetableTab> {
     if (widget.timetableType == TimetableType.Group) {
       return timetableItem.activity.groups.any((group) =>
           group.id == widget.id &&
-          (group.subgroups.length <= 1 ||
+          (group.subgroups.isEmpty ||
               widget.subgroupId == null ||
               widget.subgroupId == '' ||
               group.subgroups
@@ -190,6 +187,7 @@ class _TimetableTabState extends State<TimetableTab> {
     TimetableItem? timetableItem,
     TimetableItemUpdate? timetableItemUpdate,
   }) {
+    print('createUpdatableItem');
     if (timetableItemUpdates.isNotEmpty) {
       timetableItemUpdates.forEach((timetableUpdate) {
         String updateItemTime = timetableUpdate.time;

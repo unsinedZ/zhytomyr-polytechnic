@@ -12,12 +12,14 @@ class GroupSelectionScreen extends StatefulWidget {
   final GroupsRepository groupsLoader;
   final StreamSink<String> errorSink;
   final ValueChanged<Map<String, dynamic>> subscribeCallback;
+  final Widget Function({required Widget child}) bodyWrapper;
 
   GroupSelectionScreen({
     required this.textLocalizer,
     required this.groupsLoader,
     required this.errorSink,
     required this.subscribeCallback,
+    required this.bodyWrapper,
   });
 
   @override
@@ -87,188 +89,190 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
           style: Theme.of(context).textTheme.headline1,
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                children: [
-                  Spacer(),
-                  Image.asset(
-                    'assets/images/timetable.png',
-                    package: 'group_selection',
-                    width: mediaQuery.size.width * 0.4,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    widget.textLocalizer.localize('Chose course and group'),
-                    textAlign: TextAlign.center,
-                    textScaleFactor: 2,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    width: 150,
-                    child: DropdownButton<int>(
-                      hint: Text(widget.textLocalizer.localize('Course')),
-                      isExpanded: true,
-                      value: course,
-                      onChanged: (int? course) {
-                        setState(() {
-                          this.course = course;
-                          group = null;
-                          subgroup = null;
-                        });
-                        groupSelectionBloc.loadGroups(course!, facultyId);
-                      },
-                      items: <int>[1, 2, 3, 4, 5]
-                          .map<DropdownMenuItem<int>>((int value) {
-                        return DropdownMenuItem<int>(
-                          value: value,
-                          child: Text(value.toString()),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  StreamBuilder<List<Group>?>(
-                      stream: groupSelectionBloc.groups,
-                      builder: (context, snapshot) {
-                        return Container(
-                          width: 150,
-                          child: DropdownButton<Group>(
-                            hint: Text(widget.textLocalizer.localize('Group')),
-                            isExpanded: true,
-                            value: group,
-                            onChanged: (Group? newValue) {
-                              setState(() {
-                                subgroup = null;
-                                group = newValue;
-                              });
-                            },
-                            items: snapshot.hasData == true &&
-                                    snapshot.data != null
-                                ? snapshot.data!.map<DropdownMenuItem<Group>>(
-                                    (Group group) {
-                                    return DropdownMenuItem<Group>(
-                                      value: group,
-                                      child: Text(group.name),
-                                    );
-                                  }).toList()
-                                : null,
-                          ),
-                        );
-                      }),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  group != null &&
-                          group!.subgroups != null &&
-                          group!.subgroups!.length > 0
-                      ? Column(
-                          children: [
-                            Container(
-                              width: 150,
-                              child: DropdownButton<Subgroup>(
-                                hint: Text(
-                                    widget.textLocalizer.localize('Subgroup')),
-                                isExpanded: true,
-                                value: subgroup,
-                                onChanged: (Subgroup? newValue) {
-                                  setState(() {
-                                    subgroup = newValue;
-                                  });
-                                },
-                                items: group!.subgroups != null
-                                    ? group!.subgroups!
-                                        .map<DropdownMenuItem<Subgroup>>(
-                                            (Subgroup subgroup) {
-                                        return DropdownMenuItem<Subgroup>(
-                                          value: subgroup,
-                                          child: Text(subgroup.name),
-                                        );
-                                      }).toList()
-                                    : null,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                          ],
-                        )
-                      : Container(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Checkbox(
-                          value: isMyGroup,
-                          onChanged: (value) {
-                            setState(() {
-                              isMyGroup = value!;
-                            });
-                          }),
-                      GestureDetector(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            top: 8.0,
-                            right: 8.0,
-                            bottom: 8.0,
-                          ),
-                          child: Text(
-                              widget.textLocalizer.localize('It`s my group')),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            isMyGroup = !isMyGroup;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  Spacer(),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: course == null ||
-                      group == null ||
-                      (group!.subgroups != null &&
-                          group!.subgroups!.length > 0 &&
-                          subgroup == null)
-                  ? null
-                  : () {
-                      if (isMyGroup) {
-                        widget.subscribeCallback({
-                          "groupId": group!.id,
-                          "subgroupId": subgroup == null ? "" : subgroup!.id
-                        });
-                      }
-
-                      Navigator.pushNamed(context, '/timetable', arguments: {
-                        'type': 'group',
-                        'groupId': group!.id,
-                        'subgroupId': subgroup == null ? null : subgroup!.id
-                      });
-                    },
+      body: widget.bodyWrapper(
+        child: Column(
+          children: [
+            Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(17.0),
-                child: Text(
-                  widget.textLocalizer.localize('Continue'),
-                  textScaleFactor: 1.3,
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  children: [
+                    Spacer(),
+                    Image.asset(
+                      'assets/images/timetable.png',
+                      package: 'group_selection',
+                      width: mediaQuery.size.width * 0.4,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      widget.textLocalizer.localize('Chose course and group'),
+                      textAlign: TextAlign.center,
+                      textScaleFactor: 2,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      width: 150,
+                      child: DropdownButton<int>(
+                        hint: Text(widget.textLocalizer.localize('Course')),
+                        isExpanded: true,
+                        value: course,
+                        onChanged: (int? course) {
+                          setState(() {
+                            this.course = course;
+                            group = null;
+                            subgroup = null;
+                          });
+                          groupSelectionBloc.loadGroups(course!, facultyId);
+                        },
+                        items: <int>[1, 2, 3, 4, 5]
+                            .map<DropdownMenuItem<int>>((int value) {
+                          return DropdownMenuItem<int>(
+                            value: value,
+                            child: Text(value.toString()),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    StreamBuilder<List<Group>?>(
+                        stream: groupSelectionBloc.groups,
+                        builder: (context, snapshot) {
+                          return Container(
+                            width: 150,
+                            child: DropdownButton<Group>(
+                              hint: Text(widget.textLocalizer.localize('Group')),
+                              isExpanded: true,
+                              value: group,
+                              onChanged: (Group? newValue) {
+                                setState(() {
+                                  subgroup = null;
+                                  group = newValue;
+                                });
+                              },
+                              items: snapshot.hasData == true &&
+                                      snapshot.data != null
+                                  ? snapshot.data!.map<DropdownMenuItem<Group>>(
+                                      (Group group) {
+                                      return DropdownMenuItem<Group>(
+                                        value: group,
+                                        child: Text(group.name),
+                                      );
+                                    }).toList()
+                                  : null,
+                            ),
+                          );
+                        }),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    group != null &&
+                            group!.subgroups != null &&
+                            group!.subgroups!.length > 0
+                        ? Column(
+                            children: [
+                              Container(
+                                width: 150,
+                                child: DropdownButton<Subgroup>(
+                                  hint: Text(
+                                      widget.textLocalizer.localize('Subgroup')),
+                                  isExpanded: true,
+                                  value: subgroup,
+                                  onChanged: (Subgroup? newValue) {
+                                    setState(() {
+                                      subgroup = newValue;
+                                    });
+                                  },
+                                  items: group!.subgroups != null
+                                      ? group!.subgroups!
+                                          .map<DropdownMenuItem<Subgroup>>(
+                                              (Subgroup subgroup) {
+                                          return DropdownMenuItem<Subgroup>(
+                                            value: subgroup,
+                                            child: Text(subgroup.name),
+                                          );
+                                        }).toList()
+                                      : null,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                            ],
+                          )
+                        : Container(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Checkbox(
+                            value: isMyGroup,
+                            onChanged: (value) {
+                              setState(() {
+                                isMyGroup = value!;
+                              });
+                            }),
+                        GestureDetector(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8.0,
+                              right: 8.0,
+                              bottom: 8.0,
+                            ),
+                            child: Text(
+                                widget.textLocalizer.localize('It`s my group')),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              isMyGroup = !isMyGroup;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                  ],
                 ),
               ),
             ),
-          )
-        ],
+            Container(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: course == null ||
+                        group == null ||
+                        (group!.subgroups != null &&
+                            group!.subgroups!.length > 0 &&
+                            subgroup == null)
+                    ? null
+                    : () {
+                        if (isMyGroup) {
+                          widget.subscribeCallback({
+                            "groupId": group!.id,
+                            "subgroupId": subgroup == null ? "" : subgroup!.id
+                          });
+                        }
+
+                        Navigator.pushNamed(context, '/timetable', arguments: {
+                          'type': 'group',
+                          'groupId': group!.id,
+                          'subgroupId': subgroup == null ? null : subgroup!.id
+                        });
+                      },
+                child: Padding(
+                  padding: const EdgeInsets.all(17.0),
+                  child: Text(
+                    widget.textLocalizer.localize('Continue'),
+                    textScaleFactor: 1.3,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

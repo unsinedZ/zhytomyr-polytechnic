@@ -8,6 +8,7 @@ import 'package:group_selection/group_selection.dart';
 import 'package:contacts/contacts.dart';
 import 'package:timetable/timetable.dart' as Timetable;
 import 'package:user_sync/user_sync.dart';
+import 'package:update_check/update_check.dart';
 
 import 'package:zhytomyr_polytechnic/bl/models/expirable.dart';
 
@@ -18,13 +19,14 @@ class FirestoreRepository
         Timetable.GroupRepository,
         ContactsRepository,
         UserRepository,
-        Timetable.TutorRepository {
+        Timetable.TutorRepository,
+        VersionsRepository {
   @override
   Stream<List<Faculty>> getFaculties() =>
       FirebaseFirestore.instance.collection('faculty').get().asStream().map(
             (facultyListJson) => facultyListJson.docs
                 .map(
-                  (facultyJson) => Faculty.fromJson(facultyJson.data()!),
+                  (facultyJson) => Faculty.fromJson(facultyJson.data()),
                 )
                 .toList(),
           );
@@ -53,7 +55,7 @@ class FirestoreRepository
           duration: Duration(days: 30),
           data: (await FirebaseFirestore.instance.collection('group').get())
               .docs
-              .map((doc) => doc.data()!)
+              .map((doc) => doc.data())
               .toList());
 
       prefs.setString('groups', jsonEncode(expirableGroupsJson));
@@ -86,7 +88,7 @@ class FirestoreRepository
         (await FirebaseFirestore.instance.collection('contacts').get())
             .docs
             .first
-            .data()!);
+            .data());
 
     return contactsData;
   }
@@ -109,27 +111,51 @@ class FirestoreRepository
   }
 
   @override
-  Future<Map<String, dynamic>?> getUserInfo(String userId) async =>
-      (await FirebaseFirestore.instance
-          .collection("users")
-          .where("userId", isEqualTo: userId)
-          .get())
-      .docs
-      .first
-      .data();
+  Future<Map<String, dynamic>> getUserInfo(String userId) async {
+    final docs = (await FirebaseFirestore.instance
+            .collection("users")
+            .where("userId", isEqualTo: userId)
+            .get())
+        .docs;
+
+    if (docs.isNotEmpty) {
+      return docs.first.data();
+    } else {
+      return {"userId": userId};
+    }
+  }
 
   @override
   Future<Timetable.Tutor?> getTutorById(String teacherId) async {
     List<Timetable.Tutor> tutors = (await FirebaseFirestore.instance
-        .collection("tutors")
-        .where("id", isEqualTo: teacherId)
-        .get())
-        .docs.map((doc) => Timetable.Tutor.fromJson(doc.data()!)).toList();
+            .collection("tutors")
+            .where("id", isEqualTo: teacherId)
+            .get())
+        .docs
+        .map((doc) => Timetable.Tutor.fromJson(doc.data()))
+        .toList();
 
-    if(tutors.isNotEmpty) {
+    if (tutors.isNotEmpty) {
       return tutors.first;
     } else {
       return null;
     }
+  }
+
+  @override
+  Future<Version> loadLastVersion(String platformOS) async {
+    List<Version> versions = (await FirebaseFirestore.instance
+            .collection("versions")
+            .where("os", isEqualTo: platformOS)
+            .get())
+        .docs
+        .map((doc) => Version.fromJson(doc.data()))
+        .toList();
+
+    if (versions.isNotEmpty) {
+      return versions.first;
+    }
+
+    throw ArgumentError('No data in database');
   }
 }
