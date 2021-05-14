@@ -37,7 +37,7 @@ class UserSyncBloc {
   Stream<String?> _getUserFromStorage() =>
       storage.readAll().asStream().map((values) => values['user']);
 
-  void setData(String? userId) => Stream.value(userId)
+  void setData(String? userId, AuthProvider authProvider) => Stream.value(userId)
       .doOnData((userId) {
         if (userId == null) {
           _mappedUserController.add(null);
@@ -47,7 +47,7 @@ class UserSyncBloc {
       .switchMap((value) => repository
           .getUserInfo(userId!)
           .asStream()
-          .map((userJson) => User.fromJson(userJson!))
+          .map((userJson) => User.fromJson(userJson, authProvider))
           .doOnData(_mappedUserController.add)
           .asyncMap((user) =>
               storage.write(key: "user", value: jsonEncode(user.toJson())))
@@ -57,7 +57,7 @@ class UserSyncBloc {
   void updateUserData(Map<String, dynamic> data) => mappedUser
       .take(1)
       .where((user) => user != null && json.encode(user.data) != json.encode(data))
-      .map((user) => User(data: data, userId: user!.userId))
+      .map((user) => User(data: data, authProvider: user!.authProvider, userId: user.userId))
       .switchMap((dataNew) => Stream.value(null)
           .asyncMap(
               (_) => repository.changeUserInfo(dataNew.userId, dataNew.data))

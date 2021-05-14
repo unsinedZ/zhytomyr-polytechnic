@@ -44,7 +44,8 @@ dependencies:
   update_check:
     path: ./features/update_check
   url_launcher: ^6.0.3
-
+  facebook_authentication:
+    path: ./features/facebook_authentication
 
 dev_dependencies:
   flutter_test:

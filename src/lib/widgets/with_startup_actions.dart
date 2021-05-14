@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:error_bloc/error_bloc.dart';
 import 'package:google_authentication/google_authentication.dart';
 import 'package:push_notification/push_notification.dart';
+import 'package:facebook_authentication/facebook_authentication.dart';
 import 'package:user_sync/user_sync.dart';
 import 'package:update_check/update_check.dart';
 
@@ -53,8 +54,17 @@ class _WithStartupActionsState extends State<WithStartupActions> {
         context.read<UserSyncBloc>().cleanData();
         return;
       }
-      
-      context.read<UserSyncBloc>().setData(user?.uid);
+
+      context.read<UserSyncBloc>().setData(user?.uid, AuthProvider.Google);
+    });
+
+    context.read<FacebookAuthenticationBloc>().user.listen((user) {
+      if (user?.uid == "") {
+        context.read<UserSyncBloc>().cleanData();
+        return;
+      }
+
+      context.read<UserSyncBloc>().setData(user?.uid, AuthProvider.Facebook);
     });
 
     context.read<UpdateCheckBloc>().checkForUpdates();

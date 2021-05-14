@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 
 import 'package:google_authentication/google_authentication.dart';
+import 'package:facebook_authentication/facebook_authentication.dart';
 import 'package:terms_and_conditions/terms_and_conditions.dart';
 import 'package:timetable/timetable.dart' hide TextLocalizer;
 import 'package:faculty_list/faculty_list.dart' hide TextLocalizer;
@@ -105,8 +106,30 @@ class App extends StatelessWidget {
                     textLocalizer: TextLocalizer(),
                     errorSink: context.read<ErrorBloc>().errorSink,
                     drawer: NavigationDrawer(
-                      onSignOut:
-                          context.read<GoogleAuthenticationBloc>().logout,
+                      onSignOut: () {
+                        context
+                            .read<UserSyncBloc>()
+                            .mappedUser
+                            .first
+                            .then((user) {
+                          if (user != null && !user.isEmpty) {
+                            switch (user.authProvider) {
+                              case AuthProvider.Google:
+                                context
+                                    .read<GoogleAuthenticationBloc>()
+                                    .logout();
+                                break;
+                              case AuthProvider.Facebook:
+                                context
+                                    .read<FacebookAuthenticationBloc>()
+                                    .logout();
+                                break;
+                              case AuthProvider.Empty:
+                                break;
+                            }
+                          }
+                        });
+                      },
                       textLocalizer: TextLocalizer(),
                       errorSink: context.read<ErrorBloc>().errorSink,
                     ),
