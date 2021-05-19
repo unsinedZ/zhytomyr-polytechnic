@@ -20,7 +20,9 @@ jobs:
         with:
           channel: "stable"
       - name: build release 
-        run: flutter build apk --release
+        run: |
+          cd src
+          flutter build apk --release
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
