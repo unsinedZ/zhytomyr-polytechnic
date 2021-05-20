@@ -2,6 +2,7 @@ import 'package:apple_authentication/apple_authentication.dart';
 import 'package:flutter/material.dart';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 
 import 'package:google_authentication/google_authentication.dart';
@@ -25,12 +26,30 @@ import 'package:zhytomyr_polytechnic/widgets/dependencies.dart';
 import 'package:zhytomyr_polytechnic/widgets/screens/authentication_screen.dart';
 import 'package:zhytomyr_polytechnic/widgets/with_startup_actions.dart';
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
+  @override
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  String title = '';
+
+  @override
+  void initState() {
+    PackageInfo.fromPlatform().then((packageInfo) {
+      setState(() {
+        title = packageInfo.appName;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dependencies(
       child: WithStartupActions(
         child: MaterialApp(
+          title: title,
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             canvasColor: Colors.white,

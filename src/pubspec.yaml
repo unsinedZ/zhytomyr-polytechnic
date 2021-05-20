@@ -48,6 +48,7 @@ dependencies:
   url_launcher: ^6.0.3
   facebook_authentication:
     path: ./features/facebook_authentication
+  package_info: ^2.0.0
 
 dev_dependencies:
   flutter_test:

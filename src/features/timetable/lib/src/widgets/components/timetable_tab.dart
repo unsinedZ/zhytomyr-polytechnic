@@ -187,7 +187,6 @@ class _TimetableTabState extends State<TimetableTab> {
     TimetableItem? timetableItem,
     TimetableItemUpdate? timetableItemUpdate,
   }) {
-    print('createUpdatableItem');
     if (timetableItemUpdates.isNotEmpty) {
       timetableItemUpdates.forEach((timetableUpdate) {
         String updateItemTime = timetableUpdate.time;

@@ -554,7 +554,7 @@ packages:
     source: hosted
     version: "2.0.0"
   package_info:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: package_info
       url: "https://pub.dartlang.org"
