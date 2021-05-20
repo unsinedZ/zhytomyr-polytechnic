@@ -33,8 +33,7 @@ Future<void> initLocalizationAsync() async {
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp();
   if (kDebugMode) {
-    await FirebaseCrashlytics.instance
-        .setCrashlyticsCollectionEnabled(false);
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
   } else {
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     Isolate.current.addErrorListener(RawReceivePort((pair) async {
