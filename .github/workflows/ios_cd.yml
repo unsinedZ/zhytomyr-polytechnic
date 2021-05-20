@@ -24,10 +24,10 @@ jobs:
         flutter clean
         flutter build ios --release --no-codesign
     - name: Upload iPA
-      uses: actions/upload-artifact@master
+      uses: actions/download-artifact@v2
       with:
         name: ios-build
-        path: build/ios/iphoneos
+        path: src/build/ios/iphoneos
   beta_ios:
     name: Upload iOS Beta to Firebase App Distribution
     needs: [build_ios]
