@@ -70,6 +70,6 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
 
   Future<String> loadTermsAndConditions() async {
     return await rootBundle
-        .loadString(getAssetPathPrefix() + 'assets/terms_and_conditions.md');
+        .loadString(getAssetPathPrefix() + 'assets/terms_and_conditions_en.md');
   }
 }
