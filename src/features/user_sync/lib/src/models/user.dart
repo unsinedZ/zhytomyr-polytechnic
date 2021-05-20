@@ -40,6 +40,7 @@ class User {
 enum AuthProvider {
   Google,
   Facebook,
+  Apple,
   Empty
 }
 
