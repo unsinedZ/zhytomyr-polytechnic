@@ -12,6 +12,7 @@ import 'package:navigation_drawer/navigation_drawer.dart' as NavigationDrawer
     show TextLocalizer;
 
 import 'package:contacts/contacts.dart' as Contacts show TextLocalizer;
+import 'package:terms_and_conditions/terms_and_conditions.dart' as Terms show TextLocalizer;
 
 class TextLocalizer
     implements
@@ -19,7 +20,8 @@ class TextLocalizer
         GroupSelection.TextLocalizer,
         TimetableScreen.TextLocalizer,
         Contacts.TextLocalizer,
-        NavigationDrawer.TextLocalizer {
+        NavigationDrawer.TextLocalizer,
+        Terms.TextLocalizer {
   @override
   String localize(String stringToLocalize, [List<String>? args]) {
     return stringToLocalize.tr(args: args);
