@@ -25,7 +25,7 @@ class AppleAuthenticationBloc {
 
   Stream<AppleUser?> get user => _userController.stream;
 
-  String get providerId => "facebook.com";
+  String get providerId => "apple.com";
 
   void loadUser() async {
     try {
@@ -65,9 +65,7 @@ class AppleAuthenticationBloc {
         nonce: nonce,
       );
 
-      print('appleCredential');
-
-      final oauthCredential = OAuthProvider("apple.com").credential(
+      final oauthCredential = OAuthProvider(providerId).credential(
         idToken: appleCredential.identityToken,
         rawNonce: rawNonce,
       );
