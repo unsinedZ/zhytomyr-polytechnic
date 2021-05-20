@@ -10,10 +10,9 @@ import 'package:push_notification/push_notification.dart';
 import 'package:apple_authentication/apple_authentication.dart';
 import 'package:update_check/update_check.dart';
 import 'package:user_sync/user_sync.dart' hide User;
-import 'package:zhytomyr_polytechnic/bl/repositories/main_firestore_repository.dart';
 
-import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 import 'package:zhytomyr_polytechnic/bl/repositories/main_firestore_repository.dart';
+import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 
 class Dependencies extends StatelessWidget {
   final Widget child;
