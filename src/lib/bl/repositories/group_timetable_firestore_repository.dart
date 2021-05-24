@@ -20,52 +20,52 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
   }) : super(firebaseFirestoreInstance: firebaseFirestoreInstance);
 
   @override
-  Future<Timetable> loadTimetableByReferenceId(String referenceId, [String? userGroupId]) async {
+  Future<Timetable> loadTimetableByKey(String key, [String? userGroupId]) async {
     final SharedPreferences prefs = await sharedPreferences;
 
     Timetable? timetable;
 
-    if (prefs.containsKey('timetable.group.my') && userGroupId == referenceId) {
-      Map<String, dynamic> json =
-          jsonDecode(prefs.getString('timetable.group.my')!);
-      json['data'] = (json['data'] as Map<String, dynamic>);
-
-      Expirable<Map<String, dynamic>> expirableTimetableJson =
-          Expirable<Map<String, dynamic>>.fromJson(json);
-
-      if (expirableTimetableJson.expireAt.isAfter(DateTime.now())) {
-        timetable = Timetable.fromJson(expirableTimetableJson.data);
-      }
-    }
+    // if (prefs.containsKey('timetable.group.my') && userGroupId == key) {
+    //   Map<String, dynamic> json =
+    //       jsonDecode(prefs.getString('timetable.group.my')!);
+    //   json['data'] = (json['data'] as Map<String, dynamic>);
+    //
+    //   Expirable<Map<String, dynamic>> expirableTimetableJson =
+    //       Expirable<Map<String, dynamic>>.fromJson(json);
+    //
+    //   if (expirableTimetableJson.expireAt.isAfter(DateTime.now())) {
+    //     timetable = Timetable.fromJson(expirableTimetableJson.data);
+    //   }
+    // }
 
     if (timetable == null) {
       timetable = Timetable.fromJson(
-          (await firebaseFirestoreInstance.collection('timetable').get())
+          (await firebaseFirestoreInstance.collection('timetable_item_group').where("key", isEqualTo: 'group/' + key).get())
               .docs
               .map((doc) => doc.data())
               .first);
 
-      List<TimetableItem> items = timetable.items
-          .where((element) =>
-              element.activity.groups.any((group) => group.id == referenceId))
-          .toList();
+      // List<TimetableItem> items = timetable.items // TODO delete
+      //     .where((element) =>
+      //         element.activity.groups.any((group) => group.id == key))
+      //     .toList();
+      //
+      // timetable = Timetable(
+      //   weekDetermination: timetable.weekDetermination,
+      //   items: items,
+      //   expiresAt: timetable.expiresAt,
+      // ); // TODO delete
 
-      timetable = Timetable(
-        weekDetermination: timetable.weekDetermination,
-        items: items,
-        expiresAt: timetable.expiresAt,
-      );
-
-      if (userGroupId == referenceId) {
-        Expirable<Map<String, dynamic>> expirableTimetableJson =
-            Expirable<Map<String, dynamic>>(
-          duration: Duration(days: 30),
-          data: timetable.toJson(),
-        );
-
-        prefs.setString(
-            'timetable.group.my', jsonEncode(expirableTimetableJson));
-      }
+      // if (userGroupId == key) {
+      //   Expirable<Map<String, dynamic>> expirableTimetableJson =
+      //       Expirable<Map<String, dynamic>>(
+      //     duration: Duration(days: 30),
+      //     data: timetable.toJson(),
+      //   );
+      //
+      //   prefs.setString(
+      //       'timetable.group.my', jsonEncode(expirableTimetableJson));
+      // }
     }
 
     return timetable;

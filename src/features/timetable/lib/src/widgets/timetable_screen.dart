@@ -50,11 +50,11 @@ class _TimetableScreenState extends State<TimetableScreen> {
   late TimetableBloc timetableBloc;
   late TimetableType timetableType;
   late int weekNumber;
-  late String id;
+  late int id;
   late Stream<List<dynamic>> dataStream;
 
   StreamSubscription? groupStreamSubscription;
-  String? subgroupId;
+  int? subgroupId;
   Group? group;
   Tutor? tutor;
 
@@ -112,9 +112,9 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
     timetableBloc.loadTimetableItemUpdates();
 
-    widget.userDataStream.listen((userDataJson) {
-      timetableBloc.loadTimetable(id, userDataJson['groupId']);
-    });
+    // widget.userDataStream.listen((userDataJson) {
+    //   timetableBloc.loadTimetable(id.toString(), userDataJson['groupId']);
+    // }); // TODO
 
     if (timetableType == TimetableType.Group) {
       timetableBloc.loadGroup(id);
@@ -122,12 +122,15 @@ class _TimetableScreenState extends State<TimetableScreen> {
         setState(() {
           this.group = group;
         });
+        if(group != null) {
+          timetableBloc.loadTimetable(group.name);
+        }
       });
     } else if (timetableType == TimetableType.Teacher) {
       timetableBloc.loadTutor(id);
-      timetableBloc.tutor.listen((group) {
+      timetableBloc.tutor.listen((tutor) {
         setState(() {
-          this.tutor = group;
+          this.tutor = tutor;
         });
       });
     }
@@ -188,7 +191,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                           isWeekChanged = !isWeekChanged;
                         });
                       },
-                      onCurrentSubgroupChanged: (String newSubgroupId) {
+                      onCurrentSubgroupChanged: (int newSubgroupId) {
                         setState(() {
                           subgroupId = newSubgroupId;
                         });

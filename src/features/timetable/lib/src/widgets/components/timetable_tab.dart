@@ -19,9 +19,9 @@ class TimetableTab extends StatefulWidget {
   final int dayOfWeekNumber;
   final DateTime dateTime;
   final TimetableType timetableType;
-  final String id;
+  final int id;
   final bool isTomorrow;
-  final String? subgroupId;
+  final int? subgroupId;
 
   TimetableTab({
     required this.textLocalizer,

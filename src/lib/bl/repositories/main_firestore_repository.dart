@@ -69,14 +69,14 @@ class FirestoreRepository
   }
 
   @override
-  Future<List<Group>> getGroups(int course, String facultyId) async {
+  Future<List<Group>> getGroups(String year, int facultyId) async {
     return (await this.getAllGroups())
-        .where((group) => group.year == course && group.facultyId == facultyId)
+        .where((group) => group.year == year && group.facultyId == facultyId)
         .toList();
   }
 
   @override
-  Future<Timetable.Group> getGroupById(String groupId) async {
+  Future<Timetable.Group> getGroupById(int groupId) async {
     return (await this.getAllGroups())
         .map((e) => Timetable.Group.fromObject(e))
         .firstWhere((group) => group.id == groupId);
@@ -126,7 +126,7 @@ class FirestoreRepository
   }
 
   @override
-  Future<Timetable.Tutor?> getTutorById(String teacherId) async {
+  Future<Timetable.Tutor?> getTutorById(int teacherId) async {
     List<Timetable.Tutor> tutors = (await FirebaseFirestore.instance
             .collection("tutors")
             .where("id", isEqualTo: teacherId)

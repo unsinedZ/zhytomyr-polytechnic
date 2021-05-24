@@ -27,10 +27,12 @@ class GroupSelectionScreen extends StatefulWidget {
 }
 
 class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
-  int? course;
+  final List<String> _years = ['1', '2', '3', '4', '1m', '2m'];
+
+  String? course;
   Group? group;
   Subgroup? subgroup;
-  late String facultyId;
+  late int facultyId;
   late String facultyName;
   late GroupSelectionBloc groupSelectionBloc;
   bool isMyGroup = false;
@@ -69,7 +71,7 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
   @override
   void didChangeDependencies() {
     facultyId = (ModalRoute.of(context)!.settings.arguments
-        as Map<String, dynamic>)['facultyId'].toString();
+        as Map<String, dynamic>)['facultyId'];
     facultyName = (ModalRoute.of(context)!.settings.arguments
         as Map<String, dynamic>)['facultyName'];
     super.didChangeDependencies();
@@ -116,11 +118,11 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                     ),
                     Container(
                       width: 150,
-                      child: DropdownButton<int>(
+                      child: DropdownButton<String>(
                         hint: Text(widget.textLocalizer.localize('Course')),
                         isExpanded: true,
                         value: course,
-                        onChanged: (int? course) {
+                        onChanged: (String? course) {
                           setState(() {
                             this.course = course;
                             group = null;
@@ -128,9 +130,9 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                           });
                           groupSelectionBloc.loadGroups(course!, facultyId);
                         },
-                        items: <int>[1, 2, 3, 4, 5]
-                            .map<DropdownMenuItem<int>>((int value) {
-                          return DropdownMenuItem<int>(
+                        items: _years
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value.toString()),
                           );

@@ -7,11 +7,11 @@ import 'package:timetable/src/bl/models/models.dart';
 class FiltersBottomSheet extends StatefulWidget {
   final TextLocalizer textLocalizer;
   final int currentWeekNumber;
-  final String? currentSubgroupId;
+  final int? currentSubgroupId;
   final TimetableType timetableType;
   final Group? group;
   final Function(int) onCurrentWeekChanged;
-  final Function(String) onCurrentSubgroupChanged;
+  final Function(int) onCurrentSubgroupChanged;
 
   FiltersBottomSheet({
     required this.textLocalizer,
@@ -31,7 +31,7 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
   final _weekNumbers = [1, 2];
 
   late int currentWeekNumber;
-  late String? currentSubgroupId;
+  late int? currentSubgroupId;
 
   @override
   void initState() {

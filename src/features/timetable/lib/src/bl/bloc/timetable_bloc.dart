@@ -36,11 +36,11 @@ class TimetableBloc {
 
   Stream<Tutor?> get tutor => _tutorController.stream;
 
-  void loadTimetable(String id, [String? groupId]) {
+  void loadTimetable(String key, [String? groupId]) {
     _timetableController.add(null);
 
     timetableRepository
-        .loadTimetableByReferenceId(id, groupId)
+        .loadTimetableByKey(key, groupId)
         .then((timetable) {
       _timetableController.add(timetable);
     }).onError((error, stack) {
@@ -50,7 +50,7 @@ class TimetableBloc {
     });
   }
 
-  void loadGroup(String groupId) {
+  void loadGroup(int groupId) {
     _groupController.add(null);
 
     groupRepository.getGroupById(groupId).then((group) {
@@ -70,7 +70,7 @@ class TimetableBloc {
     });
   }
 
-  void loadTutor(String tutorId) {
+  void loadTutor(int tutorId) {
     _tutorController.add(null);
 
     tutorRepository.getTutorById(tutorId).then((tutor) {
