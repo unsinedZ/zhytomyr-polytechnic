@@ -55,6 +55,11 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
             title: Text(widget.textLocalizer.localize('Contacts')),
             onTap: () => Navigator.pushNamed(context, '/contacts'),
           ),
+          ListTile(
+            leading: Icon(Icons.text_snippet_outlined),
+            title: Text(widget.textLocalizer.localize('Terms and conditions')),
+            onTap: () => Navigator.pushNamed(context, '/terms&conditions'),
+          ),
           Spacer(),
           ListTile(
             leading: Icon(Icons.exit_to_app),
