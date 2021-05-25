@@ -21,7 +21,7 @@ jobs:
     - run: |
         cd src
         flutter pub get
-        flutter build ipa --export-options-plist=src/ios/ExportOptions.plist        
+        flutter build ipa --export-options-plist=ios/ExportOptions.plist        
     - name: Upload iPA
       uses: actions/upload-artifact@v2
       with:
