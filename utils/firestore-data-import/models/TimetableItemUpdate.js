@@ -4,18 +4,18 @@ const {TimetableItem} = require("./TimetableItem")
 
 class TimetableItemUpdate {
     static fromSQL(sqlOutput, updateItem) {
-        const timetableItem = TimetableItem.fromSQL(sqlOutput, updateItem.activity_change_id);
-
+        const timetableItem = TimetableItem.fromUpdateItem(sqlOutput, updateItem);
+        
         if(!timetableItem)
         {
             return;
         }
-
+        
         return {
             id: updateItem.change_id,
-            date: Day.fromSQL(updateItem.new_day),
-            time: Time.fromSQL(updateItem.new_hour),
-            item: timetableItem
+            date: updateItem.date,
+            key: "update/"+ updateItem.activity_change_id,
+            item: Object.assign({}, timetableItem)
         }
     }
 }

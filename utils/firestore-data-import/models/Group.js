@@ -1,5 +1,4 @@
 class Group {
-
     static defaultSubgroup = [{
         id: 1,
         name: "1"
@@ -7,6 +6,20 @@ class Group {
         id: 2,
         name: "2"
     }]
+
+    facultyId = 0;
+    id = 0;
+    name = '';
+    subgroups = [];
+    year = '';
+
+    constructor(facultyId, id, name, subgroups, year) {
+        this.facultyId = facultyId;
+        this.id = id;
+        this.name = name;
+        this.subgroups = subgroups;
+        this.year = year;
+    }
 
     static getGroupList(sqlOutput, selectedActivity) {
         const groupList = sqlOutput.activities
@@ -28,7 +41,7 @@ class Group {
             .filter((group) => group.group_name.toUpperCase() == subgroup.subgroup_name.split("[")[0].toUpperCase())[0]
 
         if (!result) {
-            console.info("Group " + subgroup.subgroup_name + " not found in groups")
+            console.info("Group \"" + subgroup.subgroup_name + "\" not found in groups")
             return;
         }
 
@@ -36,13 +49,7 @@ class Group {
     }
 
     static fromSQL(group) {
-        return {
-            facultyId: group.group_faculty_id,
-            id: group.group_id,
-            name: group.group_name,
-            subgroup: group.group_subgroup_count == 2 ? this.defaultSubgroup : [],
-            year: group.group_kurs
-        }
+        return new Group(group.group_faculty_id, group.group_id, group.group_name, group.group_subgroup_count == 2 ? this.defaultSubgroup : [], group.group_kurs)
     }
 
     static fromActivity(sqlOutput, selectedActivity) {
@@ -56,21 +63,23 @@ class Group {
                 return group;
             }
 
-            return {
-                facultyId: group.facultyId,
-                id: group.id,
-                name: group.name,
-                subgroup: subgroupList
-                    .filter((selectedSubgroup) => selectedSubgroup.subgroup_name.indexOf(group.name) >= 0)
-                    .map((subgroup) => subgroup.subgroup_name.split("[")[1].split("]")[0] == 1 ? {
-                        id: 1,
-                        name: "1"
-                    } : {
-                        id: 2,
-                        name: "2"
-                    }),
-                year: group.year
-            }
+            const subgroups = subgroupList
+                .filter((selectedSubgroup) => selectedSubgroup.subgroup_name.indexOf(group.name) >= 0)
+                .map((subgroup) => subgroup.subgroup_name.split("[")[1].split("]")[0] == 1 ? {
+                    id: 1,
+                    name: "1"
+                } : {
+                    id: 2,
+                    name: "2"
+                })
+
+            return new Group(
+                group.facultyId,
+                group.id,
+                group.name,
+                subgroups,
+                group.year
+            )
         });
     }
 }

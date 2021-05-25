@@ -1,5 +1,5 @@
 {
-  "name": "mariadb-data-import",
+  "name": "firestore-data-import",
   "version": "1.0.0",
   "description": "Tools for the export data to firestore",
   "main": "index.js",
