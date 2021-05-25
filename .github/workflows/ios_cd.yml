@@ -21,19 +21,12 @@ jobs:
     - run: |
         cd src
         flutter pub get
-        flutter clean
-        flutter build ios --release --no-codesign
-        cd build/ios/iphoneos
-        mkdir Payload
-        cd Payload
-        ln -s ../Runner.app
-        cd ..
-        zip -r app.ipa Payload
+        flutter build ipa --export-options-plist=src/ios/ExportOptions.plist        
     - name: Upload iPA
       uses: actions/upload-artifact@v2
       with:
         name: ios-build
-        path: src/build/ios/iphoneos
+        path: src/build/ios/ipa
   beta_ios:
     name: Upload iOS Beta to Firebase App Distribution
     needs: [build_ios]
@@ -54,4 +47,4 @@ jobs:
       with:
         appId: ${{secrets.FIREBASE_APP_ID_IOS}}
         token: ${{secrets.FIREBASE_TOKEN}}
-        file: app.ipa
+        file: "Житомирська політехніка.ipa"
