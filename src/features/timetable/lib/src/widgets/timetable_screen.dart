@@ -112,9 +112,9 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
     timetableBloc.loadTimetableItemUpdates();
 
-    // widget.userDataStream.listen((userDataJson) {
-    //   timetableBloc.loadTimetable(id.toString(), userDataJson['groupId']);
-    // }); // TODO
+    widget.userDataStream.listen((userDataJson) {
+      timetableBloc.loadTimetable(id, userDataJson['groupId']);
+    });
 
     if (timetableType == TimetableType.Group) {
       timetableBloc.loadGroup(id);
@@ -122,9 +122,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
         setState(() {
           this.group = group;
         });
-        if(group != null) {
-          timetableBloc.loadTimetable(group.name);
-        }
       });
     } else if (timetableType == TimetableType.Teacher) {
       timetableBloc.loadTutor(id);

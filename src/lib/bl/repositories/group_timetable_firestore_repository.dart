@@ -20,7 +20,7 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
   }) : super(firebaseFirestoreInstance: firebaseFirestoreInstance);
 
   @override
-  Future<Timetable> loadTimetableByKey(String key, [String? userGroupId]) async {
+  Future<Timetable> loadTimetableByReferenceId(int id, [String? userGroupId]) async {
     final SharedPreferences prefs = await sharedPreferences;
 
     Timetable? timetable;
@@ -40,7 +40,7 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
 
     if (timetable == null) {
       timetable = Timetable.fromJson(
-          (await firebaseFirestoreInstance.collection('timetable_item_group').where("key", isEqualTo: 'group/' + key).get())
+          (await firebaseFirestoreInstance.collection('timetable_item_group').where("key", isEqualTo: 'group/' + id.toString()).get())
               .docs
               .map((doc) => doc.data())
               .first);

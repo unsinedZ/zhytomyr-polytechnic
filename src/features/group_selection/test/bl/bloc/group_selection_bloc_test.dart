@@ -38,13 +38,13 @@ void main() {
     expect(results[0], null);
     expect(results[1]!.length, 2);
     expect(results[1]![0].name, 'SomeName');
-    expect(results[1]![0].facultyId, '');
-    expect(results[1]![0].id, '');
-    expect(results[1]![0].year, 2);
+    expect(results[1]![0].facultyId, 1);
+    expect(results[1]![0].id, 0);
+    expect(results[1]![0].year, '2');
 
     expect(results[1]![1].name, 'SomeName1');
-    expect(results[1]![1].facultyId, '');
-    expect(results[1]![1].id, '');
-    expect(results[1]![1].year, 3);
+    expect(results[1]![1].facultyId, 0);
+    expect(results[1]![1].id, 1);
+    expect(results[1]![1].year, '3');
   });
 }

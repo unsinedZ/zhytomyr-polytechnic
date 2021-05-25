@@ -36,11 +36,11 @@ class TimetableBloc {
 
   Stream<Tutor?> get tutor => _tutorController.stream;
 
-  void loadTimetable(String key, [String? groupId]) {
+  void loadTimetable(int id, [String? groupId]) {
     _timetableController.add(null);
 
     timetableRepository
-        .loadTimetableByKey(key, groupId)
+        .loadTimetableByReferenceId(id, groupId)
         .then((timetable) {
       _timetableController.add(timetable);
     }).onError((error, stack) {

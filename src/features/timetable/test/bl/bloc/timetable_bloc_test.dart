@@ -12,7 +12,7 @@ import 'package:timetable/src/bl/models/models.dart';
 
 class TimetableLoaderMock extends Mock implements TimetableRepository {
   @override
-  Future<Timetable> loadTimetableByReferenceId(String? referenceId,
+  Future<Timetable> loadTimetableByReferenceId(int? referenceId,
           [String? userGroupId]) =>
       super.noSuchMethod(
           Invocation.method(
@@ -49,7 +49,7 @@ void main() {
     List<Timetable?> results = <Timetable?>[];
 
     timetableBloc.timetable.listen((groups) => results.add(groups));
-    timetableBloc.loadTimetable('any');
+    timetableBloc.loadTimetable(0);
 
     await Future.delayed(const Duration());
 
