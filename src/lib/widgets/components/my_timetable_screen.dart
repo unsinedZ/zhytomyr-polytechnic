@@ -20,14 +20,12 @@ class MyTimetableScreen extends StatefulWidget {
 }
 
 class _MyTimetableScreenState extends State<MyTimetableScreen> {
-
   @override
   void initState() {
     widget.userDataStream.listen((userData) {
-      if (userData['groupId'] == null ||
-          userData['groupId'] == '') {
-        widget.errorSink.add(widget.textLocalizer
-            .localize('You have not yet selected a group'));
+      if (userData['groupId'] == null || userData['groupId'] == '') {
+        widget.errorSink.add(
+            widget.textLocalizer.localize('You have not yet selected a group'));
         Navigator.pop(context);
       } else {
         Navigator.pushReplacementNamed(
@@ -47,6 +45,10 @@ class _MyTimetableScreenState extends State<MyTimetableScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: CircularProgressIndicator(),));
+    return Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
   }
 }

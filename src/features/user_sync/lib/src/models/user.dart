@@ -1,52 +1,52 @@
 class User {
   final String userId;
   final AuthProvider authProvider;
-  final Map<String, dynamic> data;
+  final String groupId;
+  final String subgroupId;
 
   User({
     required this.userId,
     required this.authProvider,
-    required this.data,
+    required this.groupId,
+    required this.subgroupId,
   });
 
-  factory User.fromJson(Map<String, dynamic> json, AuthProvider authProvider) => User(
+  factory User.fromJson(Map<String, dynamic> json, AuthProvider authProvider) =>
+      User(
         userId: json["userId"] ?? '',
         authProvider: authProvider,
-        data: Map.fromIterable(json.keys.where((k) => k != 'userId'),
-            key: (k) => k, value: (k) => json[k]),
+        groupId: json["groupId"],
+        subgroupId: json["subgroupId"],
       );
 
   factory User.fromStorage(Map<String, dynamic> json) => User(
         userId: json["userId"],
         authProvider: authProviderFromString(json["authProvider"]),
-        data: json["data"],
+        groupId: json["groupId"],
+        subgroupId: json["subgroupId"],
       );
 
   factory User.empty() => User(
         userId: "",
         authProvider: AuthProvider.Empty,
-        data: {},
+        groupId: '',
+        subgroupId: '',
       );
 
   Map<String, dynamic> toJson() => {
         'userId': userId,
         'authProvider': authProvider.toString().split(".").last,
-        'data': data,
+        'groupId': groupId,
+        'subgroupId': subgroupId,
       };
 
-  bool get isEmpty => userId.isEmpty && data.isEmpty;
+  bool get isEmpty => userId.isEmpty;
 }
 
-enum AuthProvider {
-  Google,
-  Facebook,
-  Apple,
-  Empty
-}
+enum AuthProvider { Google, Facebook, Apple, Empty }
 
-AuthProvider authProviderFromString(String value){
+AuthProvider authProviderFromString(String value) {
   return AuthProvider.values.firstWhere(
-          (e) =>
-      e.toString().split(".").last.toLowerCase() == value.toLowerCase(),
+      (e) => e.toString().split(".").last.toLowerCase() == value.toLowerCase(),
       orElse: () => AuthProvider.Empty);
 }

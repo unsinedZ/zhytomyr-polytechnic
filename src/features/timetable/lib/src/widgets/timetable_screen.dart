@@ -113,7 +113,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
     timetableBloc.loadTimetableItemUpdates();
 
     widget.userDataStream.listen((userDataJson) {
-      timetableBloc.loadTimetable(id, userDataJson['groupId']);
+      timetableBloc.loadTimetable(id, userDataJson['groupId'].toString());
     });
 
     if (timetableType == TimetableType.Group) {
@@ -213,9 +213,9 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     snapshot.data![1];
 
                 if ((weekNumber.isEven &&
-                        timetable.weekDetermination == WeekDetermination.Even) ||
+                        timetable.timetableData.weekDetermination == WeekDetermination.Even) ||
                     (weekNumber.isOdd &&
-                        timetable.weekDetermination == WeekDetermination.Odd)) {
+                        timetable.timetableData.weekDetermination == WeekDetermination.Odd)) {
                   weekNumber = 1;
                 } else {
                   weekNumber = 2;

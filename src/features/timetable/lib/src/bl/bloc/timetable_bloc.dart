@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:rxdart/rxdart.dart';
+
 import 'package:timetable/src/bl/abstractions/timetable_repository.dart';
 import 'package:timetable/src/bl/abstractions/group_repository.dart';
 import 'package:timetable/src/bl/abstractions/tutor_repository.dart';
@@ -18,14 +20,13 @@ class TimetableBloc {
     required this.tutorRepository,
   });
 
-  final StreamController<Timetable?> _timetableController =
-      StreamController.broadcast();
-  final StreamController<Group?> _groupController =
-      StreamController.broadcast();
-  final StreamController<List<TimetableItemUpdate>?>
-      _timetableItemUpdatesController = StreamController.broadcast();
-  final StreamController<Tutor?> _tutorController =
-      StreamController.broadcast();
+  final BehaviorSubject<Timetable?> _timetableController =
+      BehaviorSubject<Timetable?>();
+  final BehaviorSubject<Group?> _groupController = BehaviorSubject<Group?>();
+  final BehaviorSubject<List<TimetableItemUpdate>?>
+      _timetableItemUpdatesController =
+      BehaviorSubject<List<TimetableItemUpdate>?>();
+  final BehaviorSubject<Tutor?> _tutorController = BehaviorSubject<Tutor?>();
 
   Stream<Timetable?> get timetable => _timetableController.stream;
 
@@ -55,19 +56,24 @@ class TimetableBloc {
 
     groupRepository.getGroupById(groupId).then((group) {
       _groupController.add(group);
-    }).onError((error, _) {
+    }).onError((error, stack) {
+      print(error);
+      print(stack);
       errorSink.add(error.toString());
     });
   }
 
   void loadTimetableItemUpdates() {
-    _timetableItemUpdatesController.add(null);
+    // _timetableItemUpdatesController.add(null);
 
-    timetableRepository.getTimetableItemUpdates().then((timetableItemUpdates) {
-      _timetableItemUpdatesController.add(timetableItemUpdates);
-    }).onError((error, _) {
-      errorSink.add(error.toString());
-    });
+    // timetableRepository.getTimetableItemUpdates().then((timetableItemUpdates) {
+    //   _timetableItemUpdatesController.add(timetableItemUpdates);
+    // }).onError((error, stack) {
+    //   print(error);
+    //   print(stack);
+    //   errorSink.add(error.toString());
+    // });
+    _timetableItemUpdatesController.add(<TimetableItemUpdate>[]);
   }
 
   void loadTutor(int tutorId) {

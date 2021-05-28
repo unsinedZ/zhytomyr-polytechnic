@@ -77,40 +77,45 @@ class ActivityCard extends StatelessWidget {
                 SizedBox(
                   width: 7,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      activity.name,
-                      textScaleFactor: 1.3,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      activity.room,
-                      style: Theme.of(context).textTheme.headline2,
-                    ),
-                  ],
-                ),
-                Spacer(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      activity.tutor.name,
-                      style: Theme.of(context).textTheme.headline2,
-                      textScaleFactor: 1.15,
-                    ),
-                    if (this._activityCardType == _ActivityCardType.Canceled)
+                Expanded(
+                  flex: 5,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
                       Text(
-                        'Canceled',
-                        style: TextStyle(color: Colors.red),
+                        activity.name,
+                        textScaleFactor: 1.3,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        activity.room,
+                        style: Theme.of(context).textTheme.headline2,
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        activity.tutors.first.name,
+                        style: Theme.of(context).textTheme.headline2,
                         textScaleFactor: 1.15,
                       ),
-                  ],
+                      if (this._activityCardType == _ActivityCardType.Canceled)
+                        Text(
+                          'Canceled',
+                          style: TextStyle(color: Colors.red),
+                          textScaleFactor: 1.15,
+                        ),
+                    ],
+                  ),
                 ),
               ],
             ),

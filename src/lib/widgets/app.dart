@@ -192,8 +192,7 @@ class _AppState extends State<App> {
                   userDataStream: context
                       .read<UserSyncBloc>()
                       .mappedUser
-                      .where((user) => user != null && !user.isEmpty)
-                      .map((user) => user!.data),
+                      .where((user) => user != null && !user.isEmpty),
                 ),
             '/contacts': (context) => ContactsScreen(
                   textLocalizer: TextLocalizer(),

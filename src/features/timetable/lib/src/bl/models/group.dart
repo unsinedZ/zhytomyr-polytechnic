@@ -21,7 +21,7 @@ class Group {
       name: json['name'] as String,
       year: json['year'] as String,
       facultyId: json['facultyId'] as int,
-      subgroups: (json['subgroup'] as List<dynamic>) // TODO
+      subgroups: (json['subgroups'] as List<dynamic>) // TODO
           .map((order) => Subgroup.fromJson(order))
           .toList(),
     );

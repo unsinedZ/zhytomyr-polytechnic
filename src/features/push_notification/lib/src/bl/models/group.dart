@@ -8,8 +8,8 @@ class Group {
   });
 
   factory Group.fromJson(Map<String, dynamic> json) => Group(
-        groupId: json['groupId'],
-        subgroupId: json['subgroupId'],
+        groupId: json['groupId'].toString(),
+        subgroupId: json['subgroupId'].toString(),
       );
 
   String get toTopic =>

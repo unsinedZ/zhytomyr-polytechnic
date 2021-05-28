@@ -36,7 +36,7 @@ void main() {
     expect(activity.name, 'Name');
     expect(activity.room, 'Room');
 
-    expect(activity.tutor.name, 'Name');
+    expect(activity.tutors.first.name, 'Name');
 
     expect(activity.groups.length, 2);
     expect(activity.groups[0].id, "id");
