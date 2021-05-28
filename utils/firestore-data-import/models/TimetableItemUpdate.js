@@ -1,25 +1,40 @@
-const {Time} = require("./Time");
-const {Day} = require("./Day");
-const {TimetableItem} = require("./TimetableItem")
+const {
+    TimetableItem
+} = require("./TimetableItem")
+const {
+    Group
+} = require("./Group")
 
 class TimetableItemUpdate {
+    id = null
+    date = null
+    key = null
+    item = null
+
+    constructor(id, date, key, item) {
+        this.id = id;
+        this.date = date;
+        this.key = key;
+        this.item = item;
+    }
+
     static fromSQL(sqlOutput, updateItem) {
         const timetableItem = TimetableItem.fromUpdateItem(sqlOutput, updateItem);
-        
-        if(!timetableItem)
-        {
+        const activity = sqlOutput["activities"].filter((activity) => activity.activity_id == updateItem.activity_change_id)[0]
+
+        if (!timetableItem || !activity) {
             return;
         }
-        
-        return {
-            id: updateItem.change_id,
-            date: updateItem.date,
-            key: "update/"+ updateItem.activity_change_id,
-            item: Object.assign({}, timetableItem)
+
+        return Group.fromActivity(sqlOutput, activity).map((group) => new TimetableItemUpdate(
+                updateItem.change_id,
+                updateItem.date,
+                "update/" + group.id + (group.subgroups.length == 1 ? "."+ group.subgroups[0].name : ""),
+                Object.assign({}, timetableItem)));
+                
         }
     }
-}
 
-module.exports = {
-    TimetableItemUpdate
-}
+    module.exports = {
+        TimetableItemUpdate
+    }

@@ -17,10 +17,13 @@ const {
 } = require("./models/TimetableItemUpdate");
 
 (async () => {
+  let updates = [];
   const jsonOutput = JSON.parse(fs.readFileSync(opts.file));
   const timetableKey = crypto.randomBytes(14).toString("hex");
   const rawGroup = jsonOutput["groups"];
   const groups = rawGroup.map((group) => Group.fromSQL(group))
+  jsonOutput["activities_changes"].map((updateItem) => TimetableItemUpdate.fromSQL(jsonOutput, updateItem))
+    .filter((updateItem) => updateItem).forEach((groupUpdate) => groupUpdate.forEach((update) => updates.push(update)))
 
   firebase.initializeApp({
     projectId: "emulator"
@@ -45,10 +48,10 @@ const {
     await firestore.collection("tutor").doc(crypto.randomBytes(14).toString("hex")).set(Object.assign({}, tutor))
   })
 
-  jsonOutput["activities_changes"].map((updateItem) => TimetableItemUpdate.fromSQL(jsonOutput, updateItem)).filter((updateItem) => updateItem).forEach(async (updateItem) => {
+  updates.forEach(async (updateItem) =>
     await firestore.collection("timetable_item_update").doc(crypto.randomBytes(14).toString("hex")).set(Object.assign({}, updateItem))
-  })
 
+  )
 
   const timetable_item_group = rawGroup.map((group, index) =>
     TimetableItemGroup.fromGroup(jsonOutput, index, timetableKey, "group/" + group.group_id)

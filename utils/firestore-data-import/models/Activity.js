@@ -7,7 +7,6 @@ const {Group} = require("./Group");
 
 
 class Activity {
-    id = 0;
     name = '';
     time = null;
     tutor = [];
@@ -15,8 +14,7 @@ class Activity {
     type = '';
     groups = [];
 
-    constructor(id, name, time, tutor, room, type, groups) {
-        this.id = id;
+    constructor(name, time, tutor, room, type, groups) {
         this.name = name
         this.time = time;
         this.tutor = tutor;
@@ -27,7 +25,6 @@ class Activity {
     
     static fromSQL(sqlOutput, activityItem) {
         return new Activity(
-            activityItem.activity_id,
             Subject.fromSQL(sqlOutput, activityItem.activity_subject_id).name,
             Object.assign({}, Time.fromTimeId(sqlOutput, activityItem.activity_hour_id)),
             Tutor.fromTutorId(sqlOutput, activityItem.activity_teacher_id).map(tutor => Object.assign({}, tutor)),
@@ -46,7 +43,6 @@ class Activity {
         }
 
         return new Activity(
-            activityItem.activity_id,
             Subject.fromSQL(sqlOutput, activityItem.activity_subject_id).name,
             Object.assign({}, Time.fromSQL(updateItem.new_hour)),
             Tutor.fromTutorId(sqlOutput, activityItem.activity_teacher_id).map(tutor => Object.assign({}, tutor)),

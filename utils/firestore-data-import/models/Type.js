@@ -1,10 +1,10 @@
 class Type {
+    name = ''
 
     constructor(name) {
         this.name = name
     }
 
-    name = ''
 
     static fromSql(sqlOutput, tagId) {
         return new Type(sqlOutput["activities_tags"]

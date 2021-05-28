@@ -1,5 +1,3 @@
-
-
 const {TimetableItem} = require("./TimetableItem")
 
 class TimetableItemGroup {

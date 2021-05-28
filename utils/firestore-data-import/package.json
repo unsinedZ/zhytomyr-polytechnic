@@ -2,13 +2,12 @@
   "name": "firestore-data-import",
   "version": "1.0.0",
   "description": "Tools for the export data to firestore",
-  "main": "index.js",
   "scripts": {
-    "import": "node import.js",
+    "import": "node import.js --database=schedule_bac",
     "emulator": "firebase emulators:start --only firestore --import=backup --export-on-exit=output",
     "cast": " node cast_to_models.js --file output.json"
   },
-  "author": "",
+  "author": "Softwine",
   "license": "ISC",
   "dependencies": {
     "crypto": "^1.0.1",

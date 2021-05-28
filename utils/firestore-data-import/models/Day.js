@@ -35,7 +35,7 @@ class Day {
         const day = dateString.split(" ")
         return new Day(
             this.dayNames
-                .filter((dayName) => dayName.name = day[0])
+                .filter((dayName) => dayName.name == day[0])
                 .map((dayName) => dayName.id)[0],
             parseInt(day[1])
         )

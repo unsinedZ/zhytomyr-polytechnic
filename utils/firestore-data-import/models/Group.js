@@ -59,7 +59,7 @@ class Group {
 
         return this.getGroupList(sqlOutput, selectedActivity).map((group) => {
 
-            if (group.subgroup.length == 0) {
+            if (group.subgroups.length == 0) {
                 return group;
             }
 
