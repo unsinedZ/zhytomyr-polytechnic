@@ -30,7 +30,7 @@ class TimetableItemGroup {
         return Object.assign({}, TimetableItem.fromSQL(sqlOutput, activity.activity_id));
     });
 
-        if (!timetableItem) {
+        if (!timetableItem || timetableItem.length == 0) {
             return;
         }
 

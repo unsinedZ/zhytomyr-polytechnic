@@ -29,7 +29,7 @@ class TimetableItemUpdate {
         return Group.fromActivity(sqlOutput, activity).map((group) => new TimetableItemUpdate(
                 updateItem.change_id,
                 updateItem.date,
-                "update/" + group.id + (group.subgroups.length == 1 ? "."+ group.subgroups[0].name : ""),
+                "update/" + group.id,
                 Object.assign({}, timetableItem)));
                 
         }
