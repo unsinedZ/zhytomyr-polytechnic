@@ -63,17 +63,16 @@ class TimetableBloc {
     });
   }
 
-  void loadTimetableItemUpdates() {
-    // _timetableItemUpdatesController.add(null);
+  void loadTimetableItemUpdates(int id) {
+    _timetableItemUpdatesController.add(null);
 
-    // timetableRepository.getTimetableItemUpdates().then((timetableItemUpdates) {
-    //   _timetableItemUpdatesController.add(timetableItemUpdates);
-    // }).onError((error, stack) {
-    //   print(error);
-    //   print(stack);
-    //   errorSink.add(error.toString());
-    // });
-    _timetableItemUpdatesController.add(<TimetableItemUpdate>[]);
+    timetableRepository.getTimetableItemUpdates(id).then((timetableItemUpdates) {
+      _timetableItemUpdatesController.add(timetableItemUpdates);
+    }).onError((error, stack) {
+      print(error);
+      print(stack);
+      errorSink.add(error.toString());
+    });
   }
 
   void loadTutor(int tutorId) {

@@ -6,12 +6,12 @@
   "emulators": {
     "firestore": {
       "host":"0.0.0.0",
-      "port": 9090
+      "port": 9190
     },
     "ui": {
       "enabled": true,
       "host":"0.0.0.0",
-      "port": 9091
+      "port": 9191
     }
   }
 }

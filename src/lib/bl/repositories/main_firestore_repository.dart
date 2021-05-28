@@ -93,7 +93,8 @@ class FirestoreRepository
     return contactsData;
   }
 
-  Future<void> changeUserInfo(String userId, Map<String, dynamic> data) async {
+  Future<void> changeUserInfo(
+      String userId, String groupId, String subgroupId) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
     if (sharedPreferences.containsKey('timetable.group.my')) {
@@ -102,12 +103,20 @@ class FirestoreRepository
 
     return (await FirebaseFirestore.instance
             .collection("users")
-            .where("userId", isEqualTo: userId)
+            .where(
+              "userId",
+              isEqualTo: userId,
+            )
             .get())
         .docs
         .first
         .reference
-        .update(data);
+        .update(
+      {
+        'groupId': groupId,
+        'subgroupId': subgroupId,
+      },
+    );
   }
 
   @override

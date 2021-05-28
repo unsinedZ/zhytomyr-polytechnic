@@ -11,7 +11,7 @@ class GroupSelectionScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
   final GroupsRepository groupsLoader;
   final StreamSink<String> errorSink;
-  final ValueChanged<Map<String, dynamic>> subscribeCallback;
+  final void Function(String, String) subscribeCallback;
   final Widget Function({required Widget child}) bodyWrapper;
 
   GroupSelectionScreen({
@@ -148,7 +148,8 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                           return Container(
                             width: 150,
                             child: DropdownButton<Group>(
-                              hint: Text(widget.textLocalizer.localize('Group')),
+                              hint:
+                                  Text(widget.textLocalizer.localize('Group')),
                               isExpanded: true,
                               value: group,
                               onChanged: (Group? newValue) {
@@ -181,8 +182,8 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                               Container(
                                 width: 150,
                                 child: DropdownButton<Subgroup>(
-                                  hint: Text(
-                                      widget.textLocalizer.localize('Subgroup')),
+                                  hint: Text(widget.textLocalizer
+                                      .localize('Subgroup')),
                                   isExpanded: true,
                                   value: subgroup,
                                   onChanged: (Subgroup? newValue) {
@@ -252,10 +253,10 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                     ? null
                     : () {
                         if (isMyGroup) {
-                          widget.subscribeCallback({
-                            "groupId": group!.id,
-                            "subgroupId": subgroup == null ? "" : subgroup!.id
-                          });
+                          widget.subscribeCallback(
+                            group!.id.toString(),
+                            subgroup == null ? "" : subgroup!.id.toString(),
+                          );
                         }
 
                         Navigator.pushNamed(context, '/timetable', arguments: {

@@ -3,24 +3,23 @@ import 'timeslot.dart';
 import 'tutor.dart';
 
 class Activity {
-  final int id;
   final String name;
   final List<Tutor> tutors;
   final String room;
   final List<Group> groups;
   final Timeslot time;
+  final String type;
 
   Activity({
-    required this.id,
     required this.name,
     required this.tutors,
     required this.room,
     required this.groups,
     required this.time,
+    required this.type,
   });
 
   factory Activity.fromJson(Map<String, dynamic> json) => Activity(
-        id: json['id'] as int,
         name: json['name'] as String,
         tutors: (json['tutor'] as List<dynamic>)
             .map((tutorJson) => Tutor.fromJson(tutorJson))
@@ -30,14 +29,15 @@ class Activity {
             .map((groupJson) => Group.fromJson(groupJson))
             .toList(),
         time: Timeslot.fromJson(json['time']),
+        type: json['type'],
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    'id': id,
-    'name': name,
-    'tutors': tutors.map((tutor) => tutor.toJson()).toList(),
-    'room': room,
-    'groups': groups.map((group) => group.toJson()).toList(),
-    'time': time.toJson(),
-  };
+        'name': name,
+        'tutor': tutors.map((tutor) => tutor.toJson()).toList(),
+        'room': room,
+        'groups': groups.map((group) => group.toJson()).toList(),
+        'time': time.toJson(),
+        'type': type,
+      };
 }

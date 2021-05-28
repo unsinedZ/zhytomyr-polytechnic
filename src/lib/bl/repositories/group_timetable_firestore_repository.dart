@@ -7,9 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timetable/timetable.dart';
 
 import 'package:zhytomyr_polytechnic/bl/models/expirable.dart';
-import 'package:zhytomyr_polytechnic/bl/repositories/base_timetable_firestore_repository.dart';
 
-class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
+class GroupTimetableFirestoreRepository
     implements TimetableRepository {
   final Future<SharedPreferences> sharedPreferences;
   final FirebaseFirestore firebaseFirestoreInstance;
@@ -17,7 +16,7 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
   GroupTimetableFirestoreRepository({
     required this.sharedPreferences,
     required this.firebaseFirestoreInstance,
-  }) : super(firebaseFirestoreInstance: firebaseFirestoreInstance);
+  });
 
   @override
   Future<Timetable> loadTimetableByReferenceId(int id,
@@ -37,7 +36,6 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
 
     if (prefs.containsKey('timetable.group.my') &&
         userGroupId == id.toString()) {
-      // TODO make userGroupId int
       Map<String, dynamic> json =
           jsonDecode(prefs.getString('timetable.group.my')!);
       json['data'] = (json['data'] as Map<String, dynamic>);
@@ -71,29 +69,34 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
             .toList(),
       );
 
-      // List<TimetableItem> items = timetable.items // TODO delete
-      //     .where((element) =>
-      //         element.activity.groups.any((group) => group.id == key))
-      //     .toList();
-      //
-      // timetable = Timetable(
-      //   weekDetermination: timetable.weekDetermination,
-      //   items: items,
-      //   expiresAt: timetable.expiresAt,
-      // ); // TODO delete
+      if (userGroupId == id.toString()) {
+        Expirable<Map<String, dynamic>> expirableTimetableJson =
+            Expirable<Map<String, dynamic>>(
+          duration: Duration(days: 30),
+          data: timetable.toJson(),
+        );
 
-      // if (userGroupId == key) {
-      //   Expirable<Map<String, dynamic>> expirableTimetableJson =
-      //       Expirable<Map<String, dynamic>>(
-      //     duration: Duration(days: 30),
-      //     data: timetable.toJson(),
-      //   );
-      //
-      //   prefs.setString(
-      //       'timetable.group.my', jsonEncode(expirableTimetableJson));
-      // }
+        prefs.setString(
+          'timetable.group.my',
+          jsonEncode(expirableTimetableJson),
+        );
+      }
     }
 
     return timetable;
+  }
+
+  Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int id) async {
+    // return firebaseFirestoreInstance
+    //     .collection('timetable_item_update')
+    //     .where('key', isEqualTo: 'update/' + id.toString())
+    //     .get()
+    //     .then((timetableItemUpdateListJson) => timetableItemUpdateListJson.docs
+    //         .map(
+    //           (timetableItemUpdateJson) =>
+    //               TimetableItemUpdate.fromJson(timetableItemUpdateJson.data()),
+    //         )
+    //         .toList()); // TODO load updates
+    return <TimetableItemUpdate>[];
   }
 }

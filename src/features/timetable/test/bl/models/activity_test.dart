@@ -32,7 +32,6 @@ void main() {
         '}'
     ));
 
-    expect(activity.id, 'id');
     expect(activity.name, 'Name');
     expect(activity.room, 'Room');
 

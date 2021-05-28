@@ -1,5 +1,6 @@
 export 'activity.dart';
 export 'group.dart';
+export 'user.dart';
 export 'subgroup.dart';
 export 'timeslot.dart';
 export 'tutor.dart';

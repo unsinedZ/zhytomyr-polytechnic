@@ -69,7 +69,7 @@ class _TimetableTabState extends State<TimetableTab> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               (widget.isTomorrow == true
-                  ? widget.textLocalizer.localize('Tomorrow ')
+                  ? widget.textLocalizer.localize('Tomorrow')
                   : DateFormat('d MMMM', context.locale.toString())
                       .format(widget.dateTime)),
             ),
@@ -126,7 +126,7 @@ class _TimetableTabState extends State<TimetableTab> {
       DateTime dateTime =
           DateTime.parse(timetableItemUpdate.date.replaceAll('/', '-'));
 
-      if (widget.dateTime.asDate().isAtSameMomentAs(dateTime)) {
+      if (widget.dateTime.asDate().isAtSameMomentAs(dateTime.asDate())) {
         if (timetableItemUpdate.timetableItem == null ||
             filterByTimetableType(timetableItemUpdate.timetableItem!)) {
           return true;

@@ -32,8 +32,8 @@ class TimetableLoaderMock extends Mock implements TimetableRepository {
       );
 
   @override
-  Future<List<TimetableItemUpdate>> getTimetableItemUpdates() =>
-      super.noSuchMethod(Invocation.method(#getTimetableItemUpdates, []),
+  Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int? id) =>
+      super.noSuchMethod(Invocation.method(#getTimetableItemUpdates, [id]),
           returnValue: Future.value(<TimetableItemUpdate>[]));
 }
 
@@ -91,7 +91,7 @@ void main() {
       tutorRepository: TutorRepositoryMock(),
     );
 
-    when(timetableLoaderMock.getTimetableItemUpdates())
+    when(timetableLoaderMock.getTimetableItemUpdates(0))
         .thenAnswer((_) => Future.value(<TimetableItemUpdate>[
               TimetableItemUpdate(time: '1', timetableItem: null, date: '1'),
               TimetableItemUpdate(time: '2', timetableItem: null, date: '2'),
@@ -101,7 +101,7 @@ void main() {
 
     timetableBloc.timetableItemUpdates
         .listen((timetableItemUpdates) => results.add(timetableItemUpdates));
-    timetableBloc.loadTimetableItemUpdates();
+    timetableBloc.loadTimetableItemUpdates(0);
 
     await Future.delayed(const Duration());
 

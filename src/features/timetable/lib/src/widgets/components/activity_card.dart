@@ -91,7 +91,7 @@ class ActivityCard extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        activity.room,
+                        'ауд. ' + activity.room + ', ' + activity.type,
                         style: Theme.of(context).textTheme.headline2,
                       ),
                     ],

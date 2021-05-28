@@ -22,7 +22,7 @@ class TimetableScreen extends StatefulWidget {
   final GroupRepository groupRepository;
   final TutorRepository tutorRepository;
   final StreamSink<String> errorSink;
-  final Stream<Map<String, dynamic>> userDataStream;
+  final Stream<Map<String, dynamic>> userStream;
   final Widget Function({required Widget child}) bodyWrapper;
 
   TimetableScreen({
@@ -31,7 +31,7 @@ class TimetableScreen extends StatefulWidget {
     required this.groupRepository,
     required this.tutorRepository,
     required this.errorSink,
-    required this.userDataStream,
+    required this.userStream,
     required this.bodyWrapper,
   });
 
@@ -97,7 +97,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
       timetableType = timetableTypeFromString(arguments['type'] as String);
 
-      if (timetableType == TimetableType.Group) {
+      if (timetableType == TimetableType.Group && arguments['subgroupId'] != null) {
         subgroupId = arguments['subgroupId'];
       }
     }
@@ -110,10 +110,10 @@ class _TimetableScreenState extends State<TimetableScreen> {
       tutorRepository: widget.tutorRepository,
     );
 
-    timetableBloc.loadTimetableItemUpdates();
+    timetableBloc.loadTimetableItemUpdates(id);
 
-    widget.userDataStream.listen((userDataJson) {
-      timetableBloc.loadTimetable(id, userDataJson['groupId'].toString());
+    widget.userStream.listen((userJson) {
+      timetableBloc.loadTimetable(id, User.fromStorage(userJson).groupId);
     });
 
     if (timetableType == TimetableType.Group) {

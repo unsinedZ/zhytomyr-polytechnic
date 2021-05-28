@@ -37,30 +37,39 @@ class UserSyncBloc {
   Stream<String?> _getUserFromStorage() =>
       storage.readAll().asStream().map((values) => values['user']);
 
-  void setData(String? userId, AuthProvider authProvider) => Stream.value(userId)
-      .doOnData((userId) {
-        if (userId == null) {
-          _mappedUserController.add(null);
-        }
-      })
-      .where((userId) => userId != null)
-      .switchMap((value) => repository
-          .getUserInfo(userId!)
-          .asStream()
-          .map((userJson) => User.fromJson(userJson, authProvider))
-          .doOnData(_mappedUserController.add)
-          .asyncMap((user) =>
-              storage.write(key: "user", value: jsonEncode(user.toJson())))
-          .doOnError((error, _) => errorSink.add(error.toString())))
-      .toList();
+  void setData(String? userId, AuthProvider authProvider) =>
+      Stream.value(userId)
+          .doOnData((userId) {
+            if (userId == null) {
+              _mappedUserController.add(null);
+            }
+          })
+          .where((userId) => userId != null)
+          .switchMap((value) => repository
+              .getUserInfo(userId!)
+              .asStream()
+              .map((userJson) => User.fromJson(userJson, authProvider))
+              .doOnData(_mappedUserController.add)
+              .asyncMap((user) =>
+                  storage.write(key: "user", value: jsonEncode(user.toJson())))
+              .doOnError((error, _) => errorSink.add(error.toString())))
+          .toList();
 
-  void updateUserData(Map<String, dynamic> data) => mappedUser
+  void updateUserData(String groupId, String subgroupId) => mappedUser
       .take(1)
-      .where((user) => user != null && json.encode(user.data) != json.encode(data))
-      .map((user) => User(data: data, authProvider: user!.authProvider, userId: user.userId))
+      .where((user) =>
+          user != null &&
+          (user.groupId != groupId ||
+              user.subgroupId != subgroupId))
+      .map((user) => User(
+            authProvider: user!.authProvider,
+            userId: user.userId,
+            groupId: groupId,
+            subgroupId: subgroupId,
+          ))
       .switchMap((dataNew) => Stream.value(null)
           .asyncMap(
-              (_) => repository.changeUserInfo(dataNew.userId, dataNew.data))
+              (_) => repository.changeUserInfo(dataNew.userId, dataNew.groupId, dataNew.subgroupId))
           .doOnData((_) => _mappedUserController.add(dataNew))
           .asyncMap((_) =>
               storage.write(key: "user", value: jsonEncode(dataNew.toJson()))))
