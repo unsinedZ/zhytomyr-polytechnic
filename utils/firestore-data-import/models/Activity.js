@@ -30,7 +30,7 @@ class Activity {
             Tutor.fromTutorId(sqlOutput, activityItem.activity_teacher_id).map(tutor => Object.assign({}, tutor)),
             Room.fromSQL(sqlOutput, activityItem.activity_room_id).name,
             Type.fromSql(sqlOutput, activityItem.activity_tag_id).name,
-            Group.getGroupList(sqlOutput, activityItem).map(group => Object.assign({}, group))
+            Group.fromActivity(sqlOutput, activityItem).map(group => Object.assign({}, group))
         )
     }
 

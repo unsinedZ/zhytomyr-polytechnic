@@ -79,7 +79,11 @@ const getAllCollection = async (name, firestore) => [...(await firestore.collect
     });
 
     (await getAllCollection("versions", firestore)).forEach((tutor) => {
-        compareKeys({os: null, url: null, version: null}, tutor);
+        compareKeys({
+            os: null,
+            url: null,
+            version: null
+        }, tutor);
     });
 
 
@@ -95,7 +99,8 @@ const getAllCollection = async (name, firestore) => [...(await firestore.collect
 
     (await getAllCollection("timetable_item_group", firestore)).forEach((timetableGroupItem) => {
         compareKeys(new TimetableItemGroup(), timetableGroupItem);
-        timetableGroupItem.items.forEach((timetableItem) => compareTimetableItem(timetableItem));
+
+        timetableGroupItem.items.length == 0 ? console.warn("No any TimetableItems in TimetableItemGroup: " + timetableGroupItem.key) : timetableGroupItem.items.forEach((timetableItem) => compareTimetableItem(timetableItem));
     });
 
     (await getAllCollection("timetable_item_update", firestore)).forEach((timetableUpdateItem) => {
