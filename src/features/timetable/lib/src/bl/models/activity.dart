@@ -21,7 +21,7 @@ class Activity {
 
   factory Activity.fromJson(Map<String, dynamic> json) => Activity(
         name: json['name'] as String,
-        tutors: (json['tutor'] as List<dynamic>)
+        tutors: (json['tutors'] as List<dynamic>)
             .map((tutorJson) => Tutor.fromJson(tutorJson))
             .toList(),
         room: json['room'] as String,
@@ -34,7 +34,7 @@ class Activity {
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'name': name,
-        'tutor': tutors.map((tutor) => tutor.toJson()).toList(),
+        'tutors': tutors.map((tutor) => tutor.toJson()).toList(),
         'room': room,
         'groups': groups.map((group) => group.toJson()).toList(),
         'time': time.toJson(),

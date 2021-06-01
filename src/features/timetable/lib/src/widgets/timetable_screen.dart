@@ -138,6 +138,12 @@ class _TimetableScreenState extends State<TimetableScreen> {
       (a, b) => <dynamic>[a, b],
     );
 
+    timetableBloc.timetableItemUpdates.listen((event) {
+      if(event != null) {
+        print(event.length);
+      }
+    });
+
     super.didChangeDependencies();
   }
 

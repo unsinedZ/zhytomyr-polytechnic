@@ -108,7 +108,7 @@ class _TimetableTabState extends State<TimetableTab> {
     }
 
     if (widget.timetableType == TimetableType.Teacher) {
-      return timetableItem.activity.tutors.first.id == widget.id;
+      return timetableItem.activity.tutors.any((tutor) => tutor.id == widget.id);
     }
     return false;
   }

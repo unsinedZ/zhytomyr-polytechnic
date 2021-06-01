@@ -104,7 +104,7 @@ class ActivityCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        activity.tutors.first.name,
+                        activity.tutors.map((tutor) => tutor.name).join(', '),
                         style: Theme.of(context).textTheme.headline2,
                         textScaleFactor: 1.15,
                       ),

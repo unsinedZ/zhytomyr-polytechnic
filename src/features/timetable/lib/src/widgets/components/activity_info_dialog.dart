@@ -42,7 +42,7 @@ class ActivityInfoDialog extends StatelessWidget {
                     style: Theme.of(context).textTheme.subtitle1,
                     children: <TextSpan>[
                       TextSpan(
-                          text: activity.tutors.first.name,
+                          text: activity.tutors.map((tutor) => tutor.name).join(', '),
                           style: TextStyle(fontWeight: FontWeight.bold)),
                     ],
                   ),

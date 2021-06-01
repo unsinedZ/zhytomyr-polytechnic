@@ -8,8 +8,7 @@ import 'package:timetable/timetable.dart';
 
 import 'package:zhytomyr_polytechnic/bl/models/expirable.dart';
 
-class GroupTimetableFirestoreRepository
-    implements TimetableRepository {
+class GroupTimetableFirestoreRepository implements TimetableRepository {
   final Future<SharedPreferences> sharedPreferences;
   final FirebaseFirestore firebaseFirestoreInstance;
 
@@ -28,7 +27,7 @@ class GroupTimetableFirestoreRepository
 
     timetableData = TimetableData.fromJson((await firebaseFirestoreInstance
             .collection('timetable')
-            //.where("enabled", isEqualTo: 1) // TODO
+            .where("enabled", isEqualTo: 1)
             .get())
         .docs
         .map((doc) => doc.data())
@@ -87,16 +86,17 @@ class GroupTimetableFirestoreRepository
   }
 
   Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int id) async {
-    // return firebaseFirestoreInstance
-    //     .collection('timetable_item_update')
-    //     .where('key', isEqualTo: 'update/' + id.toString())
-    //     .get()
-    //     .then((timetableItemUpdateListJson) => timetableItemUpdateListJson.docs
-    //         .map(
-    //           (timetableItemUpdateJson) =>
-    //               TimetableItemUpdate.fromJson(timetableItemUpdateJson.data()),
-    //         )
-    //         .toList()); // TODO load updates
-    return <TimetableItemUpdate>[];
+    return firebaseFirestoreInstance
+        .collection('timetable_item_update')
+        .where('key', isEqualTo: 'group/' + id.toString())
+        .get()
+        .then(
+          (timetableItemUpdateListJson) => timetableItemUpdateListJson.docs
+              .map(
+                (timetableItemUpdateJson) => TimetableItemUpdate.fromJson(
+                    timetableItemUpdateJson.data()),
+              )
+              .toList(),
+        );
   }
 }
