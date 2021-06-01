@@ -9,9 +9,9 @@ class Group {
 
     facultyId = 0;
     id = 0;
-    name = '';
+    name = null;
     subgroups = [];
-    year = '';
+    year = null;
 
     constructor(facultyId, id, name, subgroups, year) {
         this.facultyId = facultyId;

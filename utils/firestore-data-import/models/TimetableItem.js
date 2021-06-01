@@ -1,9 +1,5 @@
-const {
-    Day
-} = require("./Day")
-const {
-    Activity
-} = require("./Activity")
+const {Day} = require("./Day")
+const {Activity} = require("./Activity")
 
 class TimetableItem {
 
@@ -39,10 +35,8 @@ class TimetableItem {
 
     static fromUpdateItem(sqlOutput, updateItem) {
         const day =  Day.fromSQL(updateItem.new_day);
-
         return new TimetableItem(Object.assign({}, Activity.fromUpdate(sqlOutput, updateItem)), day.dayNumber, day.weekNumber)
     }
-
 
 }
 

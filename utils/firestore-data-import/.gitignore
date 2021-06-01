@@ -72,3 +72,6 @@ node_modules/
 backup/
 output/
 output.json
+
+# Firebase creditals
+zhytomyr-politechnic-dev-*.json

@@ -2,18 +2,23 @@ const {
     TimetableItem
 } = require("./TimetableItem")
 const {
+    Time
+} = require("./Time");
+const {
     Group
 } = require("./Group")
 
 class TimetableItemUpdate {
     id = null
     date = null
+    time = null
     key = null
     item = null
 
-    constructor(id, date, key, item) {
+    constructor(id, date, key, time, item) {
         this.id = id;
         this.date = date;
+        this.time = time;
         this.key = key;
         this.item = item;
     }
@@ -27,14 +32,15 @@ class TimetableItemUpdate {
         }
 
         return Group.fromActivity(sqlOutput, activity).map((group) => new TimetableItemUpdate(
-                updateItem.change_id,
-                updateItem.date,
-                "update/" + group.id,
-                Object.assign({}, timetableItem)));
-                
-        }
+            updateItem.change_id,
+            updateItem.date.split('T')[0],
+            "group/" + group.id,
+            Time.fromSQL(updateItem.new_hour).start,
+            Object.assign({}, timetableItem)
+        ));
     }
+}
 
-    module.exports = {
-        TimetableItemUpdate
-    }
+module.exports = {
+    TimetableItemUpdate
+}

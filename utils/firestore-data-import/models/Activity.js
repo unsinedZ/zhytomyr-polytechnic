@@ -7,17 +7,17 @@ const {Group} = require("./Group");
 
 
 class Activity {
-    name = '';
+    name = null;
     time = null;
-    tutor = [];
-    room = '';
-    type = '';
+    tutors = [];
+    room = null;
+    type = null;
     groups = [];
 
-    constructor(name, time, tutor, room, type, groups) {
+    constructor(name, time, tutors, room, type, groups) {
         this.name = name
         this.time = time;
-        this.tutor = tutor;
+        this.tutors = tutors;
         this.room = room;
         this.type = type;
         this.groups = groups;

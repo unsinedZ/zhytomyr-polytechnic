@@ -22,6 +22,7 @@ const {
   const timetableKey = crypto.randomBytes(14).toString("hex");
   const rawGroup = jsonOutput["groups"];
   const groups = rawGroup.map((group) => Group.fromSQL(group))
+
   jsonOutput["activities_changes"].map((updateItem) => TimetableItemUpdate.fromSQL(jsonOutput, updateItem))
     .filter((updateItem) => updateItem).forEach((groupUpdate) => groupUpdate.forEach((update) => updates.push(update)))
 
@@ -37,7 +38,7 @@ const {
     expiredAt: (new Date()).setMonth(new Date().getMonth() + 4),
     weekDetermination: 0,
     lastModified: Date.now(),
-    enabled: 0
+    enabled: 1
   }))
 
   groups.forEach(async (group) => {
@@ -49,16 +50,15 @@ const {
   })
 
   updates.forEach(async (updateItem) =>
-    await firestore.collection("timetable_item_update").doc(crypto.randomBytes(14).toString("hex")).set(Object.assign({}, updateItem))
-
+      await firestore.collection("timetable_item_update").doc(crypto.randomBytes(14).toString("hex")).set(Object.assign({}, updateItem))
   )
 
-  const timetable_item_group = rawGroup.map((group, index) =>
-    TimetableItemGroup.fromGroup(jsonOutput, index, timetableKey, "group/" + group.group_id)
-  )
+  const timetableItemGroup = groups.map((group, index) =>
+    TimetableItemGroup.fromGroup(jsonOutput, index, timetableKey, "group/" + group.id))
+    .filter((timetableItemGroup) => timetableItemGroup)
 
-  timetable_item_group.forEach(async (timetable) => {
+  timetableItemGroup.forEach(async (timetable) => {
     await firestore.collection("timetable_item_group").doc(crypto.randomBytes(14).toString("hex")).set(Object.assign({}, timetable))
   });
 
-})().catch(console.log)
+})().catch((error) => console.error("Error: " + error.message));
