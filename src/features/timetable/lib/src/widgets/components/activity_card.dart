@@ -128,7 +128,7 @@ class ActivityCard extends StatelessWidget {
   Color? getBackgroundColor(BuildContext context) {
     switch (this._activityCardType) {
       case _ActivityCardType.Simple:
-        return null;
+        return Theme.of(context).canvasColor;
       case _ActivityCardType.Canceled:
         return Theme.of(context).disabledColor;
       case _ActivityCardType.Added:

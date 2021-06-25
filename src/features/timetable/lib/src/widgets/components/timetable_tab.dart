@@ -63,6 +63,7 @@ class _TimetableTabState extends State<TimetableTab> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      key: Key(widget.weekNumber.toString() + '/' + widget.dayOfWeekNumber.toString()),
       child: Column(
         children: <Widget>[
           Padding(
