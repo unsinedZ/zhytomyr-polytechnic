@@ -40,7 +40,10 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
               onPressed: () {
                 Navigator.pop(context);
               }),
-          title: Text('Terms and conditions', style: Theme.of(context).textTheme.headline1,),
+          title: Text(
+            'Terms and conditions',
+            style: Theme.of(context).textTheme.headline1,
+          ),
         ),
         body: widget.bodyWrapper(
           child: Padding(
@@ -51,13 +54,18 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    MarkdownBody(
-                      data: text ?? '',
-                      selectable: true,
-                      onTapLink: (_, uri, ___) async {
-                        await launch(uri!);
-                      },
-                    ),
+                    if (text == null)
+                      Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    else
+                      MarkdownBody(
+                        data: text!,
+                        selectable: true,
+                        onTapLink: (_, uri, ___) async {
+                          await launch(uri!);
+                        },
+                      ),
                   ],
                 ),
               ),

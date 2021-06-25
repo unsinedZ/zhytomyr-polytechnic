@@ -8,21 +8,21 @@ import 'package:logger/logger.dart';
 import 'package:facebook_authentication/src/bl/models/facebook_user.dart';
 
 class FacebookAuthenticationBloc {
+  static const String providerId = "facebook.com";
+
   final StreamSink<String> errorSink;
 
   FacebookAuthenticationBloc({
     required this.errorSink,
   });
 
-  var _logger = Logger(
+  final Logger _logger = Logger(
     printer: PrettyPrinter(),
   );
 
   final BehaviorSubject<FacebookUser?> _userController = BehaviorSubject();
 
   Stream<FacebookUser?> get user => _userController.stream;
-
-  String get providerId => "facebook.com";
 
   void loadUser() async {
     try {
@@ -39,8 +39,7 @@ class FacebookAuthenticationBloc {
     try {
       final LoginResult result = await FacebookAuth.instance.login();
 
-      if (result.status == LoginStatus.cancelled ||
-          result.status == LoginStatus.failed) {
+      if (result.status != LoginStatus.success) {
         return;
       }
 

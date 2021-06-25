@@ -6,6 +6,8 @@ import 'package:group_selection/src/bl/abstractions/groups_repository.dart';
 import 'package:group_selection/src/bl/abstractions/text_localizer.dart';
 import 'package:group_selection/src/bl/bloc/group_selection_bloc.dart';
 import 'package:group_selection/src/bl/models/models.dart';
+import 'package:group_selection/src/components/checkbox_with_title.dart';
+import 'package:group_selection/src/components/submit_button.dart';
 
 class GroupSelectionScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
@@ -69,7 +71,8 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
   @override
   void didChangeDependencies() {
     facultyId = (ModalRoute.of(context)!.settings.arguments
-        as Map<String, dynamic>)['facultyId'].toString();
+            as Map<String, dynamic>)['facultyId']
+        .toString();
     facultyName = (ModalRoute.of(context)!.settings.arguments
         as Map<String, dynamic>)['facultyName'];
     super.didChangeDependencies();
@@ -146,7 +149,8 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                           return Container(
                             width: 150,
                             child: DropdownButton<Group>(
-                              hint: Text(widget.textLocalizer.localize('Group')),
+                              hint:
+                                  Text(widget.textLocalizer.localize('Group')),
                               isExpanded: true,
                               value: group,
                               onChanged: (Group? newValue) {
@@ -171,106 +175,62 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                     SizedBox(
                       height: 15,
                     ),
-                    group != null &&
-                            group!.subgroups != null &&
-                            group!.subgroups!.length > 0
-                        ? Column(
-                            children: [
-                              Container(
-                                width: 150,
-                                child: DropdownButton<Subgroup>(
-                                  hint: Text(
-                                      widget.textLocalizer.localize('Subgroup')),
-                                  isExpanded: true,
-                                  value: subgroup,
-                                  onChanged: (Subgroup? newValue) {
-                                    setState(() {
-                                      subgroup = newValue;
-                                    });
-                                  },
-                                  items: group!.subgroups != null
-                                      ? group!.subgroups!
-                                          .map<DropdownMenuItem<Subgroup>>(
-                                              (Subgroup subgroup) {
-                                          return DropdownMenuItem<Subgroup>(
-                                            value: subgroup,
-                                            child: Text(subgroup.name),
-                                          );
-                                        }).toList()
-                                      : null,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                            ],
-                          )
-                        : Container(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Checkbox(
-                            value: isMyGroup,
-                            onChanged: (value) {
-                              setState(() {
-                                isMyGroup = value!;
-                              });
-                            }),
-                        GestureDetector(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              top: 8.0,
-                              right: 8.0,
-                              bottom: 8.0,
+                    if (group != null &&
+                        group!.subgroups != null &&
+                        group!.subgroups!.length > 0)
+                      Column(
+                        children: [
+                          Container(
+                            width: 150,
+                            child: DropdownButton<Subgroup>(
+                              hint: Text(
+                                  widget.textLocalizer.localize('Subgroup')),
+                              isExpanded: true,
+                              value: subgroup,
+                              onChanged: (Subgroup? newValue) {
+                                setState(() {
+                                  subgroup = newValue;
+                                });
+                              },
+                              items: group!.subgroups != null
+                                  ? group!.subgroups!
+                                      .map<DropdownMenuItem<Subgroup>>(
+                                          (Subgroup subgroup) {
+                                      return DropdownMenuItem<Subgroup>(
+                                        value: subgroup,
+                                        child: Text(subgroup.name),
+                                      );
+                                    }).toList()
+                                  : null,
                             ),
-                            child: Text(
-                                widget.textLocalizer.localize('It`s my group')),
                           ),
-                          onTap: () {
-                            setState(() {
-                              isMyGroup = !isMyGroup;
-                            });
-                          },
-                        ),
-                      ],
+                          SizedBox(
+                            height: 15,
+                          ),
+                        ],
+                      ),
+                    CheckboxWithTitle(
+                      title: widget.textLocalizer.localize('It`s my group'),
+                      onChange: (bool? newValue) {
+                        setState(() {
+                          isMyGroup = newValue!;
+                        });
+                      },
+                      value: isMyGroup,
                     ),
                     Spacer(),
                   ],
                 ),
               ),
             ),
-            Container(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: course == null ||
-                        group == null ||
-                        (group!.subgroups != null &&
-                            group!.subgroups!.length > 0 &&
-                            subgroup == null)
-                    ? null
-                    : () {
-                        if (isMyGroup) {
-                          widget.subscribeCallback({
-                            "groupId": group!.id,
-                            "subgroupId": subgroup == null ? "" : subgroup!.id
-                          });
-                        }
-
-                        Navigator.pushNamed(context, '/timetable', arguments: {
-                          'type': 'group',
-                          'groupId': group!.id,
-                          'subgroupId': subgroup == null ? null : subgroup!.id
-                        });
-                      },
-                child: Padding(
-                  padding: const EdgeInsets.all(17.0),
-                  child: Text(
-                    widget.textLocalizer.localize('Continue'),
-                    textScaleFactor: 1.3,
-                  ),
-                ),
-              ),
-            )
+            SubmitButton(
+              subscribeCallback: widget.subscribeCallback,
+              text: widget.textLocalizer.localize('Continue'),
+              group: group,
+              course: course,
+              subgroup: subgroup,
+              isMyGroup: isMyGroup,
+            ),
           ],
         ),
       ),

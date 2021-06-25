@@ -20,7 +20,8 @@ class GroupSelectionBloc {
   void loadGroups(int course, String faculty) async {
     _groupsController.add(null);
     try {
-      _groupsController.add(await groupsLoader.getGroups(course, faculty));
+      List<Group>? groups =  await groupsLoader.getGroups(course, faculty);
+      _groupsController.add(groups);
     } catch (err) {
       errorSink.add(err.toString());
       _groupsController.add([]);

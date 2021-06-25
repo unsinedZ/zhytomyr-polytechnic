@@ -8,21 +8,21 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_authentication/src/models/google_user.dart';
 
 class GoogleAuthenticationBloc {
+  static const String providerId = "google.com";
+
   final StreamSink<String> errorSink;
 
   GoogleAuthenticationBloc({
     required this.errorSink,
   });
 
-  var _logger = Logger(
+  final Logger _logger = Logger(
     printer: PrettyPrinter(),
   );
 
   final BehaviorSubject<GoogleUser?> _userController = BehaviorSubject();
 
   Stream<GoogleUser?> get user => _userController.stream;
-
-  String get providerId => "google.com";
 
   void loadUser() async {
     try {

@@ -61,25 +61,31 @@ class FirestoreRepository
       prefs.setString('groups', jsonEncode(expirableGroupsJson));
     }
 
-    return expirableGroupsJson.data
+    List<Group> groups = expirableGroupsJson.data
         .map(
           (groupJson) => Group.fromJson(groupJson),
         )
         .toList();
+
+    return groups;
   }
 
   @override
   Future<List<Group>> getGroups(int course, String facultyId) async {
-    return (await this.getAllGroups())
+    List<Group> groups = (await this.getAllGroups())
         .where((group) => group.year == course && group.facultyId == facultyId)
         .toList();
+
+    return groups;
   }
 
   @override
   Future<Timetable.Group> getGroupById(String groupId) async {
-    return (await this.getAllGroups())
+    Timetable.Group group = (await this.getAllGroups())
         .map((e) => Timetable.Group.fromObject(e))
         .firstWhere((group) => group.id == groupId);
+
+    return group;
   }
 
   @override
@@ -120,9 +126,8 @@ class FirestoreRepository
 
     if (docs.isNotEmpty) {
       return docs.first.data();
-    } else {
-      return {"userId": userId};
     }
+    return {"userId": userId};
   }
 
   @override
@@ -137,9 +142,8 @@ class FirestoreRepository
 
     if (tutors.isNotEmpty) {
       return tutors.first;
-    } else {
-      return null;
     }
+    return null;
   }
 
   @override

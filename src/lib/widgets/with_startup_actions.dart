@@ -1,4 +1,5 @@
-import 'package:apple_authentication/apple_authentication.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:rxdart/rxdart.dart';
@@ -6,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 import 'package:error_bloc/error_bloc.dart';
+import 'package:apple_authentication/apple_authentication.dart';
 import 'package:google_authentication/google_authentication.dart';
 import 'package:push_notification/push_notification.dart';
 import 'package:facebook_authentication/facebook_authentication.dart';
@@ -78,6 +80,13 @@ class _WithStartupActionsState extends State<WithStartupActions> {
     });
 
     context.read<UpdateCheckBloc>().checkForUpdates();
+
+    context.read<FacebookAuthenticationBloc>().loadUser();
+    context.read<GoogleAuthenticationBloc>().loadUser();
+
+    if (Platform.isIOS) {
+      context.read<AppleAuthenticationBloc>().loadUser();
+    }
 
     super.initState();
   }

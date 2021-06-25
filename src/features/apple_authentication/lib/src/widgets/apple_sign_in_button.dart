@@ -16,8 +16,6 @@ class AppleSignInButton extends StatefulWidget {
 class _AppleSignInButtonState extends State<AppleSignInButton> {
   @override
   void initState() {
-    widget.appleAuthenticationBloc.loadUser();
-
     super.initState();
   }
 
