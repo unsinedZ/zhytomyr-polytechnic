@@ -1,7 +1,7 @@
 {
   "name": "firestore-data-import",
   "version": "1.0.0",
-  "description": "Tools for the export data to firestore",
+  "description": "Tools for the import data to firestore",
   "scripts": {
     "import": "node import.js --database=schedule",
     "emulator": "firebase emulators:start --only firestore --import=backup --export-on-exit=output",
