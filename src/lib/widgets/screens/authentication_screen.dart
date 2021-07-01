@@ -57,7 +57,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       child: StreamBuilder<User?>(
           stream: context.read<UserSyncBloc>().mappedUser,
           builder: (context, snapshot) {
-            if (!snapshot.hasData || !snapshot.data!.isEmpty) {
+            if (!snapshot.hasData) {
               return Center(
                 child: CircularProgressIndicator(),
               );

@@ -121,6 +121,7 @@ class FirestoreRepository
 
   @override
   Future<Map<String, dynamic>> getUserInfo(String userId) async {
+    print(userId);
     final docs = (await FirebaseFirestore.instance
             .collection("users")
             .where("userId", isEqualTo: userId)
@@ -130,7 +131,7 @@ class FirestoreRepository
     if (docs.isNotEmpty) {
       return docs.first.data();
     } else {
-      return {"userId": userId};
+      return {"userId": userId, 'groupId': '', 'subgroupId': ''};
     }
   }
 

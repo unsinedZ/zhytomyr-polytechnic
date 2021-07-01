@@ -31,7 +31,7 @@ Future<void> main() async {
 
 Future<void> initLocalizationAsync() async {
   String host = defaultTargetPlatform == TargetPlatform.android
-      ? '192.168.0.113:9190'
+      ? '192.168.0.104:9190'
       : 'localhost:9190'; // TODO delete
 
   WidgetsFlutterBinding.ensureInitialized();
