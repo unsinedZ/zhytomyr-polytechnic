@@ -1,14 +1,15 @@
 {
-  "name": "mariadb-data-import",
+  "name": "firestore-data-import",
   "version": "1.0.0",
-  "description": "Tools for the export data to firestore",
-  "main": "index.js",
+  "description": "Tools for the import data to firestore",
   "scripts": {
-    "import": "node import.js",
+    "import": "node import.js --database=schedule",
     "emulator": "firebase emulators:start --only firestore --import=backup --export-on-exit=output",
-    "cast": " node cast_to_models.js --file output.json"
+    "cast": " node cast_to_models.js --file output.json",
+    "emulator:check": "node check.js --emulator",
+    "emulator:output":"firebase emulators:start --only firestore --import=output"
   },
-  "author": "",
+  "author": "Softwine",
   "license": "ISC",
   "dependencies": {
     "crypto": "^1.0.1",

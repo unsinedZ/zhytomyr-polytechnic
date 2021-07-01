@@ -23,14 +23,22 @@ class Day {
         name: "Неділя"
     }]
 
+    dayNumber = null;
+    weekNumber = null;
+
+    constructor(dayNumber, weekNumber) {
+        this.dayNumber = dayNumber;
+        this.weekNumber = weekNumber;
+    }
+
     static fromSQL(dateString) {
         const day = dateString.split(" ")
-        return {
-            dayNumber: this.dayNames
-                .filter((dayName) => dayName.name = day[0])
+        return new Day(
+            this.dayNames
+                .filter((dayName) => dayName.name == day[0])
                 .map((dayName) => dayName.id)[0],
-            weekNumber: parseInt(day[1])
-        }
+            parseInt(day[1])
+        )
     }
 }
 

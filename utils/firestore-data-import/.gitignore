@@ -65,7 +65,13 @@ node_modules/
 # dotenv environment variables file
 .env
 
+# IDE folders
+.vscode
+
 # Data from store
 backup/
 output/
 output.json
+
+# Firebase creditals
+zhytomyr-politechnic-*.json

@@ -1,9 +1,7 @@
 const opts = require('optimist').argv
 const writeJsonFile = require('write-json-file');
 const mariadb = require('mariadb');
-const {
-    exit
-} = require('process');
+const {exit} = require('process');
 
 (async () => {
     let result = {};
