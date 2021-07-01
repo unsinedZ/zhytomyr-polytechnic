@@ -21,8 +21,8 @@ class CheckboxWithTitle extends StatelessWidget {
           onChanged: onChange,
         ),
         GestureDetector(
-          child: Padding(
-            padding: const EdgeInsets.only(
+          child: Container(
+            padding: EdgeInsets.only(
               top: 8.0,
               right: 8.0,
               bottom: 8.0,

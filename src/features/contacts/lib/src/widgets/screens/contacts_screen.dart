@@ -61,6 +61,8 @@ class ContactsScreen extends StatelessWidget {
                   PrefixedContainer(
                     title: textLocalizer.localize("Address"),
                     text: snapshot.data!.address,
+                    onTap: () =>
+                        _launchURL(snapshot.data!.addressUrl),
                   ),
                   SizedBox(
                     height: 20,

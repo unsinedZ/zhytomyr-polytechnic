@@ -1,6 +1,7 @@
 class ContactsData {
   final String phoneNumber;
   final String address;
+  final String addressUrl;
   final String instagramUrl;
   final String telegramUrl;
   final String facebookUrl;
@@ -8,6 +9,7 @@ class ContactsData {
   ContactsData({
     required this.phoneNumber,
     required this.address,
+    required this.addressUrl,
     required this.instagramUrl,
     required this.telegramUrl,
     required this.facebookUrl,
@@ -16,6 +18,7 @@ class ContactsData {
   factory ContactsData.fromJson(Map<String, dynamic> json) => ContactsData(
         phoneNumber: json['phoneNumber'],
         address: json['address'],
+        addressUrl: json['addressUrl'],
         instagramUrl: json['instagramUrl'],
         telegramUrl: json['telegramUrl'],
         facebookUrl: json['facebookUrl'],
@@ -24,6 +27,7 @@ class ContactsData {
   factory ContactsData.empty() => ContactsData(
         phoneNumber: '',
         address: '',
+        addressUrl: '',
         instagramUrl: '',
         telegramUrl: '',
         facebookUrl: '',
