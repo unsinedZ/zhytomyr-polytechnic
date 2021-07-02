@@ -121,7 +121,6 @@ class FirestoreRepository
 
   @override
   Future<Map<String, dynamic>> getUserInfo(String userId) async {
-    print(userId);
     final docs = (await FirebaseFirestore.instance
             .collection("users")
             .where("userId", isEqualTo: userId)

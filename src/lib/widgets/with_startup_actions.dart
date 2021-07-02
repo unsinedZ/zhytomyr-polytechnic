@@ -1,4 +1,3 @@
-import 'package:apple_authentication/apple_authentication.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rxdart/rxdart.dart';
@@ -7,8 +6,9 @@ import 'package:provider/provider.dart';
 
 import 'package:error_bloc/error_bloc.dart';
 import 'package:google_authentication/google_authentication.dart';
-import 'package:push_notification/push_notification.dart';
+import 'package:apple_authentication/apple_authentication.dart';
 import 'package:facebook_authentication/facebook_authentication.dart';
+import 'package:push_notification/push_notification.dart';
 import 'package:user_sync/user_sync.dart';
 import 'package:update_check/update_check.dart';
 

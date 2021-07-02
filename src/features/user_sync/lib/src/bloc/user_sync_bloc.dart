@@ -46,21 +46,23 @@ class UserSyncBloc {
           })
           .where((userId) => userId != null)
           .switchMap((value) => repository
-              .getUserInfo(userId!)
-              .asStream()
-              .map((userJson) => User.fromJson(userJson, authProvider))
-              .doOnData(_mappedUserController.add)
-              .asyncMap((user) =>
-                  storage.write(key: "user", value: jsonEncode(user.toJson())))
-              .doOnError((error, _) => errorSink.add(error.toString())))
+                  .getUserInfo(userId!)
+                  .asStream()
+                  .map((userJson) => User.fromJson(userJson, authProvider))
+                  .doOnData(_mappedUserController.add)
+                  .asyncMap((user) => storage.write(
+                      key: "user", value: jsonEncode(user.toJson())))
+                  .doOnError((error, _) {
+                _mappedUserController.add(User.empty());
+                errorSink.add(error.toString());
+              }))
           .toList();
 
   void updateUserData(String groupId, String subgroupId) => mappedUser
       .take(1)
       .where((user) =>
           user != null &&
-          (user.groupId != groupId ||
-              user.subgroupId != subgroupId))
+          (user.groupId != groupId || user.subgroupId != subgroupId))
       .map((user) => User(
             authProvider: user!.authProvider,
             userId: user.userId,
@@ -68,8 +70,8 @@ class UserSyncBloc {
             subgroupId: subgroupId,
           ))
       .switchMap((dataNew) => Stream.value(null)
-          .asyncMap(
-              (_) => repository.changeUserInfo(dataNew.userId, dataNew.groupId, dataNew.subgroupId))
+          .asyncMap((_) => repository.changeUserInfo(
+              dataNew.userId, dataNew.groupId, dataNew.subgroupId))
           .doOnData((_) => _mappedUserController.add(dataNew))
           .asyncMap((_) =>
               storage.write(key: "user", value: jsonEncode(dataNew.toJson()))))
