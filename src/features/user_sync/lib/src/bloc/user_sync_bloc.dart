@@ -22,21 +22,6 @@ class UserSyncBloc {
 
   Stream<User?> get mappedUser => _mappedUserController.stream;
 
-  void loadUser() => _getUserFromStorage()
-      .doOnData((userJson) {
-        if (userJson == null || userJson.isEmpty) {
-          _mappedUserController.add(User.empty());
-        }
-      })
-      .where((userJson) => userJson != null && userJson.isNotEmpty)
-      .map((userJson) => jsonDecode(userJson!))
-      .map((userJson) => User.fromStorage(userJson))
-      .doOnError((error, _) => errorSink.add(error.toString()))
-      .listen(_mappedUserController.add);
-
-  Stream<String?> _getUserFromStorage() =>
-      storage.readAll().asStream().map((values) => values['user']);
-
   void setData(String? userId, AuthProvider authProvider) =>
       Stream.value(userId)
           .doOnData((userId) {

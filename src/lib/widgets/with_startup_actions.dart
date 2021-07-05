@@ -28,11 +28,10 @@ class _WithStartupActionsState extends State<WithStartupActions> {
   void initState() {
     final userSyncBloc = context.read<UserSyncBloc>();
 
-    userSyncBloc.loadUser();
-
     userSyncBloc.mappedUser
         .where((user) => user != null && !user.isEmpty)
-        .map((user) => user).listen((user) {
+        .map((user) => user)
+        .listen((user) {
       context
           .read<PushNotificationBloc>()
           .subscribeToNew(user!.groupId, user.subgroupId);
@@ -53,10 +52,7 @@ class _WithStartupActionsState extends State<WithStartupActions> {
           fontSize: 16.0);
     });
 
-    context
-        .read<GoogleAuthenticationBloc>()
-        .user
-        .listen((user) {
+    context.read<GoogleAuthenticationBloc>().user.listen((user) {
       if (user?.uid == "") {
         context.read<UserSyncBloc>().cleanData();
         return;
@@ -65,10 +61,7 @@ class _WithStartupActionsState extends State<WithStartupActions> {
       context.read<UserSyncBloc>().setData(user?.uid, AuthProvider.Google);
     });
 
-    context
-        .read<FacebookAuthenticationBloc>()
-        .user
-        .listen((user) {
+    context.read<FacebookAuthenticationBloc>().user.listen((user) {
       if (user?.uid == "") {
         context.read<UserSyncBloc>().cleanData();
         return;
@@ -77,10 +70,7 @@ class _WithStartupActionsState extends State<WithStartupActions> {
       context.read<UserSyncBloc>().setData(user?.uid, AuthProvider.Facebook);
     });
 
-    context
-        .read<AppleAuthenticationBloc>()
-        .user
-        .listen((user) {
+    context.read<AppleAuthenticationBloc>().user.listen((user) {
       if (user?.uid == "") {
         context.read<UserSyncBloc>().cleanData();
         return;
