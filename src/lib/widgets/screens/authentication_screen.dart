@@ -29,7 +29,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   @override
   void initState() {
     _userSubscription = Rx.combineLatest2(
-            context.read<UserSyncBloc>().mappedUser,
+            context.read<UserSyncBloc>().syncUser,
             context.read<DeepLinkBloc>().dynamicLink,
             (a, b) => [a, b])
         .where((combinedValues) =>
@@ -55,7 +55,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Widget build(BuildContext context) => Scaffold(
     body: widget.bodyWrapper(
       child: StreamBuilder<User?>(
-          stream: context.read<UserSyncBloc>().mappedUser,
+          stream: context.read<UserSyncBloc>().syncUser,
           builder: (context, snapshot) {
             if (!snapshot.hasData || !snapshot.data!.isEmpty) {
               return Center(

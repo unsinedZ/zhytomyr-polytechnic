@@ -129,7 +129,7 @@ class _AppState extends State<App> {
                       onSignOut: () {
                         context
                             .read<UserSyncBloc>()
-                            .mappedUser
+                            .syncUser
                             .first
                             .then((user) {
                           if (user != null && !user.isEmpty) {
@@ -181,7 +181,7 @@ class _AppState extends State<App> {
                   groupRepository: FirestoreRepository(),
                   userDataStream: context
                       .read<UserSyncBloc>()
-                      .mappedUser
+                      .syncUser
                       .where((user) => user != null && !user.isEmpty)
                       .map((user) => user!.data),
                   tutorRepository: FirestoreRepository(),
@@ -191,7 +191,7 @@ class _AppState extends State<App> {
                   errorSink: context.read<ErrorBloc>().errorSink,
                   userDataStream: context
                       .read<UserSyncBloc>()
-                      .mappedUser
+                      .syncUser
                       .where((user) => user != null && !user.isEmpty)
                       .map((user) => user!.data),
                 ),

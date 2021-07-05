@@ -20,10 +20,13 @@ class TimetableBloc {
 
   final StreamController<Timetable?> _timetableController =
       StreamController.broadcast();
+
   final StreamController<Group?> _groupController =
       StreamController.broadcast();
+
   final StreamController<List<TimetableItemUpdate>?>
       _timetableItemUpdatesController = StreamController.broadcast();
+
   final StreamController<Tutor?> _tutorController =
       StreamController.broadcast();
 

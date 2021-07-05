@@ -20,15 +20,15 @@ class FacebookAuthenticationBloc {
     printer: PrettyPrinter(),
   );
 
-  final BehaviorSubject<FacebookUser?> _userController = BehaviorSubject();
+  final BehaviorSubject<FacebookUser?> _userSubject = BehaviorSubject();
 
-  Stream<FacebookUser?> get user => _userController.stream;
+  Stream<FacebookUser?> get user => _userSubject.stream;
 
   void loadUser() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null && user.providerData.last.providerId == providerId) {
-        _userController.add(FacebookUser.fromLogin(user));
+        _userSubject.add(FacebookUser.fromLogin(user));
       }
     } catch (err) {
       errorSink.add(err.toString());
@@ -43,7 +43,7 @@ class FacebookAuthenticationBloc {
         return;
       }
 
-      _userController.add(null);
+      _userSubject.add(null);
 
       final facebookAuthCredential =
           FacebookAuthProvider.credential(result.accessToken!.token);
@@ -55,10 +55,10 @@ class FacebookAuthenticationBloc {
       _logger.d('Signed in Facebook user');
       _logger.d(user);
 
-      _userController.add(FacebookUser.fromLogin(user!));
+      _userSubject.add(FacebookUser.fromLogin(user!));
     } catch (err) {
       errorSink.add(err.toString());
-      _userController.add(FacebookUser.empty());
+      _userSubject.add(FacebookUser.empty());
     }
   }
 
@@ -66,10 +66,10 @@ class FacebookAuthenticationBloc {
     await FirebaseAuth.instance.signOut();
     await FacebookAuth.instance.logOut();
 
-    _userController.add(FacebookUser.empty());
+    _userSubject.add(FacebookUser.empty());
   }
 
   void dispose() {
-    _userController.close();
+    _userSubject.close();
   }
 }
