@@ -21,9 +21,11 @@ class MyTimetableScreen extends StatefulWidget {
 }
 
 class _MyTimetableScreenState extends State<MyTimetableScreen> {
+  late final StreamSubscription userStreamSubscription;
+
   @override
   void initState() {
-    widget.userStream.listen((user) {
+    userStreamSubscription = widget.userStream.listen((user) {
       if (user!.groupId == '') {
         widget.errorSink.add(
             widget.textLocalizer.localize('You have not yet selected a group'));
@@ -35,11 +37,12 @@ class _MyTimetableScreenState extends State<MyTimetableScreen> {
           arguments: {
             'type': 'group',
             'groupId': int.parse(user.groupId),
-            'subgroupId': user.subgroupId.isNotEmpty ? int.parse(user.subgroupId) : null
+            'subgroupId':
+                user.subgroupId.isNotEmpty ? int.parse(user.subgroupId) : null
           },
         );
       }
-    }).onError((_, __) => Navigator.pop(context));
+    }, onError: (_, __) => Navigator.pop(context));
 
     super.initState();
   }
@@ -51,5 +54,11 @@ class _MyTimetableScreenState extends State<MyTimetableScreen> {
         child: CircularProgressIndicator(),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    userStreamSubscription.cancel();
+    super.dispose();
   }
 }

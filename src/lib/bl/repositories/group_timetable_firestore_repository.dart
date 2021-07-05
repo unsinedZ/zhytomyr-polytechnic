@@ -33,7 +33,8 @@ class GroupTimetableFirestoreRepository implements TimetableRepository {
         .first);
 
     if (prefs.containsKey('timetable.group.my') &&
-        userGroupId == id.toString()) {
+        userGroupId == id.toString() &&
+        timetableData.expiredAt.isAfter(DateTime.now())) {
       Map<String, dynamic> json =
           jsonDecode(prefs.getString('timetable.group.my')!);
       json['data'] = (json['data'] as Map<String, dynamic>);
@@ -44,14 +45,14 @@ class GroupTimetableFirestoreRepository implements TimetableRepository {
       if (expirableTimetableJson.expireAt.isAfter(DateTime.now())) {
         timetable = Timetable.fromJson(expirableTimetableJson.data);
         if (timetable.timetableData.lastModified !=
-                timetableData.lastModified ||
-            timetableData.expiredAt.isBefore(DateTime.now())) {
+            timetableData.lastModified) {
           timetable = null;
         }
       }
     }
 
     if (timetable == null) {
+      print(id);
       List<dynamic> itemsJson = (await firebaseFirestoreInstance
               .collection('timetable_item_group')
               .where("key", isEqualTo: 'group/' + id.toString())
