@@ -8,14 +8,12 @@ import 'package:user_sync/src/abstractions/users_repository.dart';
 import 'package:user_sync/src/models/user.dart';
 
 class UserSyncBloc {
-  final FlutterSecureStorage storage;
   final UserRepository repository;
   final StreamSink<String> errorSink;
 
   BehaviorSubject<User?> _mappedUserController = BehaviorSubject();
 
   UserSyncBloc({
-    this.storage = const FlutterSecureStorage(),
     required this.repository,
     required this.errorSink,
   });
@@ -35,8 +33,6 @@ class UserSyncBloc {
                   .asStream()
                   .map((userJson) => User.fromJson(userJson, authProvider))
                   .doOnData(_mappedUserController.add)
-                  .asyncMap((user) => storage.write(
-                      key: "user", value: jsonEncode(user.toJson())))
                   .doOnError((error, _) {
                 _mappedUserController.add(User.empty());
                 errorSink.add(error.toString());
@@ -58,12 +54,9 @@ class UserSyncBloc {
           .asyncMap((_) => repository.changeUserInfo(
               dataNew.userId, dataNew.groupId, dataNew.subgroupId))
           .doOnData((_) => _mappedUserController.add(dataNew))
-          .asyncMap((_) =>
-              storage.write(key: "user", value: jsonEncode(dataNew.toJson()))))
+  )
       .doOnError((error, _) => errorSink.add(error.toString()))
       .toList();
 
-  void cleanData() => storage
-      .delete(key: "user")
-      .then((_) => _mappedUserController.add(User.empty()));
+  void cleanData() => _mappedUserController.add(User.empty());
 }
