@@ -52,7 +52,6 @@ class GroupTimetableFirestoreRepository implements TimetableRepository {
     }
 
     if (timetable == null) {
-      print(id);
       List<dynamic> itemsJson = (await firebaseFirestoreInstance
               .collection('timetable_item_group')
               .where("key", isEqualTo: 'group/' + id.toString())
