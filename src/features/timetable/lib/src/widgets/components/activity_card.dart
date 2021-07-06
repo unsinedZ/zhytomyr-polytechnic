@@ -91,7 +91,11 @@ class ActivityCard extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        'ауд. ' + activity.room + ', ' + activity.type,
+                        textLocalizer.localize('aud.') +
+                            ' ' +
+                            activity.room +
+                            ', ' +
+                            activity.type,
                         style: Theme.of(context).textTheme.headline2,
                       ),
                     ],
@@ -110,7 +114,7 @@ class ActivityCard extends StatelessWidget {
                       ),
                       if (this._activityCardType == _ActivityCardType.Canceled)
                         Text(
-                          'Canceled',
+                          textLocalizer.localize('Canceled'),
                           style: TextStyle(color: Colors.red),
                           textScaleFactor: 1.15,
                         ),

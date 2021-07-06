@@ -15,7 +15,7 @@ import 'package:push_notification/push_notification.dart';
 import 'package:zhytomyr_polytechnic/widgets/app.dart';
 
 Future<void> main() async {
-  await initLocalizationAsync();
+  await initAsync();
   runZonedGuarded(() {
     runApp(
       Phoenix(
@@ -29,17 +29,10 @@ Future<void> main() async {
   }, FirebaseCrashlytics.instance.recordError);
 }
 
-Future<void> initLocalizationAsync() async {
-  String host = defaultTargetPlatform == TargetPlatform.android
-      ? '192.168.0.109:9190'
-      : 'localhost:9190'; // TODO delete
-
+Future<void> initAsync() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp();
-
-  FirebaseFirestore.instance.settings =
-      Settings(host: host, sslEnabled: false); // TODO delete
 
   if (kDebugMode) {
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);

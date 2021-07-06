@@ -78,7 +78,7 @@ class FirestoreRepository
   @override
   Future<Timetable.Group> getGroupById(int groupId) async {
     return (await this.getAllGroups())
-        .map((e) => Timetable.Group.fromObject(e))
+        .map((group) => Timetable.Group.fromObject(group))
         .firstWhere((group) => group.id == groupId);
   }
 
