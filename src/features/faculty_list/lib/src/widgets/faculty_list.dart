@@ -30,10 +30,6 @@ class FacultyList extends StatefulWidget {
 class _FacultyListState extends State<FacultyList> {
   late FacultyListBloc _facultyListBloc;
 
-  void _closeDrawer() {
-    Navigator.of(context).pop();
-  }
-
   @override
   void initState() {
     _facultyListBloc = FacultyListBloc(
