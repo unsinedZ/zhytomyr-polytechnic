@@ -9,6 +9,7 @@ void main() {
     final ContactsData contactsData = ContactsData.fromJson(jsonDecode(
         '{"phoneNumber" : "phoneNumber", '
           '"address" : "address", '
+          '"addressUrl" : "addressUrl", '
           '"instagramUrl" : "instagramUrl", '
           '"telegramUrl" : "telegramUrl", '
           '"facebookUrl" : "facebookUrl"'
@@ -16,6 +17,7 @@ void main() {
 
     expect(contactsData.phoneNumber, "phoneNumber");
     expect(contactsData.address, "address");
+    expect(contactsData.addressUrl, "addressUrl");
     expect(contactsData.instagramUrl, "instagramUrl");
     expect(contactsData.telegramUrl, "telegramUrl");
     expect(contactsData.facebookUrl, "facebookUrl");
