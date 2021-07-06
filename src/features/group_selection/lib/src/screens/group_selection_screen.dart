@@ -11,7 +11,7 @@ class GroupSelectionScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
   final GroupsRepository groupsLoader;
   final StreamSink<String> errorSink;
-  final ValueChanged<Map<String, dynamic>> subscribeCallback;
+  final void Function(String, String) subscribeCallback;
   final Widget Function({required Widget child}) bodyWrapper;
 
   GroupSelectionScreen({
@@ -27,10 +27,12 @@ class GroupSelectionScreen extends StatefulWidget {
 }
 
 class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
-  int? course;
+  final List<String> _years = ['1', '2', '3', '4', '1m', '2m'];
+
+  String? course;
   Group? group;
   Subgroup? subgroup;
-  late String facultyId;
+  late int facultyId;
   late String facultyName;
   late GroupSelectionBloc groupSelectionBloc;
   bool isMyGroup = false;
@@ -69,7 +71,7 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
   @override
   void didChangeDependencies() {
     facultyId = (ModalRoute.of(context)!.settings.arguments
-        as Map<String, dynamic>)['facultyId'].toString();
+        as Map<String, dynamic>)['facultyId'];
     facultyName = (ModalRoute.of(context)!.settings.arguments
         as Map<String, dynamic>)['facultyName'];
     super.didChangeDependencies();
@@ -116,11 +118,11 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                     ),
                     Container(
                       width: 150,
-                      child: DropdownButton<int>(
+                      child: DropdownButton<String>(
                         hint: Text(widget.textLocalizer.localize('Course')),
                         isExpanded: true,
                         value: course,
-                        onChanged: (int? course) {
+                        onChanged: (String? course) {
                           setState(() {
                             this.course = course;
                             group = null;
@@ -128,9 +130,9 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                           });
                           groupSelectionBloc.loadGroups(course!, facultyId);
                         },
-                        items: <int>[1, 2, 3, 4, 5]
-                            .map<DropdownMenuItem<int>>((int value) {
-                          return DropdownMenuItem<int>(
+                        items: _years
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value.toString()),
                           );
@@ -146,7 +148,8 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                           return Container(
                             width: 150,
                             child: DropdownButton<Group>(
-                              hint: Text(widget.textLocalizer.localize('Group')),
+                              hint:
+                                  Text(widget.textLocalizer.localize('Group')),
                               isExpanded: true,
                               value: group,
                               onChanged: (Group? newValue) {
@@ -179,8 +182,8 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                               Container(
                                 width: 150,
                                 child: DropdownButton<Subgroup>(
-                                  hint: Text(
-                                      widget.textLocalizer.localize('Subgroup')),
+                                  hint: Text(widget.textLocalizer
+                                      .localize('Subgroup')),
                                   isExpanded: true,
                                   value: subgroup,
                                   onChanged: (Subgroup? newValue) {
@@ -250,10 +253,10 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
                     ? null
                     : () {
                         if (isMyGroup) {
-                          widget.subscribeCallback({
-                            "groupId": group!.id,
-                            "subgroupId": subgroup == null ? "" : subgroup!.id
-                          });
+                          widget.subscribeCallback(
+                            group!.id.toString(),
+                            subgroup == null ? "" : subgroup!.id.toString(),
+                          );
                         }
 
                         Navigator.pushNamed(context, '/timetable', arguments: {

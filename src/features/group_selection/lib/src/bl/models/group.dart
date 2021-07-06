@@ -1,10 +1,10 @@
 import 'subgroup.dart';
 
 class Group {
-  final String id;
+  final int id;
   final String name;
-  final int year;
-  final String facultyId;
+  final String year;
+  final int facultyId;
   final List<Subgroup>? subgroups;
 
   Group({
@@ -17,10 +17,10 @@ class Group {
 
   factory Group.fromJson(Map<String, dynamic> json) {
     return Group(
-      id: json['id'] as String,
+      id: json['id'] as int,
       name: json['name'] as String,
-      year: json['year'] as int,
-      facultyId: json['facultyId'] as String,
+      year: json['year'] as String,
+      facultyId: json['facultyId'] as int,
       subgroups: (json['subgroups'] as List<dynamic>)
           .map((order) => Subgroup.fromJson(order))
           .toList(),

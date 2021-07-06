@@ -48,7 +48,10 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
           ListTile(
             leading: Icon(Icons.wysiwyg),
             title: Text(widget.textLocalizer.localize('Faculties')),
-            onTap: () => Navigator.pushNamed(context, '/faculties'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacementNamed(context, '/faculties');
+            },
           ),
           ListTile(
             leading: Icon(Icons.contacts),

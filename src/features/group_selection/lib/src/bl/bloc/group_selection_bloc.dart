@@ -17,11 +17,13 @@ class GroupSelectionBloc {
 
   Stream<List<Group>?> get groups => _groupsController.stream;
 
-  void loadGroups(int course, String faculty) async {
+  void loadGroups(String year, int faculty) async {
     _groupsController.add(null);
     try {
-      _groupsController.add(await groupsLoader.getGroups(course, faculty));
-    } catch (err) {
+      _groupsController.add(await groupsLoader.getGroups(year, faculty));
+    } catch (err, stack) {
+      print(err);
+      print(stack);
       errorSink.add(err.toString());
       _groupsController.add([]);
     }

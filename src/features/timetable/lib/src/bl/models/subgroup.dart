@@ -1,5 +1,5 @@
 class Subgroup {
-  final String id;
+  final int id;
   final String name;
 
   Subgroup({
@@ -9,14 +9,14 @@ class Subgroup {
 
   factory Subgroup.fromJson(Map<String, dynamic> json) {
     return Subgroup(
-      id: json['id'] as String,
+      id: json['id'] as int,
       name: json['name'] as String,
     );
   }
 
   factory Subgroup.fromObject(dynamic object) {
     return Subgroup(
-      id: object.id as String,
+      id: object.id as int,
       name: object.name as String,
     );
   }

@@ -55,9 +55,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Widget build(BuildContext context) => Scaffold(
     body: widget.bodyWrapper(
       child: StreamBuilder<User?>(
+          initialData: User.empty(),
           stream: context.read<UserSyncBloc>().mappedUser,
           builder: (context, snapshot) {
-            if (!snapshot.hasData || !snapshot.data!.isEmpty) {
+            if (!snapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            if(snapshot.hasData && snapshot.data!.isEmpty == false){
               return Center(
                 child: CircularProgressIndicator(),
               );

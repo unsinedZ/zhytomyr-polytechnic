@@ -19,6 +19,7 @@ class FacultyIcon extends StatelessWidget {
         children: [
           CachedNetworkImage(
             width: 150,
+            height: 150,
             imageUrl: faculty.imageUrl,
             placeholder: (context, url) => Shimmer.fromColors(
               baseColor: Colors.black,
@@ -29,7 +30,7 @@ class FacultyIcon extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 height: 150,
-                width: 147.2,
+                width: 150,
               ),
             ),
             errorWidget: (context, url, error) => Icon(Icons.error),

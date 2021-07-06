@@ -3,7 +3,7 @@ import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -14,7 +14,7 @@ import 'package:push_notification/push_notification.dart';
 import 'package:zhytomyr_polytechnic/widgets/app.dart';
 
 Future<void> main() async {
-  await initLocalizationAsync();
+  await initAsync();
   runZonedGuarded(() {
     runApp(
       Phoenix(
@@ -28,10 +28,11 @@ Future<void> main() async {
   }, FirebaseCrashlytics.instance.recordError);
 }
 
-Future<void> initLocalizationAsync() async {
+Future<void> initAsync() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp();
+
   if (kDebugMode) {
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
   } else {

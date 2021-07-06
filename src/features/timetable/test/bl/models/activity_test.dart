@@ -10,41 +10,41 @@ void main() {
         '{'
             '"id" : "id", '
             '"name" : "Name", '
-            '"tutor" : {"id" : "id", "name" : "Name", "imageUrl" : "imageUrl"}, '
+            '"tutors" : [{"id" : 0, "name" : "Name", "imageUrl" : "imageUrl"}], '
             '"room" : "Room", '
             '"groups" : ['
                           '{'
-                            '"id" : "id", '
+                            '"id" : 0, '
                             '"name" : "Name", '
-                            '"facultyId" : "facultyId", '
-                            '"year" : 3, '
-                            '"subgroups" : [{"id" : "id", "name" : "Name"}, {"id" : "id", "name" : "Name"}]'
+                            '"facultyId" : 0, '
+                            '"year" : "3", '
+                            '"subgroups" : [{"id" : 0, "name" : "Name"}, {"id" : 0, "name" : "Name"}]'
                           '}, '
                           '{'
-                            '"id" : "id", '
+                            '"id" : 0, '
                             '"name" : "Name", '
-                            '"facultyId" : "facultyId", '
-                            '"year" : 3, '
-                            '"subgroups" : [{"id" : "id", "name" : "Name"}, {"id" : "id", "name" : "Name"}]'
+                            '"facultyId" : 0, '
+                            '"year" : "3", '
+                            '"subgroups" : [{"id" : 0, "name" : "Name"}, {"id" : 0, "name" : "Name"}]'
                           '}'
                         '], '
-            '"time" : {"start" : "Start", "end" : "End"}'
+            '"time" : {"start" : "Start", "end" : "End"},'
+            '"type": "type"'
         '}'
     ));
 
-    expect(activity.id, 'id');
     expect(activity.name, 'Name');
     expect(activity.room, 'Room');
 
-    expect(activity.tutor.name, 'Name');
+    expect(activity.tutors.first.name, 'Name');
 
     expect(activity.groups.length, 2);
-    expect(activity.groups[0].id, "id");
+    expect(activity.groups[0].id, 0);
     expect(activity.groups[0].name, "Name");
-    expect(activity.groups[0].year, 3);
+    expect(activity.groups[0].year, '3');
     expect(activity.groups[0].subgroups.length, 2);
     expect(activity.groups[0].subgroups[0].name, 'Name');
-    expect(activity.groups[0].subgroups[0].id, 'id');
+    expect(activity.groups[0].subgroups[0].id, 0);
 
     expect(activity.time.start, 'Start');
     expect(activity.time.end, 'End');

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:google_authentication/google_authentication.dart';
 import 'package:facebook_authentication/facebook_authentication.dart';
 import 'package:terms_and_conditions/terms_and_conditions.dart' hide TextLocalizer;
-import 'package:timetable/timetable.dart' hide TextLocalizer;
+import 'package:timetable/timetable.dart' hide TextLocalizer, User, AuthProvider;
 import 'package:faculty_list/faculty_list.dart' hide TextLocalizer;
 import 'package:group_selection/group_selection.dart' hide TextLocalizer;
 import 'package:navigation_drawer/navigation_drawer.dart' hide TextLocalizer;
@@ -180,21 +180,20 @@ class _AppState extends State<App> {
                   textLocalizer: TextLocalizer(),
                   errorSink: context.read<ErrorBloc>().errorSink,
                   groupRepository: FirestoreRepository(),
-                  userDataStream: context
+                  userStream: context
                       .read<UserSyncBloc>()
                       .mappedUser
                       .where((user) => user != null && !user.isEmpty)
-                      .map((user) => user!.data),
+                      .map((user) => user!.toJson()),
                   tutorRepository: FirestoreRepository(),
                 ),
             '/my-timetable': (context) => MyTimetableScreen(
                   textLocalizer: TextLocalizer(),
                   errorSink: context.read<ErrorBloc>().errorSink,
-                  userDataStream: context
+                  userStream: context
                       .read<UserSyncBloc>()
                       .mappedUser
-                      .where((user) => user != null && !user.isEmpty)
-                      .map((user) => user!.data),
+                      .where((user) => user != null && !user.isEmpty),
                 ),
             '/contacts': (context) => ContactsScreen(
                   textLocalizer: TextLocalizer(),

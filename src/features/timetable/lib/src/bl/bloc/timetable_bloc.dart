@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:rxdart/rxdart.dart';
+
 import 'package:timetable/src/bl/abstractions/timetable_repository.dart';
 import 'package:timetable/src/bl/abstractions/group_repository.dart';
 import 'package:timetable/src/bl/abstractions/tutor_repository.dart';
@@ -18,14 +20,13 @@ class TimetableBloc {
     required this.tutorRepository,
   });
 
-  final StreamController<Timetable?> _timetableController =
-      StreamController.broadcast();
-  final StreamController<Group?> _groupController =
-      StreamController.broadcast();
-  final StreamController<List<TimetableItemUpdate>?>
-      _timetableItemUpdatesController = StreamController.broadcast();
-  final StreamController<Tutor?> _tutorController =
-      StreamController.broadcast();
+  final BehaviorSubject<Timetable?> _timetableController =
+      BehaviorSubject<Timetable?>();
+  final BehaviorSubject<Group?> _groupController = BehaviorSubject<Group?>();
+  final BehaviorSubject<List<TimetableItemUpdate>?>
+      _timetableItemUpdatesController =
+      BehaviorSubject<List<TimetableItemUpdate>?>();
+  final BehaviorSubject<Tutor?> _tutorController = BehaviorSubject<Tutor?>();
 
   Stream<Timetable?> get timetable => _timetableController.stream;
 
@@ -36,7 +37,7 @@ class TimetableBloc {
 
   Stream<Tutor?> get tutor => _tutorController.stream;
 
-  void loadTimetable(String id, [String? groupId]) {
+  void loadTimetable(int id, [String? groupId]) {
     _timetableController.add(null);
 
     timetableRepository
@@ -50,27 +51,31 @@ class TimetableBloc {
     });
   }
 
-  void loadGroup(String groupId) {
+  void loadGroup(int groupId) {
     _groupController.add(null);
 
     groupRepository.getGroupById(groupId).then((group) {
       _groupController.add(group);
-    }).onError((error, _) {
+    }).onError((error, stack) {
+      print(error);
+      print(stack);
       errorSink.add(error.toString());
     });
   }
 
-  void loadTimetableItemUpdates() {
+  void loadTimetableItemUpdates(int id) {
     _timetableItemUpdatesController.add(null);
 
-    timetableRepository.getTimetableItemUpdates().then((timetableItemUpdates) {
+    timetableRepository.getTimetableItemUpdates(id).then((timetableItemUpdates) {
       _timetableItemUpdatesController.add(timetableItemUpdates);
-    }).onError((error, _) {
+    }).onError((error, stack) {
+      print(error);
+      print(stack);
       errorSink.add(error.toString());
     });
   }
 
-  void loadTutor(String tutorId) {
+  void loadTutor(int tutorId) {
     _tutorController.add(null);
 
     tutorRepository.getTutorById(tutorId).then((tutor) {

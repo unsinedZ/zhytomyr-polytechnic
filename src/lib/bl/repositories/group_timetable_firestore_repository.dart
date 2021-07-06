@@ -1,31 +1,40 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:timetable/timetable.dart';
 
 import 'package:zhytomyr_polytechnic/bl/models/expirable.dart';
-import 'package:zhytomyr_polytechnic/bl/repositories/base_timetable_firestore_repository.dart';
 
-class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
-    implements TimetableRepository {
+class GroupTimetableFirestoreRepository implements TimetableRepository {
   final Future<SharedPreferences> sharedPreferences;
   final FirebaseFirestore firebaseFirestoreInstance;
 
   GroupTimetableFirestoreRepository({
     required this.sharedPreferences,
     required this.firebaseFirestoreInstance,
-  }) : super(firebaseFirestoreInstance: firebaseFirestoreInstance);
+  });
 
   @override
-  Future<Timetable> loadTimetableByReferenceId(String referenceId, [String? userGroupId]) async {
+  Future<Timetable> loadTimetableByReferenceId(int id,
+      [String? userGroupId]) async {
     final SharedPreferences prefs = await sharedPreferences;
 
     Timetable? timetable;
+    TimetableData timetableData;
 
-    if (prefs.containsKey('timetable.group.my') && userGroupId == referenceId) {
+    timetableData = TimetableData.fromJson((await firebaseFirestoreInstance
+            .collection('timetable')
+            .where("enabled", isEqualTo: 1)
+            .get())
+        .docs
+        .map((doc) => doc.data())
+        .first);
+
+    if (prefs.containsKey('timetable.group.my') &&
+        userGroupId == id.toString() &&
+        timetableData.expiredAt.isAfter(DateTime.now())) {
       Map<String, dynamic> json =
           jsonDecode(prefs.getString('timetable.group.my')!);
       json['data'] = (json['data'] as Map<String, dynamic>);
@@ -35,28 +44,30 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
 
       if (expirableTimetableJson.expireAt.isAfter(DateTime.now())) {
         timetable = Timetable.fromJson(expirableTimetableJson.data);
+        if (timetable.timetableData.lastModified !=
+            timetableData.lastModified) {
+          timetable = null;
+        }
       }
     }
 
     if (timetable == null) {
-      timetable = Timetable.fromJson(
-          (await firebaseFirestoreInstance.collection('timetable').get())
-              .docs
-              .map((doc) => doc.data())
-              .first);
-
-      List<TimetableItem> items = timetable.items
-          .where((element) =>
-              element.activity.groups.any((group) => group.id == referenceId))
-          .toList();
+      List<dynamic> itemsJson = (await firebaseFirestoreInstance
+              .collection('timetable_item_group')
+              .where("key", isEqualTo: 'group/' + id.toString())
+              .get())
+          .docs
+          .map((doc) => doc.data())
+          .first['items'];
 
       timetable = Timetable(
-        weekDetermination: timetable.weekDetermination,
-        items: items,
-        expiresAt: timetable.expiresAt,
+        timetableData: timetableData,
+        items: itemsJson
+            .map((itemJson) => TimetableItem.fromJson(itemJson))
+            .toList(),
       );
 
-      if (userGroupId == referenceId) {
+      if (userGroupId == id.toString()) {
         Expirable<Map<String, dynamic>> expirableTimetableJson =
             Expirable<Map<String, dynamic>>(
           duration: Duration(days: 30),
@@ -64,10 +75,27 @@ class GroupTimetableFirestoreRepository extends BaseTimetableFirestoreRepository
         );
 
         prefs.setString(
-            'timetable.group.my', jsonEncode(expirableTimetableJson));
+          'timetable.group.my',
+          jsonEncode(expirableTimetableJson),
+        );
       }
     }
 
     return timetable;
+  }
+
+  Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int id) async {
+    return firebaseFirestoreInstance
+        .collection('timetable_item_update')
+        .where('key', isEqualTo: 'group/' + id.toString())
+        .get()
+        .then(
+          (timetableItemUpdateListJson) => timetableItemUpdateListJson.docs
+              .map(
+                (timetableItemUpdateJson) => TimetableItemUpdate.fromJson(
+                    timetableItemUpdateJson.data()),
+              )
+              .toList(),
+        );
   }
 }
