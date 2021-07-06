@@ -119,6 +119,7 @@ class _AppState extends State<App> {
             '/terms&conditions': (context) => TermsAndConditionsScreen(
                   bodyWrapper: ({required Widget child}) =>
                       BodyWrapper(child: child),
+                  textLocalizer: TextLocalizer(),
                 ),
             '/faculties': (context) => VerifyAuthentication(
                   child: FacultyList(
