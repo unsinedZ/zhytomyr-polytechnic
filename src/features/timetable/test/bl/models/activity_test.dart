@@ -10,7 +10,7 @@ void main() {
         '{'
             '"id" : "id", '
             '"name" : "Name", '
-            '"tutor" : [{"id" : 0, "name" : "Name", "imageUrl" : "imageUrl"}], '
+            '"tutors" : [{"id" : 0, "name" : "Name", "imageUrl" : "imageUrl"}], '
             '"room" : "Room", '
             '"groups" : ['
                           '{'
