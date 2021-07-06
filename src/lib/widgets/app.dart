@@ -160,6 +160,7 @@ class _AppState extends State<App> {
                       },
                       textLocalizer: TextLocalizer(),
                       errorSink: context.read<ErrorBloc>().errorSink,
+                      currentPage: CurrentPage.Faculties,
                     ),
                     bodyWrapper: ({required Widget child}) =>
                         BodyWrapper(child: child),

@@ -23,10 +23,14 @@ class ContactsScreenBloc {
     contactsRepository
         .loadContactsData()
         .then((contactsData) => _contactsDataController.add(contactsData))
-        .catchError((err) {
-      errorSink.add(err.toString());
-      _contactsDataController.add(ContactsData.empty());
-    });
+        .catchError(
+      (err, stack) {
+        print(err);
+        print(stack);
+        errorSink.add(err.toString());
+        _contactsDataController.add(ContactsData.empty());
+      },
+    );
   }
 
   void dispose() {
