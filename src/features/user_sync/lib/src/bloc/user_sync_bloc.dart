@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:rxdart/rxdart.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:user_sync/src/abstractions/users_repository.dart';
 import 'package:user_sync/src/models/user.dart';
