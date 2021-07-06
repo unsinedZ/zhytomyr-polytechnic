@@ -28,10 +28,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   @override
   void initState() {
-    _userSubscription = Rx.combineLatest2(
-            context.read<UserSyncBloc>().syncUser,
-            context.read<DeepLinkBloc>().dynamicLink,
-            (a, b) => [a, b])
+    _userSubscription = Rx.combineLatest2(context.read<UserSyncBloc>().syncUser,
+            context.read<DeepLinkBloc>().dynamicLink, (a, b) => [a, b])
         .where((combinedValues) =>
             combinedValues[0] != null && !(combinedValues[0]! as User).isEmpty)
         .listen((combinedValues) {
@@ -53,78 +51,83 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: widget.bodyWrapper(
-      child: StreamBuilder<User?>(
-          stream: context.read<UserSyncBloc>().syncUser,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData || !snapshot.data!.isEmpty) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+        body: widget.bodyWrapper(
+          child: StreamBuilder<User?>(
+              stream: context.read<UserSyncBloc>().syncUser,
+              initialData: User.empty(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: Center(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/logo.png',
-                        width: MediaQuery.of(context).size.width * 0.7,
-                      ),
-                      SizedBox(
-                        height: 90,
-                      ),
-                      Wrap(
-                        alignment: WrapAlignment.center,
+                if (snapshot.hasData && snapshot.data!.isEmpty == false) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  child: Center(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(textLocalizer
-                              .localize('By authorize you agree to ')),
-                          InkWell(
-                            child: Text(
-                              textLocalizer
-                                  .localize('terms & conditions.'),
-                              style:
-                                  Theme.of(context).textTheme.headline4,
-                            ),
-                            onTap: () => Navigator.pushNamed(
-                                context, '/terms&conditions'),
+                          Image.asset(
+                            'assets/images/logo.png',
+                            width: MediaQuery.of(context).size.width * 0.7,
                           ),
+                          SizedBox(
+                            height: 90,
+                          ),
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            children: [
+                              Text(textLocalizer
+                                  .localize('By authorize you agree to ')),
+                              InkWell(
+                                child: Text(
+                                  textLocalizer.localize('terms & conditions.'),
+                                  style: Theme.of(context).textTheme.headline4,
+                                ),
+                                onTap: () => Navigator.pushNamed(
+                                    context, '/terms&conditions'),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          GoogleSignInButton(
+                            authenticationBloc:
+                                context.read<GoogleAuthenticationBloc>(),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          SignInWithFacebookButton(
+                            authenticationBloc:
+                                context.read<FacebookAuthenticationBloc>(),
+                          ),
+                          if (Platform.isIOS) ...[
+                            SizedBox(
+                              height: 10,
+                            ),
+                            AppleSignInButton(
+                              appleAuthenticationBloc:
+                                  context.read<AppleAuthenticationBloc>(),
+                            ),
+                          ],
                         ],
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      GoogleSignInButton(
-                        authenticationBloc:
-                            context.read<GoogleAuthenticationBloc>(),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      SignInWithFacebookButton(
-                        authenticationBloc:
-                            context.read<FacebookAuthenticationBloc>(),
-                      ),
-                      if (Platform.isIOS) ...[
-                        SizedBox(
-                          height: 10,
-                        ),
-                        AppleSignInButton(
-                          appleAuthenticationBloc:
-                              context.read<AppleAuthenticationBloc>(),
-                        ),
-                      ],
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            );
-          }),
-    ),
-  );
+                );
+              }),
+        ),
+      );
 
   @override
   void dispose() {

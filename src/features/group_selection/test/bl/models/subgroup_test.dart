@@ -6,9 +6,9 @@ import 'package:group_selection/src/bl/models/models.dart';
 void main() {
   test('Subgroup.fromJson work correctly', () {
     final Subgroup group = Subgroup.fromJson(jsonDecode(
-        '{"id" : "id", "name" : "Name"}'));
+        '{"id" : 1, "name" : "Name"}'));
 
-    expect(group.id, "id");
+    expect(group.id, 1);
     expect(group.name, "Name");
   });
 }

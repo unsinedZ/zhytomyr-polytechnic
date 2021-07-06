@@ -1,0 +1,27 @@
+{
+  "name": "firestore-data-import",
+  "version": "1.0.0",
+  "description": "Tools for the import data to firestore",
+  "scripts": {
+    "import": "node import.js --database=schedule",
+    "emulator": "firebase emulators:start --only firestore --import=backup --export-on-exit=output",
+    "cast": " node cast_to_models.js --file output.json",
+    "emulator:check": "node check.js --emulator",
+    "emulator:output": "firebase emulators:start --only firestore --import=output"
+  },
+  "author": "Softwine",
+  "license": "ISC",
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "firebase": "^8.6.1",
+    "firebase-admin": "^9.8.0",
+    "firebase-tools": "^9.10.2",
+    "mariadb": "^2.5.3",
+    "optimist": "^0.6.1",
+    "write-json-file": "^4.3.0"
+  },
+  "devDependencies": {
+    "@types/firebase": "^3.2.1",
+    "nodemon": "^2.0.7"
+  }
+}

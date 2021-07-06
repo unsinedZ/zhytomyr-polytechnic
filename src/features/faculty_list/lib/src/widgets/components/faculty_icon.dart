@@ -16,14 +16,16 @@ class FacultyIcon extends StatelessWidget {
     return Column(
       children: [
         InkWell(
-          onTap: () => Navigator.pushNamed(context, "/group",
-              arguments: {'facultyId': faculty.id, 'facultyName': faculty.name}),
+          onTap: () => Navigator.pushNamed(context, "/group", arguments: {
+            'facultyId': faculty.id,
+            'facultyName': faculty.name
+          }),
           borderRadius: BorderRadius.all(Radius.circular(5000)),
-          highlightColor:  Color(0xff35b9ca).withOpacity(0.3),
+          highlightColor: Color(0xff35b9ca).withOpacity(0.3),
           child: Ink(
             decoration: BoxDecoration(
-              image: DecorationImage(image: CachedNetworkImageProvider(faculty.imageUrl))
-            ),
+                image: DecorationImage(
+                    image: CachedNetworkImageProvider(faculty.imageUrl))),
             width: 150,
             height: 150,
           ),

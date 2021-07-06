@@ -19,9 +19,9 @@ class TimetableTab extends StatefulWidget {
   final int dayOfWeekNumber;
   final DateTime dateTime;
   final TimetableType timetableType;
-  final String id;
+  final int id;
   final bool isTomorrow;
-  final String? subgroupId;
+  final int? subgroupId;
 
   TimetableTab({
     required this.textLocalizer,
@@ -63,13 +63,14 @@ class _TimetableTabState extends State<TimetableTab> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      key: Key(widget.weekNumber.toString() + '/' + widget.dayOfWeekNumber.toString()),
       child: Column(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
               (widget.isTomorrow == true
-                  ? widget.textLocalizer.localize('Tomorrow ')
+                  ? widget.textLocalizer.localize('Tomorrow')
                   : DateFormat('d MMMM', context.locale.toString())
                       .format(widget.dateTime)),
             ),
@@ -101,16 +102,14 @@ class _TimetableTabState extends State<TimetableTab> {
   bool filterByTimetableType(TimetableItem timetableItem) {
     if (widget.timetableType == TimetableType.Group) {
       return timetableItem.activity.groups.any((group) =>
-          group.id == widget.id &&
           (group.subgroups.isEmpty ||
               widget.subgroupId == null ||
-              widget.subgroupId == '' ||
               group.subgroups
                   .any((subgroup) => subgroup.id == widget.subgroupId)));
     }
 
     if (widget.timetableType == TimetableType.Teacher) {
-      return timetableItem.activity.tutor.id == widget.id;
+      return timetableItem.activity.tutors.any((tutor) => tutor.id == widget.id);
     }
     return false;
   }
@@ -128,7 +127,7 @@ class _TimetableTabState extends State<TimetableTab> {
       DateTime dateTime =
           DateTime.parse(timetableItemUpdate.date.replaceAll('/', '-'));
 
-      if (widget.dateTime.asDate().isAtSameMomentAs(dateTime)) {
+      if (widget.dateTime.asDate().isAtSameMomentAs(dateTime.asDate())) {
         if (timetableItemUpdate.timetableItem == null ||
             filterByTimetableType(timetableItemUpdate.timetableItem!)) {
           return true;

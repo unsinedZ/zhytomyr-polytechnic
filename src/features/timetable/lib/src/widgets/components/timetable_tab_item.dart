@@ -25,8 +25,6 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
 
   bool get isNew => widget.updatableTimetableItem.isNew;
 
-  bool get isEmpty => widget.updatableTimetableItem.isEmpty;
-
   bool get isCancelled => widget.updatableTimetableItem.isCancelled;
 
   bool get isReplaced => widget.updatableTimetableItem.isReplaced;

@@ -42,7 +42,7 @@ class ActivityInfoDialog extends StatelessWidget {
                     style: Theme.of(context).textTheme.subtitle1,
                     children: <TextSpan>[
                       TextSpan(
-                          text: activity.tutor.name,
+                          text: activity.tutors.map((tutor) => tutor.name).join(', '),
                           style: TextStyle(fontWeight: FontWeight.bold)),
                     ],
                   ),
@@ -83,13 +83,15 @@ class ActivityInfoDialog extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 0,
-            top: 0,
+            right: 3,
+            top: 3,
             child: IconButton(
+              alignment: Alignment.topRight,
+              padding: EdgeInsets.zero,
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: Icon(Icons.close),
+              icon: Icon(Icons.close, color: Colors.black,),
             ),
           )
         ],

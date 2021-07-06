@@ -4,8 +4,8 @@ class TimetableFilters {
   final int weekNumber;
   final int weekDayNumber;
   final TimetableType timetableType;
-  final String id;
-  final String? subgroupId;
+  final int id;
+  final int? subgroupId;
 
   TimetableFilters({
     required this.weekNumber,
@@ -20,8 +20,8 @@ class TimetableFilters {
       weekNumber: json['weekNumber'] as int,
       weekDayNumber: json['weekDayNumber'] as int,
       timetableType: timetableTypeFromString(json['timetableType'] as String),
-      id: json['id'] as String,
-      subgroupId: json['weekDayNumber'] as String?,
+      id: json['id'] as int,
+      subgroupId: json['weekDayNumber'] as int?,
     );
   }
 }

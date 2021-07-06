@@ -71,18 +71,18 @@ class FirestoreRepository
   }
 
   @override
-  Future<List<Group>> getGroups(int course, String facultyId) async {
+  Future<List<Group>> getGroups(String year, int facultyId) async {
     List<Group> groups = (await this.getAllGroups())
-        .where((group) => group.year == course && group.facultyId == facultyId)
+        .where((group) => group.year == year && group.facultyId == facultyId)
         .toList();
 
     return groups;
   }
 
   @override
-  Future<Timetable.Group> getGroupById(String groupId) async {
+  Future<Timetable.Group> getGroupById(int groupId) async {
     Timetable.Group group = (await this.getAllGroups())
-        .map((e) => Timetable.Group.fromObject(e))
+        .map((group) => Timetable.Group.fromObject(group))
         .firstWhere((group) => group.id == groupId);
 
     return group;
@@ -99,7 +99,8 @@ class FirestoreRepository
     return contactsData;
   }
 
-  Future<void> changeUserInfo(String userId, Map<String, dynamic> data) async {
+  Future<void> changeUserInfo(
+      String userId, String groupId, String subgroupId) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
     if (sharedPreferences.containsKey('timetable.group.my')) {
@@ -108,12 +109,20 @@ class FirestoreRepository
 
     return (await FirebaseFirestore.instance
             .collection("users")
-            .where("userId", isEqualTo: userId)
+            .where(
+              "userId",
+              isEqualTo: userId,
+            )
             .get())
         .docs
         .first
         .reference
-        .update(data);
+        .update(
+      {
+        'groupId': groupId,
+        'subgroupId': subgroupId,
+      },
+    );
   }
 
   @override
@@ -126,12 +135,13 @@ class FirestoreRepository
 
     if (docs.isNotEmpty) {
       return docs.first.data();
+    } else {
+      return {"userId": userId, 'groupId': '', 'subgroupId': ''};
     }
-    return {"userId": userId};
   }
 
   @override
-  Future<Timetable.Tutor?> getTutorById(String teacherId) async {
+  Future<Timetable.Tutor?> getTutorById(int teacherId) async {
     List<Timetable.Tutor> tutors = (await FirebaseFirestore.instance
             .collection("tutors")
             .where("id", isEqualTo: teacherId)

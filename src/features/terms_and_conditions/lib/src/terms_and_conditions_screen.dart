@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_markdown/flutter_markdown.dart';
-
 import 'package:url_launcher/url_launcher.dart';
+
+import 'package:terms_and_conditions/terms_and_conditions.dart';
 
 import 'constants.dart';
 
 class TermsAndConditionsScreen extends StatefulWidget {
   final Widget Function({required Widget child}) bodyWrapper;
+  final TextLocalizer textLocalizer;
 
-  TermsAndConditionsScreen({required this.bodyWrapper});
+  TermsAndConditionsScreen({
+    required this.bodyWrapper,
+    required this.textLocalizer,
+  });
 
   @override
   _TermsAndConditionsScreenState createState() =>
@@ -41,7 +46,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
                 Navigator.pop(context);
               }),
           title: Text(
-            'Terms and conditions',
+            widget.textLocalizer.localize('Terms and conditions'),
             style: Theme.of(context).textTheme.headline1,
           ),
         ),
@@ -77,7 +82,8 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
   }
 
   Future<String> loadTermsAndConditions() async {
-    return await rootBundle
-        .loadString(getAssetPathPrefix() + 'assets/terms_and_conditions.md');
+    return await rootBundle.loadString(getAssetPathPrefix() +
+        'assets/' +
+        widget.textLocalizer.localize('terms_and_conditions_en.md'));
   }
 }

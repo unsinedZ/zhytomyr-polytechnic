@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:group_selection/src/bl/models/models.dart';
 
 class SubmitButton extends StatelessWidget {
-  final int? course;
+  final String? course;
   final Group? group;
   final Subgroup? subgroup;
   final bool isMyGroup;
   final String text;
-  final ValueChanged<Map<String, dynamic>> subscribeCallback;
+  final void Function(String grupId, String subgroupId) subscribeCallback;
 
   SubmitButton({
     required this.course,
@@ -31,10 +31,8 @@ class SubmitButton extends StatelessWidget {
             ? null
             : () {
                 if (isMyGroup) {
-                  subscribeCallback({
-                    "groupId": group!.id,
-                    "subgroupId": subgroup == null ? "" : subgroup!.id
-                  });
+                  subscribeCallback(group!.id.toString(),
+                    subgroup == null ? "" : subgroup!.id.toString());
                 }
 
                 Navigator.pushNamed(context, '/timetable', arguments: {

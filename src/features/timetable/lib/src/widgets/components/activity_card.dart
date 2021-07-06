@@ -77,40 +77,49 @@ class ActivityCard extends StatelessWidget {
                 SizedBox(
                   width: 7,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      activity.name,
-                      textScaleFactor: 1.3,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      activity.room,
-                      style: Theme.of(context).textTheme.headline2,
-                    ),
-                  ],
-                ),
-                Spacer(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      activity.tutor.name,
-                      style: Theme.of(context).textTheme.headline2,
-                      textScaleFactor: 1.15,
-                    ),
-                    if (this._activityCardType == _ActivityCardType.Canceled)
+                Expanded(
+                  flex: 5,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
                       Text(
-                        'Canceled',
-                        style: TextStyle(color: Colors.red),
+                        activity.name,
+                        textScaleFactor: 1.3,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        textLocalizer.localize('aud.') +
+                            ' ' +
+                            activity.room +
+                            ', ' +
+                            activity.type,
+                        style: Theme.of(context).textTheme.headline2,
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        activity.tutors.map((tutor) => tutor.name).join(', '),
+                        style: Theme.of(context).textTheme.headline2,
                         textScaleFactor: 1.15,
                       ),
-                  ],
+                      if (this._activityCardType == _ActivityCardType.Canceled)
+                        Text(
+                          textLocalizer.localize('Canceled'),
+                          style: TextStyle(color: Colors.red),
+                          textScaleFactor: 1.15,
+                        ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -123,7 +132,7 @@ class ActivityCard extends StatelessWidget {
   Color? getBackgroundColor(BuildContext context) {
     switch (this._activityCardType) {
       case _ActivityCardType.Simple:
-        return null;
+        return Theme.of(context).canvasColor;
       case _ActivityCardType.Canceled:
         return Theme.of(context).disabledColor;
       case _ActivityCardType.Added:

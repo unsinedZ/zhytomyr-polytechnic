@@ -9,8 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:error_bloc/error_bloc.dart';
 import 'package:apple_authentication/apple_authentication.dart';
 import 'package:google_authentication/google_authentication.dart';
-import 'package:push_notification/push_notification.dart';
 import 'package:facebook_authentication/facebook_authentication.dart';
+import 'package:push_notification/push_notification.dart';
 import 'package:user_sync/user_sync.dart';
 import 'package:update_check/update_check.dart';
 
@@ -30,12 +30,14 @@ class _WithStartupActionsState extends State<WithStartupActions> {
   void initState() {
     final userSyncBloc = context.read<UserSyncBloc>();
 
-    userSyncBloc.loadUser();
-
     userSyncBloc.syncUser
         .where((user) => user != null && !user.isEmpty)
-        .map((user) => user!.data)
-        .listen(context.read<PushNotificationBloc>().subscribeToNew);
+        .map((user) => user)
+        .listen((user) {
+      context
+          .read<PushNotificationBloc>()
+          .subscribeToNew(user!.groupId, user.subgroupId);
+    });
 
     context
         .read<ErrorBloc>()

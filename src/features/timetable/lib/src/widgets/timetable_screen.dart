@@ -22,7 +22,7 @@ class TimetableScreen extends StatefulWidget {
   final GroupRepository groupRepository;
   final TutorRepository tutorRepository;
   final StreamSink<String> errorSink;
-  final Stream<Map<String, dynamic>> userDataStream;
+  final Stream<Map<String, dynamic>> userStream;
   final Widget Function({required Widget child}) bodyWrapper;
 
   TimetableScreen({
@@ -31,7 +31,7 @@ class TimetableScreen extends StatefulWidget {
     required this.groupRepository,
     required this.tutorRepository,
     required this.errorSink,
-    required this.userDataStream,
+    required this.userStream,
     required this.bodyWrapper,
   });
 
@@ -50,11 +50,11 @@ class _TimetableScreenState extends State<TimetableScreen> {
   late TimetableBloc timetableBloc;
   late TimetableType timetableType;
   late int weekNumber;
-  late String id;
+  late int id;
   late Stream<List<dynamic>> dataStream;
 
   StreamSubscription? groupStreamSubscription;
-  String? subgroupId;
+  int? subgroupId;
   Group? group;
   Tutor? tutor;
 
@@ -97,7 +97,8 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
       timetableType = timetableTypeFromString(arguments['type'] as String);
 
-      if (timetableType == TimetableType.Group) {
+      if (timetableType == TimetableType.Group &&
+          arguments['subgroupId'] != null) {
         subgroupId = arguments['subgroupId'];
       }
     }
@@ -110,10 +111,10 @@ class _TimetableScreenState extends State<TimetableScreen> {
       tutorRepository: widget.tutorRepository,
     );
 
-    timetableBloc.loadTimetableItemUpdates();
+    timetableBloc.loadTimetableItemUpdates(id);
 
-    widget.userDataStream.listen((userDataJson) {
-      timetableBloc.loadTimetable(id, userDataJson['groupId']);
+    widget.userStream.listen((userJson) {
+      timetableBloc.loadTimetable(id, User.fromStorage(userJson).groupId);
     });
 
     if (timetableType == TimetableType.Group) {
@@ -125,9 +126,9 @@ class _TimetableScreenState extends State<TimetableScreen> {
       });
     } else if (timetableType == TimetableType.Teacher) {
       timetableBloc.loadTutor(id);
-      timetableBloc.tutor.listen((group) {
+      timetableBloc.tutor.listen((tutor) {
         setState(() {
-          this.tutor = group;
+          this.tutor = tutor;
         });
       });
     }
@@ -188,7 +189,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                           isWeekChanged = !isWeekChanged;
                         });
                       },
-                      onCurrentSubgroupChanged: (String newSubgroupId) {
+                      onCurrentSubgroupChanged: (int newSubgroupId) {
                         setState(() {
                           subgroupId = newSubgroupId;
                         });
@@ -216,9 +217,11 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   snapshot.data![1];
 
               if ((weekNumber.isEven &&
-                      timetable.weekDetermination == WeekDetermination.Even) ||
+                      timetable.timetableData.weekDetermination ==
+                          WeekDetermination.Even) ||
                   (weekNumber.isOdd &&
-                      timetable.weekDetermination == WeekDetermination.Odd)) {
+                      timetable.timetableData.weekDetermination ==
+                          WeekDetermination.Odd)) {
                 weekNumber = 1;
               } else {
                 weekNumber = 2;

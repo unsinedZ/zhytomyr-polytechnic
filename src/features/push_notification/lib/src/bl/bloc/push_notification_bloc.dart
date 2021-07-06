@@ -14,8 +14,8 @@ class PushNotificationBloc {
 
   Stream<String?> get pushNotification => _pushNotificationController.stream;
 
-  void subscribeToNew(Map<String, dynamic> data) =>
-      Stream.value(Group.fromJson(data))
+  void subscribeToNew(String groupId, String subgroupId) =>
+      Stream.value(Group(groupId: groupId, subgroupId: subgroupId))
           .doOnData((group) =>
               FirebaseMessaging.instance.subscribeToTopic(group.toTopic))
           .switchMap((group) => pushNotification
