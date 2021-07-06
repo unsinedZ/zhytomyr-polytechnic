@@ -47,7 +47,8 @@ class NavigationDrawer extends StatelessWidget {
             title: Text(textLocalizer.localize('Faculties')),
             onTap: () {
               if(currentPage == CurrentPage.Faculties){
-                Navigator.pop(context);
+                Navigator.of(context).pop();
+                return;
               }
               Navigator.pushNamed(context, '/faculties');
             },
