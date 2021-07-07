@@ -5,7 +5,7 @@ const jsonCreditals = require(opts.file)
 
 const data = JSON.stringify({
     "message": {
-        "topic": "group."+opts.group,
+        "topic": opts.topic,
         "data": {
             "type": "warning",
             "alert": "Пари змінились"

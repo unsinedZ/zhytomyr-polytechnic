@@ -1,1 +1,1 @@
-node index.js --file [file] --group [group]
+node index.js --file [file] --topic [topic]
