@@ -1,9 +1,9 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:error_bloc/error_bloc.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:toast/toast.dart';
 
 class WithStartupAction extends StatefulWidget {
   final Widget child;
@@ -22,7 +22,7 @@ class _WithStartupActionState extends State<WithStartupAction> {
         .error
         .debounceTime(Duration(milliseconds: 500))
         .listen((errorMessage) {
-      Toast.show(errorMessage, context);
+      BotToast.showText(text: errorMessage);
     });
     super.initState();
   }
