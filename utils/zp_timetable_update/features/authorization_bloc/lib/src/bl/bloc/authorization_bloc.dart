@@ -1,43 +1,59 @@
+import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
-//import 'package:googleapis/binaryauthorization/v1.dart';
-// import 'package:authorization_bloc/src/bl/model/google_creditals.dart';
-// import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
+import 'package:http/http.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:googleapis_auth/googleapis_auth.dart';
-import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthorizationBloc {
-  final client = http.Client();
+  final StreamSink errorSink;
+  final Client client;
 
-  void login(File file) async {
+  AuthorizationBloc({required this.errorSink, required this.client});
+
+  final StreamController<AccessToken?> _authorizationController =
+      StreamController();
+
+  Stream<AccessToken?> get token => _authorizationController.stream;
+
+  void loadUser() async {
+    final storage = await SharedPreferences.getInstance();
+    String? serviceAccount = storage.getString("account");
+    if (serviceAccount == null) {
+      return _authorizationController.add(AccessToken("", "", DateTime(1970)));
+    }
+    login(storage.getString("account")!);
+  }
+
+  void login(String serviceAccount) async {
     try {
-      final clientCredentials = ServiceAccountCredentials.fromJson(
-          jsonDecode(await file.readAsString()));
+      _authorizationController.add(null);
+      final storage = await SharedPreferences.getInstance();
+      final clientCredentials =
+          ServiceAccountCredentials.fromJson(jsonDecode(serviceAccount));
       final accessCredentials = await obtainAccessCredentialsViaServiceAccount(
         clientCredentials,
-        ["https://www.googleapis.com/auth/cloud-platform"],
+        [
+          "https://www.googleapis.com/auth/cloud-platform",
+          "https://www.googleapis.com/auth/datastore"
+        ],
         client,
       );
-      // GoogleCreditals googleCreditals =
-      //     GoogleCreditals.fromJson(jsonDecode(await file.readAsString()));
-
-      // final jwt = JWT(
-      //   {},
-      //   header: {"kid": googleCreditals.privateKeyId},
-      //   issuer: googleCreditals.clientEmail,
-      //   subject: googleCreditals.clientEmail,
-      //   audience: "https://fcm.googleapis.com/",
-      // );
-
-      // final token = jwt.sign(RSAPrivateKey(googleCreditals.privateKey),
-      //     algorithm: JWTAlgorithm.RS256,
-      //     expiresIn: Duration(milliseconds: 3600));
-      
-      print('Signed token: $accessCredentials.accessToken\n');
+      storage.setString("account", serviceAccount);
+      _authorizationController.add(accessCredentials.accessToken);
     } catch (error) {
+      _authorizationController.add(AccessToken("", "", DateTime(1970)));
+      errorSink.add(error.toString());
       print(error.toString());
     }
   }
+
+  void logout() async {
+    final storage = await SharedPreferences.getInstance();
+    await storage.clear();
+    _authorizationController.add(AccessToken("", "", DateTime(1970)));
+  }
+
+  
 }

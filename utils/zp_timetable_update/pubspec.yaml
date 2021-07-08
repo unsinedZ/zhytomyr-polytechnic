@@ -16,8 +16,8 @@ dependencies:
   error_bloc:
     path: ./features/error_bloc
   rxdart: ^0.27.1
-  toast: 
-    path: ./features/toast
+  bot_toast: ^4.0.1
+  http: ^0.13.3
   authorization_bloc:
     path: ./features/authorization_bloc
 
@@ -27,3 +27,5 @@ dev_dependencies:
     sdk: flutter
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
