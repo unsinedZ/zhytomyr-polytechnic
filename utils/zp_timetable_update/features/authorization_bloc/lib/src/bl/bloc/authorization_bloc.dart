@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:googleapis_auth/auth_io.dart';
@@ -13,13 +12,23 @@ class AuthorizationBloc {
 
   AuthorizationBloc({required this.errorSink, required this.client});
 
-  final StreamController<String?> _authorizationController = StreamController();
+  final StreamController<AccessToken?> _authorizationController =
+      StreamController();
 
-  Stream<String?> get token => _authorizationController.stream;
+  Stream<AccessToken?> get token => _authorizationController.stream;
 
-  void login(File file) async {
+  void loadUser() async {
+    final storage = await SharedPreferences.getInstance();
+    String? serviceAccount = storage.getString("account");
+    if (serviceAccount == null) {
+      return _authorizationController.add(AccessToken("", "", DateTime(1970)));
+    }
+    login(storage.getString("account")!);
+  }
+
+  void login(String serviceAccount) async {
     try {
-      final serviceAccount = await file.readAsString();
+      _authorizationController.add(null);
       final storage = await SharedPreferences.getInstance();
       final clientCredentials =
           ServiceAccountCredentials.fromJson(jsonDecode(serviceAccount));
@@ -32,10 +41,19 @@ class AuthorizationBloc {
         client,
       );
       storage.setString("account", serviceAccount);
-      _authorizationController.add(accessCredentials.accessToken.data);
+      _authorizationController.add(accessCredentials.accessToken);
     } catch (error) {
+      _authorizationController.add(AccessToken("", "", DateTime(1970)));
       errorSink.add(error.toString());
       print(error.toString());
     }
   }
+
+  void logout() async {
+    final storage = await SharedPreferences.getInstance();
+    await storage.clear();
+    _authorizationController.add(AccessToken("", "", DateTime(1970)));
+  }
+
+  
 }
