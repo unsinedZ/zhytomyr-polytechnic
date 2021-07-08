@@ -18,7 +18,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   final FilesPicker _filesPicker = FilesPicker(defaultExtension: "json");
   late final AuthorizationBloc _authorizationBloc;
   late final StreamSubscription _tokenSubscription;
-  String? text = "";
 
   @override
   void initState() {
@@ -49,8 +48,8 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      body: StreamBuilder<AccessToken?>(
+      child: Scaffold(
+        body: StreamBuilder<AccessToken?>(
           stream: _authorizationBloc.token,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -59,7 +58,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                 child: CircularProgressIndicator(),
               );
             }
-            
+
             return Padding(
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: Center(
@@ -76,14 +75,16 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                       ),
                       SubmitButton(
                           onTap: _login,
-                          text: "login",
+                          text: "Ввійти",
                           color: Theme.of(context).buttonColor)
                     ],
                   ),
                 ),
               ),
             );
-          }),
-    ));
+          },
+        ),
+      ),
+    );
   }
 }
