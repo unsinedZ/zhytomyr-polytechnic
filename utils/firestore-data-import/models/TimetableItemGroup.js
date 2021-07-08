@@ -32,6 +32,7 @@ class TimetableItemGroup {
 
             return sqlOutput["activities"].filter((activity) => subgroup.map((subgroup) => subgroup.subgroup_id).includes(activity.activity_subgroup_id))
         }
+
         return sqlOutput["activities"].filter((activities) => activities.activity_teacher_id == uniqueId)
     }
 
