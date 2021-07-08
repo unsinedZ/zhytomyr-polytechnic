@@ -25,7 +25,7 @@ class GroupTimetableFirestoreRepository implements TimetableRepository {
     TimetableData timetableData;
 
     timetableData = TimetableData.fromJson((await firebaseFirestoreInstance
-            .collection('timetable')
+            .collection('timetables')
             .where("enabled", isEqualTo: 1)
             .get())
         .docs
@@ -53,7 +53,7 @@ class GroupTimetableFirestoreRepository implements TimetableRepository {
 
     if (timetable == null) {
       List<dynamic> itemsJson = (await firebaseFirestoreInstance
-              .collection('timetable_item_group')
+              .collection('timetable_items_group')
               .where("key", isEqualTo: 'group/' + id.toString())
               .get())
           .docs
@@ -86,7 +86,7 @@ class GroupTimetableFirestoreRepository implements TimetableRepository {
 
   Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int id) async {
     return firebaseFirestoreInstance
-        .collection('timetable_item_update')
+        .collection('timetable_items_update')
         .where('key', isEqualTo: 'group/' + id.toString())
         .get()
         .then(

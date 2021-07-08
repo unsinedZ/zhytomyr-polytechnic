@@ -23,7 +23,7 @@ class FirestoreRepository
         VersionsRepository {
   @override
   Stream<List<Faculty>> getFaculties() =>
-      FirebaseFirestore.instance.collection('faculty').get().asStream().map(
+      FirebaseFirestore.instance.collection('faculties').get().asStream().map(
             (facultyListJson) => facultyListJson.docs
                 .map(
                   (facultyJson) => Faculty.fromJson(facultyJson.data()),
@@ -53,7 +53,7 @@ class FirestoreRepository
     if (expirableGroupsJson == null) {
       expirableGroupsJson = Expirable<List<Map<String, dynamic>>>(
           duration: Duration(days: 30),
-          data: (await FirebaseFirestore.instance.collection('group').get())
+          data: (await FirebaseFirestore.instance.collection('groups').get())
               .docs
               .map((doc) => doc.data())
               .toList());
