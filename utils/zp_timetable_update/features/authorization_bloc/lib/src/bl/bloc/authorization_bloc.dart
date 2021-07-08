@@ -13,7 +13,7 @@ class AuthorizationBloc {
   AuthorizationBloc({required this.errorSink, required this.client});
 
   final StreamController<AccessToken?> _authorizationController =
-      StreamController();
+      StreamController.broadcast();
 
   Stream<AccessToken?> get token => _authorizationController.stream;
 
