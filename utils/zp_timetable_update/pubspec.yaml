@@ -21,6 +21,9 @@ dependencies:
   http: ^0.13.3
   authorization_bloc:
     path: ./features/authorization_bloc
+  timetable:
+    path: ./features/timetable
+  googleapis: ^3.0.0
 
 
 dev_dependencies:

@@ -26,7 +26,11 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     _tokenSubscription = _authorizationBloc.token
         .where((token) => token != null && !token.hasExpired)
         .listen((token) {
-      Navigator.pushReplacementNamed(context, "/main_screen");
+      Navigator.pushReplacementNamed(context, "/main_screen", arguments: {
+        'type': 'group',
+        'groupId': 59,
+        'subgroupId': null
+      });
     });
     super.initState();
   }
