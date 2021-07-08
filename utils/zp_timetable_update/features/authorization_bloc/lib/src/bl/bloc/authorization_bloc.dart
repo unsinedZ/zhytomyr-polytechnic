@@ -21,7 +21,7 @@ class AuthorizationBloc {
     final storage = await SharedPreferences.getInstance();
     String? serviceAccount = storage.getString("account");
     if (serviceAccount == null) {
-      return _authorizationController.add(AccessToken("", "", DateTime(1970)));
+      return _authorizationController.add(AccessToken("", "", DateTime.utc(1970)));
     }
     login(storage.getString("account")!);
   }
@@ -43,7 +43,7 @@ class AuthorizationBloc {
       storage.setString("account", serviceAccount);
       _authorizationController.add(accessCredentials.accessToken);
     } catch (error) {
-      _authorizationController.add(AccessToken("", "", DateTime(1970)));
+      _authorizationController.add(AccessToken("", "", DateTime.utc(1970)));
       errorSink.add(error.toString());
       print(error.toString());
     }
@@ -52,7 +52,7 @@ class AuthorizationBloc {
   void logout() async {
     final storage = await SharedPreferences.getInstance();
     await storage.clear();
-    _authorizationController.add(AccessToken("", "", DateTime(1970)));
+    _authorizationController.add(AccessToken("", "", DateTime.utc(1970)));
   }
 
   
