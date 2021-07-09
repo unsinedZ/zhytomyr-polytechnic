@@ -24,7 +24,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     _authorizationBloc = context.read<AuthorizationBloc>();
 
     _tokenSubscription = _authorizationBloc.token
-        .where((token) => token != null && !token.hasExpired)
+        .where((token) => token != null)
         .listen((token) {
       Navigator.pushReplacementNamed(context, "/main_screen", arguments: {
         'type': 'group',
@@ -53,7 +53,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: StreamBuilder<AccessToken?>(
+        body: StreamBuilder<AuthClient?>(
           stream: _authorizationBloc.token,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {

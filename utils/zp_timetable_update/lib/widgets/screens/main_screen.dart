@@ -14,6 +14,19 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   @override
+  void initState() {
+
+
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     GroupTimetableFirestoreRepository groupTimetableFirestoreRepository =
         GroupTimetableFirestoreRepository(client: context.read<AuthorizationBloc>().client);
