@@ -1,3 +1,4 @@
+
 import 'package:authorization_bloc/authorization_bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:error_bloc/error_bloc.dart';
@@ -18,8 +19,6 @@ class WithStartupAction extends StatefulWidget {
 class _WithStartupActionState extends State<WithStartupAction> {
   @override
   void initState() {
-    context.read<AuthorizationBloc>()..loadUser();
-
     context
         .read<ErrorBloc>()
         .error
@@ -27,6 +26,8 @@ class _WithStartupActionState extends State<WithStartupAction> {
         .listen((errorMessage) {
       BotToast.showText(text: errorMessage);
     });
+
+    context.read<AuthorizationBloc>()..loadUser();
 
     super.initState();
   }
