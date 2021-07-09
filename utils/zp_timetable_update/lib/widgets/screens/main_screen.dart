@@ -13,11 +13,9 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  late final _authorizationBloc = context.read<AuthorizationBloc>();
   @override
   void initState() {
-
-
-
     super.initState();
   }
 
@@ -28,11 +26,25 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    GroupTimetableFirestoreRepository groupTimetableFirestoreRepository =
-        GroupTimetableFirestoreRepository(client: context.read<AuthorizationBloc>().client);
-    groupTimetableFirestoreRepository.test();
-    return Container(
-      child: Text("asd"),
+
+    return StreamBuilder<AuthClient?>(
+        stream: _authorizationBloc.authClient,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Container(
+              alignment: Alignment.center,
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          GroupTimetableFirestoreRepository groupTimetableFirestoreRepository =
+          GroupTimetableFirestoreRepository(client: snapshot.data!);
+          groupTimetableFirestoreRepository.test();
+
+        return Container(
+          child: Text("asd"),
+        );
+      }
     );
   }
 }

@@ -23,7 +23,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   void initState() {
     _authorizationBloc = context.read<AuthorizationBloc>();
 
-    _tokenSubscription = _authorizationBloc.token
+    _tokenSubscription = _authorizationBloc.authClient
         .where((token) => token != null)
         .listen((token) {
       Navigator.pushReplacementNamed(context, "/main_screen", arguments: {
@@ -54,7 +54,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     return SafeArea(
       child: Scaffold(
         body: StreamBuilder<AuthClient?>(
-          stream: _authorizationBloc.token,
+          stream: _authorizationBloc.authClient,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Container(

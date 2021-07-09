@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:googleapis_auth/googleapis_auth.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthorizationBloc {
@@ -10,10 +11,10 @@ class AuthorizationBloc {
 
   AuthorizationBloc({required this.errorSink});
 
-  final StreamController<AuthClient?> _authorizationController =
-      StreamController.broadcast();
+  final BehaviorSubject<AuthClient?> _authorizationController =
+      BehaviorSubject<AuthClient?>();
 
-  Stream<AuthClient?> get token => _authorizationController.stream;
+  Stream<AuthClient?> get authClient => _authorizationController.stream;
 
   void loadUser() async {
     final storage = await SharedPreferences.getInstance();
