@@ -54,6 +54,4 @@ class AuthorizationBloc {
     await storage.clear();
     _authorizationController.add(AccessToken("", "", DateTime.utc(1970)));
   }
-
-  
 }
