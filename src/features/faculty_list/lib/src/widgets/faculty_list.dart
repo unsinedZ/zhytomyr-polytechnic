@@ -40,11 +40,6 @@ class _FacultyListState extends State<FacultyList> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    _facultyListBloc.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,45 +55,51 @@ class _FacultyListState extends State<FacultyList> {
         child: StreamBuilder<List<Faculty>>(
           stream: _facultyListBloc.faculties,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData) {
-              return RefreshIndicator(
-                onRefresh: () => _facultyListBloc.loadList(),
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  child: Container(
-                    width: double.infinity,
-                    child: Column(
-                      children: [
-                        Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(15),
-                            child: Text(
-                              widget.textLocalizer.localize("Choose faculty"),
-                              style: Theme.of(context).textTheme.headline6,
-                            ),
+            if (!snapshot.hasData) {
+              return FacultyListShimmer();
+            }
+            return RefreshIndicator(
+              onRefresh: () => _facultyListBloc.loadList(),
+              child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                child: Container(
+                  width: double.infinity,
+                  child: Column(
+                    children: [
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Text(
+                            widget.textLocalizer.localize("Choose faculty"),
+                            style: Theme.of(context).textTheme.headline6,
                           ),
                         ),
-                        Wrap(
-                          spacing: 20,
-                          alignment: WrapAlignment.center,
-                          children: (snapshot.data as List<Faculty>)
-                              .map(
-                                (facultyList) => FacultyIcon(
-                                  faculty: facultyList,
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ],
-                    ),
+                      ),
+                      Wrap(
+                        spacing: 20,
+                        alignment: WrapAlignment.center,
+                        children: (snapshot.data as List<Faculty>)
+                            .map(
+                              (facultyList) => FacultyIcon(
+                                faculty: facultyList,
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ],
                   ),
                 ),
-              );
-            }
-            return FacultyListShimmer();
+              ),
+            );
           },
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _facultyListBloc.dispose();
+    super.dispose();
   }
 }

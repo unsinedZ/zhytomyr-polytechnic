@@ -1,7 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:shimmer/shimmer.dart';
 
 import 'package:faculty_list/src/bl/models/faculty.dart';
 
@@ -12,38 +12,30 @@ class FacultyIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, "/group",
-          arguments: {'facultyId': faculty.id, 'facultyName': faculty.name}),
-      child: Column(
-        children: [
-          CachedNetworkImage(
+    return Column(
+      children: [
+        InkWell(
+          onTap: () => Navigator.pushNamed(
+            context,
+            "/group",
+            arguments: {'facultyId': faculty.id, 'facultyName': faculty.name},
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(5000)),
+          highlightColor: Color(0xff35b9ca).withOpacity(0.3),
+          child: Ink.image(
+            image: CachedNetworkImageProvider(faculty.imageUrl),
             width: 150,
             height: 150,
-            imageUrl: faculty.imageUrl,
-            placeholder: (context, url) => Shimmer.fromColors(
-              baseColor: Colors.black,
-              highlightColor: Colors.grey.shade800,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black12,
-                  shape: BoxShape.circle,
-                ),
-                height: 150,
-                width: 150,
-              ),
-            ),
-            errorWidget: (context, url, error) => Icon(Icons.error),
           ),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              faculty.name,
-              textScaleFactor: 1.2,
-            ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            faculty.name,
+            textScaleFactor: 1.2,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

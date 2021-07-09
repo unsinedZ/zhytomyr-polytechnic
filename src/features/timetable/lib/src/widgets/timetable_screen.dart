@@ -97,7 +97,8 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
       timetableType = timetableTypeFromString(arguments['type'] as String);
 
-      if (timetableType == TimetableType.Group && arguments['subgroupId'] != null) {
+      if (timetableType == TimetableType.Group &&
+          arguments['subgroupId'] != null) {
         subgroupId = arguments['subgroupId'];
       }
     }
@@ -207,49 +208,52 @@ class _TimetableScreenState extends State<TimetableScreen> {
           child: StreamBuilder<List<dynamic>>(
             stream: dataStream,
             builder: (context, snapshot) {
-              if (_isSnapshotHasData(snapshot)) {
-                Timetable timetable = snapshot.data![0];
-                List<TimetableItemUpdate> timetableItemUpdates =
-                    snapshot.data![1];
-
-                if ((weekNumber.isEven &&
-                        timetable.timetableData.weekDetermination == WeekDetermination.Even) ||
-                    (weekNumber.isOdd &&
-                        timetable.timetableData.weekDetermination == WeekDetermination.Odd)) {
-                  weekNumber = 1;
-                } else {
-                  weekNumber = 2;
-                }
-
-                return TabBarView(
-                  children: _weekDaysNames
-                      .asMap()
-                      .keys
-                      .map<Widget>(
-                        (index) => TimetableTab(
-                          textLocalizer: widget.textLocalizer,
-                          timetable: timetable,
-                          timetableItemUpdates: timetableItemUpdates,
-                          weekNumber: weekNumber,
-                          dayOfWeekNumber: index + 1,
-                          dateTime: indexDayDateTime.add(Duration(
-                              days: -initialIndex +
-                                  index +
-                                  (isWeekChanged ? 7 : 0))),
-                          id: id,
-                          subgroupId: subgroupId,
-                          timetableType: timetableType,
-                          isTomorrow: initialIndex == index &&
-                                  isNextDay == true &&
-                                  isWeekChanged == false
-                              ? true
-                              : false,
-                        ),
-                      )
-                      .toList(),
-                );
-              } else
+              if (!_isSnapshotHasData(snapshot)) {
                 return TimetableTabShimmer();
+              }
+
+              Timetable timetable = snapshot.data![0];
+              List<TimetableItemUpdate> timetableItemUpdates =
+                  snapshot.data![1];
+
+              if ((weekNumber.isEven &&
+                      timetable.timetableData.weekDetermination ==
+                          WeekDetermination.Even) ||
+                  (weekNumber.isOdd &&
+                      timetable.timetableData.weekDetermination ==
+                          WeekDetermination.Odd)) {
+                weekNumber = 1;
+              } else {
+                weekNumber = 2;
+              }
+
+              return TabBarView(
+                children: _weekDaysNames
+                    .asMap()
+                    .keys
+                    .map<Widget>(
+                      (index) => TimetableTab(
+                        textLocalizer: widget.textLocalizer,
+                        timetable: timetable,
+                        timetableItemUpdates: timetableItemUpdates,
+                        weekNumber: weekNumber,
+                        dayOfWeekNumber: index + 1,
+                        dateTime: indexDayDateTime.add(Duration(
+                            days: -initialIndex +
+                                index +
+                                (isWeekChanged ? 7 : 0))),
+                        id: id,
+                        subgroupId: subgroupId,
+                        timetableType: timetableType,
+                        isTomorrow: initialIndex == index &&
+                                isNextDay == true &&
+                                isWeekChanged == false
+                            ? true
+                            : false,
+                      ),
+                    )
+                    .toList(),
+              );
             },
           ),
         ),

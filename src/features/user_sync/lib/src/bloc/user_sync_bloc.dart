@@ -9,20 +9,20 @@ class UserSyncBloc {
   final UserRepository repository;
   final StreamSink<String> errorSink;
 
-  BehaviorSubject<User?> _mappedUserController = BehaviorSubject();
+  BehaviorSubject<User?> _syncUserSubject = BehaviorSubject();
 
   UserSyncBloc({
     required this.repository,
     required this.errorSink,
   });
 
-  Stream<User?> get mappedUser => _mappedUserController.stream;
+  Stream<User?> get syncUser => _syncUserSubject.stream;
 
   void setData(String? userId, AuthProvider authProvider) =>
       Stream.value(userId)
           .doOnData((userId) {
             if (userId == null) {
-              _mappedUserController.add(null);
+              _syncUserSubject.add(null);
             }
           })
           .where((userId) => userId != null)
@@ -30,14 +30,14 @@ class UserSyncBloc {
                   .getUserInfo(userId!)
                   .asStream()
                   .map((userJson) => User.fromJson(userJson, authProvider))
-                  .doOnData(_mappedUserController.add)
+                  .doOnData(_syncUserSubject.add)
                   .doOnError((error, _) {
-                _mappedUserController.add(User.empty());
+                _syncUserSubject.add(User.empty());
                 errorSink.add(error.toString());
               }))
           .toList();
 
-  void updateUserData(String groupId, String subgroupId) => mappedUser
+  void updateUserData(String groupId, String subgroupId) => syncUser
       .take(1)
       .where((user) =>
           user != null &&
@@ -51,10 +51,9 @@ class UserSyncBloc {
       .switchMap((dataNew) => Stream.value(null)
           .asyncMap((_) => repository.changeUserInfo(
               dataNew.userId, dataNew.groupId, dataNew.subgroupId))
-          .doOnData((_) => _mappedUserController.add(dataNew))
-  )
+          .doOnData((_) => _syncUserSubject.add(dataNew)))
       .doOnError((error, _) => errorSink.add(error.toString()))
       .toList();
 
-  void cleanData() => _mappedUserController.add(User.empty());
+  void cleanData() => _syncUserSubject.add(User.empty());
 }

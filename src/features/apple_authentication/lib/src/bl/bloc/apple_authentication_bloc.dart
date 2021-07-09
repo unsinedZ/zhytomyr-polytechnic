@@ -11,27 +11,27 @@ import 'package:crypto/crypto.dart';
 import 'package:apple_authentication/src/bl/models/apple_user.dart';
 
 class AppleAuthenticationBloc {
+  static const String providerId = "apple.com";
+
   final StreamSink<String> errorSink;
 
   AppleAuthenticationBloc({
     required this.errorSink,
   });
 
-  var _logger = Logger(
+  final Logger _logger = Logger(
     printer: PrettyPrinter(),
   );
 
-  final BehaviorSubject<AppleUser?> _userController = BehaviorSubject();
+  final BehaviorSubject<AppleUser?> _userSubject = BehaviorSubject();
 
-  Stream<AppleUser?> get user => _userController.stream;
-
-  String get providerId => "apple.com";
+  Stream<AppleUser?> get user => _userSubject.stream;
 
   void loadUser() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null && user.providerData.last.providerId == providerId) {
-        _userController.add(AppleUser.fromLogin(user));
+        _userSubject.add(AppleUser.fromLogin(user));
       }
     } catch (err) {
       errorSink.add(err.toString());
@@ -77,7 +77,7 @@ class AppleAuthenticationBloc {
       _logger.d('Signed in Apple user');
       _logger.d(user);
 
-      _userController.add(AppleUser.fromLogin(user!));
+      _userSubject.add(AppleUser.fromLogin(user!));
     } catch (err) {
       if (err is SignInWithAppleAuthorizationException &&
           err.code.toString() == 'AuthorizationErrorCode.canceled') {
@@ -91,10 +91,10 @@ class AppleAuthenticationBloc {
   Future<void> logout() async {
     await FirebaseAuth.instance.signOut();
 
-    _userController.add(AppleUser.empty());
+    _userSubject.add(AppleUser.empty());
   }
 
   void dispose() {
-    _userController.close();
+    _userSubject.close();
   }
 }

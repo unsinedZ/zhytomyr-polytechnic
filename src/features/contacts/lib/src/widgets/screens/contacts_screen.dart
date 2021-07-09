@@ -46,51 +46,53 @@ class ContactsScreen extends StatelessWidget {
         child: StreamBuilder<ContactsData?>(
             stream: contactsScreenBloc.contactsData,
             builder: (context, snapshot) {
-              if (snapshot.hasData && snapshot.data != null) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    PrefixedContainer(
-                      title: textLocalizer.localize("Number"),
-                      text: snapshot.data!.phoneNumber,
-                      onTap: () =>
-                          _launchURL("tel:${snapshot.data!.phoneNumber}"),
-                    ),
-                    PrefixedContainer(
-                      title: textLocalizer.localize("Address"),
-                      text: snapshot.data!.address,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    SocialNetworkContainer(
-                      icon: FaIcon(
-                        FontAwesomeIcons.instagram,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      text: "@instagram",
-                      onTap: () => _launchURL(snapshot.data!.instagramUrl),
-                    ),
-                    SocialNetworkContainer(
-                      icon: FaIcon(
-                        FontAwesomeIcons.telegram,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      text: "@telegram",
-                      onTap: () => _launchURL(snapshot.data!.telegramUrl),
-                    ),
-                    SocialNetworkContainer(
-                      icon: FaIcon(
-                        FontAwesomeIcons.facebook,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      text: "@facebook",
-                      onTap: () => _launchURL(snapshot.data!.facebookUrl),
-                    ),
-                  ],
-                );
-              } else
+              if (!snapshot.hasData || snapshot.data == null) {
                 return ContactsScreenShimmer();
+              }
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  PrefixedContainer(
+                    title: textLocalizer.localize("Number"),
+                    text: snapshot.data!.phoneNumber,
+                    onTap: () =>
+                        _launchURL("tel:${snapshot.data!.phoneNumber}"),
+                  ),
+                  PrefixedContainer(
+                    title: textLocalizer.localize("Address"),
+                    text: snapshot.data!.address,
+                    onTap: () =>
+                        _launchURL(snapshot.data!.addressUrl),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SocialNetworkContainer(
+                    icon: FaIcon(
+                      FontAwesomeIcons.instagram,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    text: "@instagram",
+                    onTap: () => _launchURL(snapshot.data!.instagramUrl),
+                  ),
+                  SocialNetworkContainer(
+                    icon: FaIcon(
+                      FontAwesomeIcons.telegram,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    text: "@telegram",
+                    onTap: () => _launchURL(snapshot.data!.telegramUrl),
+                  ),
+                  SocialNetworkContainer(
+                    icon: FaIcon(
+                      FontAwesomeIcons.facebook,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    text: "@facebook",
+                    onTap: () => _launchURL(snapshot.data!.facebookUrl),
+                  ),
+                ],
+              );
             }),
       ),
     );
