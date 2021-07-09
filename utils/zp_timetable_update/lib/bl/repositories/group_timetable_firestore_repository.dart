@@ -90,17 +90,19 @@ class GroupTimetableFirestoreRepository //implements TimetableRepository
 
     structuredQuery.from = [collectionSelector];
 
+    structuredQuery.limit = 1;
     runQueryRequest.structuredQuery = structuredQuery;
 
-    RunQueryResponse runQueryResponse =  await firestoreApi.projects.databases.documents.runQuery(
+
+    await firestoreApi.projects.databases.documents.runQuery(
       runQueryRequest,
       'projects/zhytomyr-politechnic-dev/databases/(default)/documents',
     );
 
-    runQueryResponse.document!.toJson().forEach((key, value) {
-      print(key);
-      print(value);
-    });
+    // runQueryResponse.document!.toJson().forEach((key, value) {
+    //   print(key);
+    //   print(value);
+    // });
 
     // .documents.get(
     // 'projects/zhytomyr-politechnic-dev/databases/(default)/documents/contacts');
