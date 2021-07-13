@@ -10,7 +10,7 @@ class Tutor {
   });
 
   factory Tutor.fromJson(Map<String, dynamic> json) => Tutor(
-        id: json['id'],
+        id: int.parse(json['id']),
         name: json['name'],
         imageUrl: json['imageUrl'],
       );

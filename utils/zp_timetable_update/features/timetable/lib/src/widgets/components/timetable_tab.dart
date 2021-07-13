@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 
@@ -46,6 +47,7 @@ class _TimetableTabState extends State<TimetableTab> {
 
   @override
   void initState() {
+    initializeDateFormatting();
     widgets = stateToWidgets();
 
     super.initState();
@@ -71,26 +73,26 @@ class _TimetableTabState extends State<TimetableTab> {
             child: Text(
               (widget.isTomorrow == true
                   ? widget.textLocalizer.localize('Tomorrow')
-                  : DateFormat('d MMMM', context.locale.toString())
+                  : DateFormat('d MMMM', 'uk')
                       .format(widget.dateTime)),
             ),
           ),
           ...widgets,
           if (widgets.isEmpty) ...[
             SizedBox(
-              height: 120,
+              height: 20,
             ),
             Image.asset(
               'assets/images/day_off.png',
               package: 'timetable',
-              width: MediaQuery.of(context).size.width * 0.7,
+              width: MediaQuery.of(context).size.width * 0.5,
             ),
             SizedBox(
               height: 15,
             ),
             Text(
               widget.textLocalizer.localize('DAY OFF'),
-              textScaleFactor: 1.7,
+              textScaleFactor: 1.5,
               style: Theme.of(context).textTheme.headline3,
             ),
           ],
@@ -100,15 +102,7 @@ class _TimetableTabState extends State<TimetableTab> {
   }
 
   bool filterByTimetableType(TimetableItem timetableItem) {
-    if (widget.timetableType == TimetableType.Group) {
-      return timetableItem.activity.groups.any((group) =>
-          (group.subgroups.isEmpty ||
-              widget.subgroupId == null ||
-              group.subgroups
-                  .any((subgroup) => subgroup.id == widget.subgroupId)));
-    }
-
-    if (widget.timetableType == TimetableType.Teacher) {
+    if (widget.timetableType == TimetableType.Tutor) {
       return timetableItem.activity.tutors.any((tutor) => tutor.id == widget.id);
     }
     return false;

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:googleapis_auth/auth_io.dart';
 
 import 'package:intl/intl.dart';
 
@@ -9,7 +10,6 @@ import 'package:rxdart/rxdart.dart';
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/widgets/components/components.dart';
 import 'package:timetable/src/bl/bloc/timetable_bloc.dart';
-import 'package:timetable/src/bl/abstractions/group_repository.dart';
 import 'package:timetable/src/bl/abstractions/tutor_repository.dart';
 import 'package:timetable/src/bl/models/models.dart';
 import 'package:timetable/src/widgets/components/filters_bottom_sheet.dart';
@@ -19,14 +19,15 @@ import 'package:timetable/timetable.dart';
 class TimetableScreen extends StatefulWidget {
   final ITextLocalizer textLocalizer;
   final TimetableRepositoryFactory timetableRepositoryFactory;
-  final GroupRepository groupRepository;
+
+  // final GroupRepository groupRepository;
   final TutorRepository tutorRepository;
   final StreamSink<String> errorSink;
 
   TimetableScreen({
     required this.textLocalizer,
     required this.timetableRepositoryFactory,
-    required this.groupRepository,
+    // required this.groupRepository,
     required this.tutorRepository,
     required this.errorSink,
   });
@@ -47,20 +48,20 @@ class _TimetableScreenState extends State<TimetableScreen> {
   late TimetableType timetableType;
   late int weekNumber;
   late int id;
+  late AuthClient client;
   late Stream<List<dynamic>> dataStream;
 
   StreamSubscription? groupStreamSubscription;
+  StreamSubscription? clientStreamSubscription;
   int? subgroupId;
   Group? group;
   Tutor? tutor;
 
   MediaQueryData get mediaQuery => MediaQuery.of(context);
 
-  String get title => timetableType == TimetableType.Group
-      ? (group == null ? '' : group!.name)
-      : timetableType == TimetableType.Teacher
-          ? (tutor == null ? '' : tutor!.name)
-          : '';
+  String get title => timetableType == TimetableType.Tutor
+      ? (tutor == null ? '' : tutor!.name)
+      : '';
 
   @override
   void initState() {
@@ -80,30 +81,15 @@ class _TimetableScreenState extends State<TimetableScreen> {
     final arguments =
         (ModalRoute.of(context)!.settings.arguments) as Map<String, dynamic>;
 
-    if (arguments.length > 3) {
-      TimetableFilters timetableFilters =
-          TimetableFilters.fromJson(arguments[3]);
-      weekNumber = timetableFilters.weekNumber;
-      id = timetableFilters.id;
-      subgroupId = timetableFilters.subgroupId;
-      timetableType = timetableFilters.timetableType;
-      initialIndex = timetableFilters.weekDayNumber - 1;
-    } else {
-      id = arguments['groupId'];
-
-      timetableType = timetableTypeFromString(arguments['type'] as String);
-
-      if (timetableType == TimetableType.Group &&
-          arguments['subgroupId'] != null) {
-        subgroupId = arguments['subgroupId'];
-      }
-    }
+    id = arguments['id'];
+    timetableType = timetableTypeFromString(arguments['type'] as String);
+    client = arguments['client'];
 
     timetableBloc = TimetableBloc(
       timetableRepository: widget.timetableRepositoryFactory
-          .getTimetableRepository(timetableType),
+          .getTimetableRepository(timetableType, client),
       errorSink: widget.errorSink,
-      groupRepository: widget.groupRepository,
+      //groupRepository: widget.groupRepository,
       tutorRepository: widget.tutorRepository,
     );
 
@@ -111,15 +97,8 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
     timetableBloc.loadTimetable(id);
 
-    if (timetableType == TimetableType.Group) {
-      timetableBloc.loadGroup(id);
-      timetableBloc.group.listen((group) {
-        setState(() {
-          this.group = group;
-        });
-      });
-    } else if (timetableType == TimetableType.Teacher) {
-      timetableBloc.loadTutor(id);
+    if (timetableType == TimetableType.Tutor) {
+      timetableBloc.loadTutor(id, client);
       timetableBloc.tutor.listen((tutor) {
         setState(() {
           this.tutor = tutor;
@@ -165,9 +144,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: (group == null && timetableType == TimetableType.Group)
-              ? null
-              : () {
+          onPressed: () {
                   showModalBottomSheet(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
@@ -181,11 +158,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
                         setState(() {
                           weekNumber = newWeekNumber;
                           isWeekChanged = !isWeekChanged;
-                        });
-                      },
-                      onCurrentSubgroupChanged: (int newSubgroupId) {
-                        setState(() {
-                          subgroupId = newSubgroupId;
                         });
                       },
                       currentWeekNumber: weekNumber,
@@ -255,12 +227,13 @@ class _TimetableScreenState extends State<TimetableScreen> {
   @override
   void dispose() {
     groupStreamSubscription?.cancel();
+    clientStreamSubscription?.cancel();
 
     super.dispose();
   }
 }
 
-enum TimetableType { Unspecified, Group, Teacher }
+enum TimetableType { Tutor, Unspecified }
 
 TimetableType timetableTypeFromString(String value) =>
     TimetableType.values.firstWhere(

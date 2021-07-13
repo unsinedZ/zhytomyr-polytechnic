@@ -16,10 +16,10 @@ class TimetableData {
   factory TimetableData.fromJson(Map<String, dynamic> json) {
     return TimetableData(
       id: json['id'],
-      enabled: (json['enabled'] as int) == 1,
-      expiredAt: DateTime.fromMillisecondsSinceEpoch(json['expiredAt'] as int),
-      lastModified: DateTime.fromMillisecondsSinceEpoch(json['lastModified'] as int),
-      weekDetermination: (json['weekDetermination'] as int == 0
+      enabled: int.parse(json['enabled']) == 1,
+      expiredAt: DateTime.fromMillisecondsSinceEpoch(int.parse(json['expiredAt'])),
+      lastModified: DateTime.fromMillisecondsSinceEpoch(int.parse(json['lastModified'])),
+      weekDetermination: (int.parse(json['weekDetermination']) == 0
           ? WeekDetermination.Odd
           : WeekDetermination.Even),
     );

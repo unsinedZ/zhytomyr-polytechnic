@@ -37,9 +37,7 @@ class _MainScreenState extends State<MainScreen> {
             );
           }
 
-          GroupTimetableFirestoreRepository groupTimetableFirestoreRepository =
-          GroupTimetableFirestoreRepository(client: snapshot.data!);
-          groupTimetableFirestoreRepository.test();
+
 
         return Container(
           child: Text("asd"),

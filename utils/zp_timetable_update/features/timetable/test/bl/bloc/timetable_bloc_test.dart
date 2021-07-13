@@ -49,7 +49,7 @@ void main() {
     TimetableBloc timetableBloc = TimetableBloc(
       timetableRepository: timetableLoaderMock,
       errorSink: StreamController<String>().sink,
-      groupRepository: groupRepositoryMock,
+      //groupRepository: groupRepositoryMock,
       tutorRepository: TutorRepositoryMock(),
     );
 
@@ -87,7 +87,7 @@ void main() {
     TimetableBloc timetableBloc = TimetableBloc(
       timetableRepository: timetableLoaderMock,
       errorSink: StreamController<String>().sink,
-      groupRepository: groupRepositoryMock,
+      //groupRepository: groupRepositoryMock,
       tutorRepository: TutorRepositoryMock(),
     );
 

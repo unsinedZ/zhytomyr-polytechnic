@@ -17,10 +17,10 @@ class Group {
 
   factory Group.fromJson(Map<String, dynamic> json) {
     return Group(
-      id: json['id'] as int,
+      id: int.parse(json['id']),
       name: json['name'] as String,
       year: json['year'] as String,
-      facultyId: json['facultyId'] as int,
+      facultyId: int.parse(json['facultyId']),
       subgroups: (json['subgroups'] as List<dynamic>)
           .map((order) => Subgroup.fromJson(order))
           .toList(),

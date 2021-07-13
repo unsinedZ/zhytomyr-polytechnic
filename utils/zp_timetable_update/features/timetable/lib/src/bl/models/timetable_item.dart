@@ -13,9 +13,9 @@ class TimetableItem {
 
   factory TimetableItem.fromJson(Map<String, dynamic> json) {
     return TimetableItem(
-      weekNumber: json['weekNumber'] as int,
+      weekNumber: int.parse(json['weekNumber']),
       activity: Activity.fromJson(json['activity']),
-      dayNumber: json['dayNumber'] as int,
+      dayNumber: int.parse(json['dayNumber']),
     );
   }
 

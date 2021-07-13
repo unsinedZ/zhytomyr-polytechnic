@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:googleapis_auth/auth_io.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:timetable/src/bl/abstractions/timetable_repository.dart';
@@ -9,20 +10,20 @@ import 'package:timetable/src/bl/models/models.dart';
 
 class TimetableBloc {
   final TimetableRepository timetableRepository;
-  final GroupRepository groupRepository;
+  //final GroupRepository groupRepository;
   final StreamSink<String> errorSink;
   final TutorRepository tutorRepository;
 
   TimetableBloc({
     required this.timetableRepository,
-    required this.groupRepository,
+    //required this.groupRepository,
     required this.errorSink,
     required this.tutorRepository,
   });
 
   final BehaviorSubject<Timetable?> _timetableController =
       BehaviorSubject<Timetable?>();
-  final BehaviorSubject<Group?> _groupController = BehaviorSubject<Group?>();
+  // final BehaviorSubject<Group?> _groupController = BehaviorSubject<Group?>();
   final BehaviorSubject<List<TimetableItemUpdate>?>
       _timetableItemUpdatesController =
       BehaviorSubject<List<TimetableItemUpdate>?>();
@@ -30,7 +31,7 @@ class TimetableBloc {
 
   Stream<Timetable?> get timetable => _timetableController.stream;
 
-  Stream<Group?> get group => _groupController.stream;
+  // Stream<Group?> get group => _groupController.stream;
 
   Stream<List<TimetableItemUpdate>?> get timetableItemUpdates =>
       _timetableItemUpdatesController.stream;
@@ -51,17 +52,17 @@ class TimetableBloc {
     });
   }
 
-  void loadGroup(int groupId) {
-    _groupController.add(null);
-
-    groupRepository.getGroupById(groupId).then((group) {
-      _groupController.add(group);
-    }).onError((error, stack) {
-      print(error);
-      print(stack);
-      errorSink.add(error.toString());
-    });
-  }
+  // void loadGroup(int groupId) {
+  //   _groupController.add(null);
+  //
+  //   groupRepository.getGroupById(groupId).then((group) {
+  //     _groupController.add(group);
+  //   }).onError((error, stack) {
+  //     print(error);
+  //     print(stack);
+  //     errorSink.add(error.toString());
+  //   });
+  // }
 
   void loadTimetableItemUpdates(int id) {
     _timetableItemUpdatesController.add(null);
@@ -75,19 +76,21 @@ class TimetableBloc {
     });
   }
 
-  void loadTutor(int tutorId) {
+  void loadTutor(int tutorId, AuthClient client) {
     _tutorController.add(null);
 
-    tutorRepository.getTutorById(tutorId).then((tutor) {
+    tutorRepository.getTutorById(tutorId, client).then((tutor) {
       _tutorController.add(tutor);
-    }).onError((error, _) {
+    }).onError((error, stack) {
+      print(error);
+      print(stack);
       errorSink.add(error.toString());
     });
   }
 
   void dispose() {
     _timetableController.close();
-    _groupController.close();
+    // _groupController.close();
     _timetableItemUpdatesController.close();
     _tutorController.close();
   }

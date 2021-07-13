@@ -11,7 +11,6 @@ class FiltersBottomSheet extends StatefulWidget {
   final TimetableType timetableType;
   final Group? group;
   final Function(int) onCurrentWeekChanged;
-  final Function(int) onCurrentSubgroupChanged;
 
   FiltersBottomSheet({
     required this.textLocalizer,
@@ -20,7 +19,6 @@ class FiltersBottomSheet extends StatefulWidget {
     required this.timetableType,
     required this.group,
     required this.onCurrentWeekChanged,
-    required this.onCurrentSubgroupChanged,
   });
 
   @override
@@ -81,45 +79,7 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                       .toList(),
                 ),
               ),
-            ] +
-            (widget.timetableType == TimetableType.Group &&
-                    widget.group!.subgroups.isNotEmpty
-                ? [
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Text(
-                      widget.textLocalizer.localize('Subgroup'),
-                      style: Theme.of(context).textTheme.headline3,
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: widget.group!.subgroups
-                            .map<Widget>(
-                              (subgroup) => _FilterButton(
-                                onPressed: currentSubgroupId == subgroup.id
-                                    ? null
-                                    : () {
-                                        setState(() {
-                                          currentSubgroupId = subgroup.id;
-                                        });
-                                        widget.onCurrentSubgroupChanged(
-                                            subgroup.id);
-                                      },
-                                text: subgroup.name,
-                                isSelected: currentSubgroupId == subgroup.id,
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ),
-                  ]
-                : []),
+            ],
       ),
     );
   }

@@ -24,12 +24,12 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     _authorizationBloc = context.read<AuthorizationBloc>();
 
     _tokenSubscription = _authorizationBloc.authClient
-        .where((token) => token != null)
-        .listen((token) {
+        .where((client) => client != null)
+        .listen((client) {
       Navigator.pushReplacementNamed(context, "/main_screen", arguments: {
-        'type': 'group',
-        'groupId': 59,
-        'subgroupId': null
+        'type': 'tutor',
+        'id': 59,
+        'client': client,
       });
     });
     super.initState();
