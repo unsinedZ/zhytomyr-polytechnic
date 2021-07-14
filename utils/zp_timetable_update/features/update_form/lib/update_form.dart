@@ -1,7 +1,3 @@
 library update_form;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/widgets/screens/update_form_screen.dart';
