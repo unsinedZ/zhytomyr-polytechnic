@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
 import 'package:googleapis_auth/auth_io.dart';
-
 import 'package:intl/intl.dart';
-
 import 'package:rxdart/rxdart.dart';
+import 'package:provider/provider.dart';
 
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/widgets/components/components.dart';
@@ -117,108 +117,113 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      initialIndex: initialIndex,
-      length: 6,
-      child: Scaffold(
-        appBar: AppBar(
-          bottom: TabBar(
-            indicatorColor: Colors.amberAccent,
-            labelColor: Colors.white,
-            unselectedLabelColor: Color(0xc3ffffff),
-            tabs: _weekDaysNames
-                .map((weekDay) => Tab(
-                      text: widget.textLocalizer.localize(weekDay),
-                    ))
-                .toList(),
+    return MultiProvider(
+      providers: [
+        Provider<TimetableBloc>(create: (_) => timetableBloc),
+      ],
+      child: DefaultTabController(
+        initialIndex: initialIndex,
+        length: 6,
+        child: Scaffold(
+          appBar: AppBar(
+            bottom: TabBar(
+              indicatorColor: Colors.amberAccent,
+              labelColor: Colors.white,
+              unselectedLabelColor: Color(0xc3ffffff),
+              tabs: _weekDaysNames
+                  .map((weekDay) => Tab(
+                        text: widget.textLocalizer.localize(weekDay),
+                      ))
+                  .toList(),
+            ),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            title: Text(
+              title,
+              style: Theme.of(context).textTheme.headline1,
+            ),
           ),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+          floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Navigator.pop(context);
+                    showModalBottomSheet(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                      ),
+                      context: context,
+                      builder: (context) => FiltersBottomSheet(
+                        onCurrentWeekChanged: (int newWeekNumber) {
+                          setState(() {
+                            weekNumber = newWeekNumber;
+                            isWeekChanged = !isWeekChanged;
+                          });
+                        },
+                        currentWeekNumber: weekNumber,
+                        timetableType: timetableType,
+                        group: group,
+                        currentSubgroupId: subgroupId,
+                        textLocalizer: widget.textLocalizer,
+                      ),
+                    );
+                  },
+            child: Icon(Icons.filter_alt_outlined),
+          ),
+          body: StreamBuilder<List<dynamic>>(
+            stream: dataStream,
+            builder: (context, snapshot) {
+              if (_isSnapshotHasData(snapshot)) {
+                Timetable timetable = snapshot.data![0];
+                List<TimetableItemUpdate> timetableItemUpdates =
+                    snapshot.data![1];
+
+                if ((weekNumber.isEven &&
+                        timetable.timetableData.weekDetermination ==
+                            WeekDetermination.Even) ||
+                    (weekNumber.isOdd &&
+                        timetable.timetableData.weekDetermination ==
+                            WeekDetermination.Odd)) {
+                  weekNumber = 1;
+                } else {
+                  weekNumber = 2;
+                }
+
+                return TabBarView(
+                  children: _weekDaysNames
+                      .asMap()
+                      .keys
+                      .map<Widget>(
+                        (index) => TimetableTab(
+                          textLocalizer: widget.textLocalizer,
+                          timetable: timetable,
+                          timetableItemUpdates: timetableItemUpdates,
+                          weekNumber: weekNumber,
+                          dayOfWeekNumber: index + 1,
+                          dateTime: indexDayDateTime.add(Duration(
+                              days: -initialIndex +
+                                  index +
+                                  (isWeekChanged ? 7 : 0))),
+                          id: id,
+                          subgroupId: subgroupId,
+                          timetableType: timetableType,
+                          isTomorrow: initialIndex == index &&
+                                  isNextDay == true &&
+                                  isWeekChanged == false
+                              ? true
+                              : false,
+                        ),
+                      )
+                      .toList(),
+                );
+              } else
+                return TimetableTabShimmer();
             },
           ),
-          title: Text(
-            title,
-            style: Theme.of(context).textTheme.headline1,
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-                  showModalBottomSheet(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
-                    ),
-                    context: context,
-                    builder: (context) => FiltersBottomSheet(
-                      onCurrentWeekChanged: (int newWeekNumber) {
-                        setState(() {
-                          weekNumber = newWeekNumber;
-                          isWeekChanged = !isWeekChanged;
-                        });
-                      },
-                      currentWeekNumber: weekNumber,
-                      timetableType: timetableType,
-                      group: group,
-                      currentSubgroupId: subgroupId,
-                      textLocalizer: widget.textLocalizer,
-                    ),
-                  );
-                },
-          child: Icon(Icons.filter_alt_outlined),
-        ),
-        body: StreamBuilder<List<dynamic>>(
-          stream: dataStream,
-          builder: (context, snapshot) {
-            if (_isSnapshotHasData(snapshot)) {
-              Timetable timetable = snapshot.data![0];
-              List<TimetableItemUpdate> timetableItemUpdates =
-                  snapshot.data![1];
-
-              if ((weekNumber.isEven &&
-                      timetable.timetableData.weekDetermination ==
-                          WeekDetermination.Even) ||
-                  (weekNumber.isOdd &&
-                      timetable.timetableData.weekDetermination ==
-                          WeekDetermination.Odd)) {
-                weekNumber = 1;
-              } else {
-                weekNumber = 2;
-              }
-
-              return TabBarView(
-                children: _weekDaysNames
-                    .asMap()
-                    .keys
-                    .map<Widget>(
-                      (index) => TimetableTab(
-                        textLocalizer: widget.textLocalizer,
-                        timetable: timetable,
-                        timetableItemUpdates: timetableItemUpdates,
-                        weekNumber: weekNumber,
-                        dayOfWeekNumber: index + 1,
-                        dateTime: indexDayDateTime.add(Duration(
-                            days: -initialIndex +
-                                index +
-                                (isWeekChanged ? 7 : 0))),
-                        id: id,
-                        subgroupId: subgroupId,
-                        timetableType: timetableType,
-                        isTomorrow: initialIndex == index &&
-                                isNextDay == true &&
-                                isWeekChanged == false
-                            ? true
-                            : false,
-                      ),
-                    )
-                    .toList(),
-              );
-            } else
-              return TimetableTabShimmer();
-          },
         ),
       ),
     );

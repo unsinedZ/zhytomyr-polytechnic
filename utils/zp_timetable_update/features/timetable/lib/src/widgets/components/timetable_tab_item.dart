@@ -59,6 +59,10 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
         isCurrentClass = true;
       }
     }
+    print(isNew);
+    print(isCancelled);
+    print(isReplaced);
+    print(isCurrentClass);
     super.initState();
   }
 
@@ -70,6 +74,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
           ActivityCard.canceled(
             activity: mainActivity,
             textLocalizer: widget.textLocalizer,
+            dateTime: widget.dateTime,
           ),
         if (isReplaced)
           Icon(
@@ -80,16 +85,19 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
             ? ActivityCard.current(
                 activity: mainActivity,
                 textLocalizer: widget.textLocalizer,
+                dateTime: widget.dateTime,
               )
             : isReplaced || isNew
                 ? ActivityCard.added(
                     activity: activityUpdate,
                     textLocalizer: widget.textLocalizer,
+                    dateTime: widget.dateTime,
                   )
-                : ActivityCard.simple(
-                        activity: mainActivity,
-                        textLocalizer: widget.textLocalizer,
-                      ),
+                : isCancelled ? Container() : ActivityCard.simple(
+                    activity: mainActivity,
+                    textLocalizer: widget.textLocalizer,
+                    dateTime: widget.dateTime,
+                  ),
       ],
     );
   }

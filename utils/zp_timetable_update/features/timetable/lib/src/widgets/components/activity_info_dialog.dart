@@ -6,10 +6,12 @@ import 'package:timetable/src/bl/models/models.dart';
 class ActivityInfoDialog extends StatelessWidget {
   final ITextLocalizer textLocalizer;
   final Activity activity;
+  final VoidCallback onCancel;
 
   ActivityInfoDialog({
     required this.activity,
     required this.textLocalizer,
+    required this.onCancel,
   });
 
   @override
@@ -42,7 +44,9 @@ class ActivityInfoDialog extends StatelessWidget {
                     style: Theme.of(context).textTheme.subtitle1,
                     children: <TextSpan>[
                       TextSpan(
-                          text: activity.tutors.map((tutor) => tutor.name).join(', '),
+                          text: activity.tutors
+                              .map((tutor) => tutor.name)
+                              .join(', '),
                           style: TextStyle(fontWeight: FontWeight.bold)),
                     ],
                   ),
@@ -79,6 +83,58 @@ class ActivityInfoDialog extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(
+                  height: 5,
+                ),
+                Container(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Створити заміну',
+                        textScaleFactor: 1.3,
+                      ),
+                    ),
+                    style:
+                    Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.disabled)) {
+                              return Theme.of(context).disabledColor;
+                            }
+                            return Color(0xff36d02b);
+                          }),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Container(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: onCancel,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Відмінити',
+                        textScaleFactor: 1.3,
+                      ),
+                    ),
+                    style:
+                        Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.disabled)) {
+                          return Theme.of(context).disabledColor;
+                        }
+                        return Color(0xffff4b4b);
+                      }),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -91,7 +147,10 @@ class ActivityInfoDialog extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: Icon(Icons.close, color: Colors.black,),
+              icon: Icon(
+                Icons.close,
+                color: Colors.black,
+              ),
             ),
           )
         ],

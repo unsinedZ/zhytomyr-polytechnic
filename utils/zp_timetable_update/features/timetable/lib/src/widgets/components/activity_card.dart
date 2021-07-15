@@ -1,33 +1,54 @@
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
+import 'package:timetable/src/bl/bloc/timetable_bloc.dart';
 import 'package:timetable/src/bl/models/models.dart';
 import 'package:timetable/src/widgets/components/activity_info_dialog.dart';
 
-class ActivityCard extends StatelessWidget {
+class ActivityCard extends StatefulWidget {
   final Activity activity;
+  final DateTime dateTime;
   final ITextLocalizer textLocalizer;
   final _ActivityCardType _activityCardType;
 
   ActivityCard.simple({
     required this.activity,
+    required this.dateTime,
     required this.textLocalizer,
   }) : this._activityCardType = _ActivityCardType.Simple;
 
   ActivityCard.canceled({
     required this.activity,
+    required this.dateTime,
     required this.textLocalizer,
   }) : this._activityCardType = _ActivityCardType.Canceled;
 
   ActivityCard.current({
     required this.activity,
+    required this.dateTime,
     required this.textLocalizer,
   }) : this._activityCardType = _ActivityCardType.Current;
 
   ActivityCard.added({
     required this.activity,
+    required this.dateTime,
     required this.textLocalizer,
   }) : this._activityCardType = _ActivityCardType.Added;
+
+  @override
+  _ActivityCardState createState() => _ActivityCardState();
+}
+
+class _ActivityCardState extends State<ActivityCard> {
+  late final TimetableBloc timetableBloc;
+
+  @override
+  void initState() {
+    timetableBloc = context.read<TimetableBloc>();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +57,11 @@ class ActivityCard extends StatelessWidget {
         showDialog<void>(
           context: context,
           builder: (context) => ActivityInfoDialog(
-            activity: activity,
-            textLocalizer: textLocalizer,
+            activity: widget.activity,
+            textLocalizer: widget.textLocalizer,
+            onCancel: () {
+              timetableBloc.cancelLesson(widget.activity, widget.dateTime);
+            },
           ),
         );
       },
@@ -56,11 +80,11 @@ class ActivityCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        activity.time.start,
+                        widget.activity.time.start,
                         textScaleFactor: 1.3,
                       ),
                       Text(
-                        activity.time.end,
+                        widget.activity.time.end,
                         style: Theme.of(context).textTheme.headline2,
                         textScaleFactor: 1.3,
                       ),
@@ -84,18 +108,18 @@ class ActivityCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        activity.name,
+                        widget.activity.name,
                         textScaleFactor: 1.3,
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       Text(
-                        textLocalizer.localize('aud.') +
+                        widget.textLocalizer.localize('aud.') +
                             ' ' +
-                            activity.room +
+                            widget.activity.room +
                             ', ' +
-                            activity.type,
+                            widget.activity.type,
                         style: Theme.of(context).textTheme.headline2,
                       ),
                     ],
@@ -108,13 +132,16 @@ class ActivityCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        activity.tutors.map((tutor) => tutor.name).join(', '),
+                        widget.activity.tutors
+                            .map((tutor) => tutor.name)
+                            .join(', '),
                         style: Theme.of(context).textTheme.headline2,
                         textScaleFactor: 1.15,
                       ),
-                      if (this._activityCardType == _ActivityCardType.Canceled)
+                      if (this.widget._activityCardType ==
+                          _ActivityCardType.Canceled)
                         Text(
-                          textLocalizer.localize('Canceled'),
+                          widget.textLocalizer.localize('Canceled'),
                           style: TextStyle(color: Colors.red),
                           textScaleFactor: 1.15,
                         ),
@@ -130,7 +157,7 @@ class ActivityCard extends StatelessWidget {
   }
 
   Color? getBackgroundColor(BuildContext context) {
-    switch (this._activityCardType) {
+    switch (this.widget._activityCardType) {
       case _ActivityCardType.Simple:
         return Theme.of(context).canvasColor;
       case _ActivityCardType.Canceled:

@@ -40,16 +40,21 @@ class App extends StatelessWidget {
             ),
             elevatedButtonTheme: ElevatedButtonThemeData(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.disabled)) {
-                        return Color(0xffeeeeee);
-                      }
-                      return Color(0xfff4e83d);
-                    }),
+                // backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                //         (Set<MaterialState> states) {
+                //       if (states.contains(MaterialState.disabled)) {
+                //         return Color(0xffeeeeee);
+                //       }
+                //       return Color(0xfff4e83d);
+                //     }),
+                padding: MaterialStateProperty.resolveWith<EdgeInsetsGeometry>(
+                  (Set<MaterialState> states) {
+                    return EdgeInsets.all(0);
+                  },
+                ),
                 elevation: MaterialStateProperty.all(0),
                 foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
+                  (Set<MaterialState> states) {
                     return Colors.black;
                   },
                 ),

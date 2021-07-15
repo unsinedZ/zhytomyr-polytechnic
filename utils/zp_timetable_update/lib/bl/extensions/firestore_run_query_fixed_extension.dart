@@ -2,11 +2,12 @@ import 'dart:convert';
 
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:googleapis/firestore/v1.dart';
+
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:http/http.dart' as http;
 
 extension FirestoreRunQueryFixedExtension
-on ProjectsDatabasesDocumentsResource {
+    on ProjectsDatabasesDocumentsResource {
   /// Runs a query.
   ///
   /// [request] - The metadata request object.
@@ -36,8 +37,10 @@ on ProjectsDatabasesDocumentsResource {
       {required http.Client client, String? parent}) async {
     final projectId = 'zhytomyr-politechnic-dev';
     final urlParentAddition = parent != null ? '/$parent' : '';
+    // final url =
+    //     'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents$urlParentAddition:runQuery';
     final url =
-        'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents$urlParentAddition:runQuery';
+        'http://127.0.0.1:9190/v1/projects/emulator/databases/(default)/documents$urlParentAddition:runQuery'; // TODO delete
     final body = json.encode(request.toJson());
     final response = await client.post(Uri.parse(url), body: body);
     final resBody = response.body;

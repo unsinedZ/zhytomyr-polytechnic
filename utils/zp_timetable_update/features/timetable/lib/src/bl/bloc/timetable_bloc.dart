@@ -10,6 +10,7 @@ import 'package:timetable/src/bl/models/models.dart';
 
 class TimetableBloc {
   final TimetableRepository timetableRepository;
+
   //final GroupRepository groupRepository;
   final StreamSink<String> errorSink;
   final TutorRepository tutorRepository;
@@ -23,6 +24,7 @@ class TimetableBloc {
 
   final BehaviorSubject<Timetable?> _timetableController =
       BehaviorSubject<Timetable?>();
+
   // final BehaviorSubject<Group?> _groupController = BehaviorSubject<Group?>();
   final BehaviorSubject<List<TimetableItemUpdate>?>
       _timetableItemUpdatesController =
@@ -67,7 +69,9 @@ class TimetableBloc {
   void loadTimetableItemUpdates(int id) {
     _timetableItemUpdatesController.add(null);
 
-    timetableRepository.getTimetableItemUpdates(id).then((timetableItemUpdates) {
+    timetableRepository
+        .getTimetableItemUpdates(id)
+        .then((timetableItemUpdates) {
       _timetableItemUpdatesController.add(timetableItemUpdates);
     }).onError((error, stack) {
       print(error);
@@ -88,9 +92,21 @@ class TimetableBloc {
     });
   }
 
+  Future<void> cancelLesson(Activity activity, DateTime dateTime) async {
+    print('cancelLesson');
+    await timetableRepository
+        .cancelLesson(activity, dateTime)
+        .onError((error, stackTrace) {
+      print(error);
+      print(stackTrace);
+      errorSink.add(error.toString());
+    });
+    print('cancelLesson1');
+    return null;
+  }
+
   void dispose() {
     _timetableController.close();
-    // _groupController.close();
     _timetableItemUpdatesController.close();
     _tutorController.close();
   }
