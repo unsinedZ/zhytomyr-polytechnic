@@ -7,7 +7,7 @@ import 'package:desktop_window/desktop_window.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-    DesktopWindow.setMaxWindowSize(Size(800, 700));
+    DesktopWindow.setMaxWindowSize(Size(800, 1000));
     DesktopWindow.setMinWindowSize(Size(800, 700));
     DesktopWindow.setWindowSize(Size(800, 700));
   }
