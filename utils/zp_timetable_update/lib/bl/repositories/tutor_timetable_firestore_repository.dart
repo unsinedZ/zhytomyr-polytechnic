@@ -20,8 +20,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
   });
 
   @override
-  Future<Timetable> loadTimetableByReferenceId(int id,
-      [String? userGroupId]) async {
+  Future<Timetable> loadTimetableByReferenceId(int id) async {
     final SharedPreferences prefs = await sharedPreferences;
 
     Timetable? timetable;
@@ -43,7 +42,6 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
     ).first;
 
     if (prefs.containsKey('timetable.tutor') &&
-        userGroupId == id.toString() &&
         timetableData.expiredAt.isAfter(DateTime.now())) {
       Map<String, dynamic> json =
           jsonDecode(prefs.getString('timetable.tutor')!);
@@ -78,21 +76,19 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
         },
       );
 
-      if (userGroupId == id.toString()) {
-        Expirable<Map<String, dynamic>> expirableTimetableJson =
-            Expirable<Map<String, dynamic>>(
-          duration: Duration(days: 30),
-          data: timetable!.toJson(),
-        );
+      Expirable<Map<String, dynamic>> expirableTimetableJson =
+          Expirable<Map<String, dynamic>>(
+        duration: Duration(days: 30),
+        data: timetable!.toJson(),
+      );
 
-        prefs.setString(
-          'timetable.tutor',
-          jsonEncode(expirableTimetableJson),
-        );
-      }
+      prefs.setString(
+        'timetable.tutor',
+        jsonEncode(expirableTimetableJson),
+      );
     }
 
-    return timetable!;
+    return timetable;
   }
 
   @override
@@ -119,18 +115,22 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
 
   @override
   Future<void> cancelLesson(Activity activity, DateTime dateTime) async {
-    FirestoreApi firestoreApi = FirestoreApi(client, rootUrl: 'http://127.0.0.1:9190/');
+    FirestoreApi firestoreApi =
+        FirestoreApi(client, rootUrl: 'http://127.0.0.1:9190/');
 
     String date = dateTime.year.toString() +
         '-' +
-        (dateTime.month < 10 ? ('0' + dateTime.month.toString()) : dateTime.month.toString()) +
+        (dateTime.month < 10
+            ? ('0' + dateTime.month.toString())
+            : dateTime.month.toString()) +
         '-' +
-        (dateTime.day < 10 ? '0' + dateTime.day.toString() : dateTime.day.toString());
+        (dateTime.day < 10
+            ? '0' + dateTime.day.toString()
+            : dateTime.day.toString());
 
     Document document = Document();
     Map<String, Value> fields = {
-      'date': Value()
-        ..stringValue = date,
+      'date': Value()..stringValue = date,
       'time': Value()..stringValue = activity.time.start,
       'groupKey': Value()
         ..stringValue = 'group/' + activity.groups.first.id.toString(),

@@ -83,13 +83,14 @@ class _TimetableScreenState extends State<TimetableScreen> {
       timetableRepository: widget.timetableRepositoryFactory(client),
       errorSink: widget.errorSink,
       tutorRepository: widget.tutorRepository,
+      tutorId: id,
     );
 
-    timetableBloc.loadTimetableItemUpdates(id);
+    timetableBloc.loadTimetableItemUpdates();
 
-    timetableBloc.loadTimetable(id);
+    timetableBloc.loadTimetable();
 
-    timetableBloc.loadTutor(id, client);
+    timetableBloc.loadTutor(client);
     timetableBloc.tutor.listen((tutor) {
       setState(() {
         this.tutor = tutor;

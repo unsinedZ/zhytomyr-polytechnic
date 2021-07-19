@@ -60,7 +60,12 @@ class _ActivityCardState extends State<ActivityCard> {
             activity: widget.activity,
             textLocalizer: widget.textLocalizer,
             onCancel: () {
-              timetableBloc.cancelLesson(widget.activity, widget.dateTime);
+              timetableBloc
+                  .cancelLesson(widget.activity, widget.dateTime)
+                  .then((_) {
+                    Navigator.pop(context);
+                    timetableBloc.loadTimetableItemUpdates();
+                  });
             },
           ),
         );

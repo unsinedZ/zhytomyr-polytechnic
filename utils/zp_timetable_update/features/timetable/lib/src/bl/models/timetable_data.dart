@@ -27,10 +27,10 @@ class TimetableData {
 
   Map<String, dynamic> toJson() => <String, dynamic>{
     'id': id,
-    'enabled': enabled ? 1 : 0,
-    'expiredAt': expiredAt.millisecondsSinceEpoch,
-    'lastModified': lastModified.millisecondsSinceEpoch,
-    'weekDetermination': weekDetermination == WeekDetermination.Odd ? 0 : 1,
+    'enabled': enabled ? '1' : '0',
+    'expiredAt': expiredAt.millisecondsSinceEpoch.toString(),
+    'lastModified': lastModified.millisecondsSinceEpoch.toString(),
+    'weekDetermination': weekDetermination == WeekDetermination.Odd ? '0' : '1',
   };
 }
 

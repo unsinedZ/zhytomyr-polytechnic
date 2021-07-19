@@ -11,11 +11,13 @@ class TimetableBloc {
   final TimetableRepository timetableRepository;
   final StreamSink<String> errorSink;
   final TutorRepository tutorRepository;
+  final int tutorId;
 
   TimetableBloc({
     required this.timetableRepository,
     required this.errorSink,
     required this.tutorRepository,
+    required this.tutorId,
   });
 
   final BehaviorSubject<Timetable?> _timetableController =
@@ -28,18 +30,16 @@ class TimetableBloc {
 
   Stream<Timetable?> get timetable => _timetableController.stream;
 
-  // Stream<Group?> get group => _groupController.stream;
-
   Stream<List<TimetableItemUpdate>?> get timetableItemUpdates =>
       _timetableItemUpdatesController.stream;
 
   Stream<Tutor?> get tutor => _tutorController.stream;
 
-  void loadTimetable(int id, [String? groupId]) {
+  void loadTimetable() {
     _timetableController.add(null);
 
     timetableRepository
-        .loadTimetableByReferenceId(id, groupId)
+        .loadTimetableByReferenceId(tutorId)
         .then((timetable) {
       _timetableController.add(timetable);
     }).onError((error, stack) {
@@ -49,11 +49,11 @@ class TimetableBloc {
     });
   }
 
-  void loadTimetableItemUpdates(int id) {
+  void loadTimetableItemUpdates() {
     _timetableItemUpdatesController.add(null);
 
     timetableRepository
-        .getTimetableItemUpdates(id)
+        .getTimetableItemUpdates(tutorId)
         .then((timetableItemUpdates) {
       _timetableItemUpdatesController.add(timetableItemUpdates);
     }).onError((error, stack) {
@@ -63,7 +63,7 @@ class TimetableBloc {
     });
   }
 
-  void loadTutor(int tutorId, AuthClient client) {
+  void loadTutor(AuthClient client) {
     _tutorController.add(null);
 
     tutorRepository.getTutorById(tutorId, client).then((tutor) {
@@ -76,7 +76,6 @@ class TimetableBloc {
   }
 
   Future<void> cancelLesson(Activity activity, DateTime dateTime) async {
-    print('cancelLesson');
     await timetableRepository
         .cancelLesson(activity, dateTime)
         .onError((error, stackTrace) {
@@ -84,7 +83,6 @@ class TimetableBloc {
       print(stackTrace);
       errorSink.add(error.toString());
     });
-    print('cancelLesson1');
     return null;
   }
 

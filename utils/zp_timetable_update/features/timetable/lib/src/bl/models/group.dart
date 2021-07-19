@@ -40,10 +40,10 @@ class Group {
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
+        'id': id.toString(),
         'name': name,
         'year': year,
-        'facultyId': facultyId,
+        'facultyId': facultyId.toString(),
         'subgroups': subgroups.map((subgroup) => subgroup.toJson()).toList(),
       };
 }

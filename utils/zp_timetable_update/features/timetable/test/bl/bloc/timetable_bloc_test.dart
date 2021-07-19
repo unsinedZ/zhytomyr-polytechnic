@@ -47,7 +47,7 @@ void main() {
       timetableRepository: timetableLoaderMock,
       errorSink: StreamController<String>().sink,
       //groupRepository: groupRepositoryMock,
-      tutorRepository: TutorRepositoryMock(),
+      tutorRepository: TutorRepositoryMock(), tutorId: 0,
     );
 
     when(timetableLoaderMock.loadTimetableByReferenceId(any, any)).thenAnswer(
@@ -68,7 +68,7 @@ void main() {
     List<Timetable?> results = <Timetable?>[];
 
     timetableBloc.timetable.listen((groups) => results.add(groups));
-    timetableBloc.loadTimetable(0);
+    timetableBloc.loadTimetable();
 
     await Future.delayed(const Duration());
 
@@ -83,7 +83,7 @@ void main() {
     TimetableBloc timetableBloc = TimetableBloc(
       timetableRepository: timetableLoaderMock,
       errorSink: StreamController<String>().sink,
-      tutorRepository: TutorRepositoryMock(),
+      tutorRepository: TutorRepositoryMock(), tutorId: 0,
     );
 
     when(timetableLoaderMock.getTimetableItemUpdates(0))
@@ -96,7 +96,7 @@ void main() {
 
     timetableBloc.timetableItemUpdates
         .listen((timetableItemUpdates) => results.add(timetableItemUpdates));
-    timetableBloc.loadTimetableItemUpdates(0);
+    timetableBloc.loadTimetableItemUpdates();
 
     await Future.delayed(const Duration());
 
