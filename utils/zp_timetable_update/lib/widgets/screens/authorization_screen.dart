@@ -27,7 +27,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         .where((client) => client != null)
         .listen((client) {
       Navigator.pushReplacementNamed(context, "/main_screen", arguments: {
-        'type': 'tutor',
         'id': 60,
         'client': client,
       });

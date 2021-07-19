@@ -35,7 +35,7 @@ extension FirestoreRunQueryFixedExtension
   /// this method will complete with the same error.
   Future<List<Document>> runQueryFixed(RunQueryRequest request,
       {required http.Client client, String? parent}) async {
-    final projectId = 'zhytomyr-politechnic-dev';
+    // final projectId = 'zhytomyr-politechnic-dev';
     final urlParentAddition = parent != null ? '/$parent' : '';
     // final url =
     //     'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents$urlParentAddition:runQuery';

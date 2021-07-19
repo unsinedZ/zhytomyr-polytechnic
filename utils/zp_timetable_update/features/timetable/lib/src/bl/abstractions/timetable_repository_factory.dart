@@ -1,4 +1,4 @@
-import 'package:googleapis_auth/auth.dart';
+import 'package:googleapis_auth/auth_io.dart';
 import 'package:timetable/src/bl/abstractions/timetable_repository.dart';
 import 'package:timetable/src/widgets/timetable_screen.dart';
 

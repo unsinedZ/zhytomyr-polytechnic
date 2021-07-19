@@ -18,17 +18,15 @@ import 'package:timetable/timetable.dart';
 
 class TimetableScreen extends StatefulWidget {
   final ITextLocalizer textLocalizer;
-  final TimetableRepositoryFactory timetableRepositoryFactory;
-
-  // final GroupRepository groupRepository;
   final TutorRepository tutorRepository;
+  final TimetableRepository Function(AuthClient client)
+      timetableRepositoryFactory;
   final StreamSink<String> errorSink;
 
   TimetableScreen({
     required this.textLocalizer,
-    required this.timetableRepositoryFactory,
-    // required this.groupRepository,
     required this.tutorRepository,
+    required this.timetableRepositoryFactory,
     required this.errorSink,
   });
 
@@ -45,7 +43,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
   bool isNextDay = false;
 
   late TimetableBloc timetableBloc;
-  late TimetableType timetableType;
   late int weekNumber;
   late int id;
   late AuthClient client;
@@ -59,9 +56,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   MediaQueryData get mediaQuery => MediaQuery.of(context);
 
-  String get title => timetableType == TimetableType.Tutor
-      ? (tutor == null ? '' : tutor!.name)
-      : '';
+  String get title => (tutor == null ? '' : tutor!.name);
 
   @override
   void initState() {
@@ -82,14 +77,11 @@ class _TimetableScreenState extends State<TimetableScreen> {
         (ModalRoute.of(context)!.settings.arguments) as Map<String, dynamic>;
 
     id = arguments['id'];
-    timetableType = timetableTypeFromString(arguments['type'] as String);
     client = arguments['client'];
 
     timetableBloc = TimetableBloc(
-      timetableRepository: widget.timetableRepositoryFactory
-          .getTimetableRepository(timetableType, client),
+      timetableRepository: widget.timetableRepositoryFactory(client),
       errorSink: widget.errorSink,
-      //groupRepository: widget.groupRepository,
       tutorRepository: widget.tutorRepository,
     );
 
@@ -97,14 +89,12 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
     timetableBloc.loadTimetable(id);
 
-    if (timetableType == TimetableType.Tutor) {
-      timetableBloc.loadTutor(id, client);
-      timetableBloc.tutor.listen((tutor) {
-        setState(() {
-          this.tutor = tutor;
-        });
+    timetableBloc.loadTutor(id, client);
+    timetableBloc.tutor.listen((tutor) {
+      setState(() {
+        this.tutor = tutor;
       });
-    }
+    });
 
     dataStream = Rx.combineLatest2(
       timetableBloc.timetable,
@@ -149,29 +139,28 @@ class _TimetableScreenState extends State<TimetableScreen> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-                    showModalBottomSheet(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        ),
-                      ),
-                      context: context,
-                      builder: (context) => FiltersBottomSheet(
-                        onCurrentWeekChanged: (int newWeekNumber) {
-                          setState(() {
-                            weekNumber = newWeekNumber;
-                            isWeekChanged = !isWeekChanged;
-                          });
-                        },
-                        currentWeekNumber: weekNumber,
-                        timetableType: timetableType,
-                        group: group,
-                        currentSubgroupId: subgroupId,
-                        textLocalizer: widget.textLocalizer,
-                      ),
-                    );
+              showModalBottomSheet(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                context: context,
+                builder: (context) => FiltersBottomSheet(
+                  onCurrentWeekChanged: (int newWeekNumber) {
+                    setState(() {
+                      weekNumber = newWeekNumber;
+                      isWeekChanged = !isWeekChanged;
+                    });
                   },
+                  currentWeekNumber: weekNumber,
+                  group: group,
+                  currentSubgroupId: subgroupId,
+                  textLocalizer: widget.textLocalizer,
+                ),
+              );
+            },
             child: Icon(Icons.filter_alt_outlined),
           ),
           body: StreamBuilder<List<dynamic>>(
@@ -210,7 +199,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
                                   (isWeekChanged ? 7 : 0))),
                           id: id,
                           subgroupId: subgroupId,
-                          timetableType: timetableType,
                           isTomorrow: initialIndex == index &&
                                   isNextDay == true &&
                                   isWeekChanged == false

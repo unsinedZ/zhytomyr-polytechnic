@@ -4,20 +4,16 @@ import 'package:googleapis_auth/auth_io.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:timetable/src/bl/abstractions/timetable_repository.dart';
-import 'package:timetable/src/bl/abstractions/group_repository.dart';
 import 'package:timetable/src/bl/abstractions/tutor_repository.dart';
 import 'package:timetable/src/bl/models/models.dart';
 
 class TimetableBloc {
   final TimetableRepository timetableRepository;
-
-  //final GroupRepository groupRepository;
   final StreamSink<String> errorSink;
   final TutorRepository tutorRepository;
 
   TimetableBloc({
     required this.timetableRepository,
-    //required this.groupRepository,
     required this.errorSink,
     required this.tutorRepository,
   });
@@ -25,7 +21,6 @@ class TimetableBloc {
   final BehaviorSubject<Timetable?> _timetableController =
       BehaviorSubject<Timetable?>();
 
-  // final BehaviorSubject<Group?> _groupController = BehaviorSubject<Group?>();
   final BehaviorSubject<List<TimetableItemUpdate>?>
       _timetableItemUpdatesController =
       BehaviorSubject<List<TimetableItemUpdate>?>();
@@ -53,18 +48,6 @@ class TimetableBloc {
       errorSink.add(error.toString());
     });
   }
-
-  // void loadGroup(int groupId) {
-  //   _groupController.add(null);
-  //
-  //   groupRepository.getGroupById(groupId).then((group) {
-  //     _groupController.add(group);
-  //   }).onError((error, stack) {
-  //     print(error);
-  //     print(stack);
-  //     errorSink.add(error.toString());
-  //   });
-  // }
 
   void loadTimetableItemUpdates(int id) {
     _timetableItemUpdatesController.add(null);

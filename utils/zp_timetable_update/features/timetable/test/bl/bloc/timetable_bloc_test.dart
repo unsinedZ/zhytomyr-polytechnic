@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 import 'package:timetable/src/bl/abstractions/timetable_repository.dart';
-import 'package:timetable/src/bl/abstractions/group_repository.dart';
 import 'package:timetable/src/bl/abstractions/tutor_repository.dart';
 import 'package:timetable/src/bl/bloc/timetable_bloc.dart';
 import 'package:timetable/src/bl/models/models.dart';
@@ -37,14 +36,12 @@ class TimetableLoaderMock extends Mock implements TimetableRepository {
           returnValue: Future.value(<TimetableItemUpdate>[]));
 }
 
-class GroupRepositoryMock extends Mock implements GroupRepository {}
 
 class TutorRepositoryMock extends Mock implements TutorRepository {}
 
 void main() {
   test('TimetableBloc.loadTimetable work correctly', () async {
     TimetableLoaderMock timetableLoaderMock = TimetableLoaderMock();
-    GroupRepositoryMock groupRepositoryMock = GroupRepositoryMock();
 
     TimetableBloc timetableBloc = TimetableBloc(
       timetableRepository: timetableLoaderMock,
@@ -82,12 +79,10 @@ void main() {
 
   test('TimetableBloc.getTimetableItemUpdates work correctly', () async {
     TimetableLoaderMock timetableLoaderMock = TimetableLoaderMock();
-    GroupRepositoryMock groupRepositoryMock = GroupRepositoryMock();
 
     TimetableBloc timetableBloc = TimetableBloc(
       timetableRepository: timetableLoaderMock,
       errorSink: StreamController<String>().sink,
-      //groupRepository: groupRepositoryMock,
       tutorRepository: TutorRepositoryMock(),
     );
 

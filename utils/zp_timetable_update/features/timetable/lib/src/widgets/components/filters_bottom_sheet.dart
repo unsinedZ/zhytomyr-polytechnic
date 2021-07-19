@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
-import 'package:timetable/src/widgets/timetable_screen.dart';
 import 'package:timetable/src/bl/models/models.dart';
 
 class FiltersBottomSheet extends StatefulWidget {
   final ITextLocalizer textLocalizer;
   final int currentWeekNumber;
   final int? currentSubgroupId;
-  final TimetableType timetableType;
   final Group? group;
   final Function(int) onCurrentWeekChanged;
 
@@ -16,7 +14,6 @@ class FiltersBottomSheet extends StatefulWidget {
     required this.textLocalizer,
     required this.currentWeekNumber,
     required this.currentSubgroupId,
-    required this.timetableType,
     required this.group,
     required this.onCurrentWeekChanged,
   });

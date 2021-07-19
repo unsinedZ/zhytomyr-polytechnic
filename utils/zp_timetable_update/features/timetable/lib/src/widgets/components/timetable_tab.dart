@@ -10,7 +10,6 @@ import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/bl/models/models.dart';
 import 'package:timetable/src/bl/extensions/date_time_extension.dart';
 import 'package:timetable/src/widgets/components/components.dart';
-import 'package:timetable/src/widgets/timetable_screen.dart';
 
 class TimetableTab extends StatefulWidget {
   final ITextLocalizer textLocalizer;
@@ -19,7 +18,6 @@ class TimetableTab extends StatefulWidget {
   final int weekNumber;
   final int dayOfWeekNumber;
   final DateTime dateTime;
-  final TimetableType timetableType;
   final int id;
   final bool isTomorrow;
   final int? subgroupId;
@@ -31,7 +29,6 @@ class TimetableTab extends StatefulWidget {
     required this.weekNumber,
     required this.dayOfWeekNumber,
     required this.dateTime,
-    required this.timetableType,
     required this.id,
     required this.isTomorrow,
     this.subgroupId,
@@ -102,10 +99,7 @@ class _TimetableTabState extends State<TimetableTab> {
   }
 
   bool filterByTimetableType(TimetableItem timetableItem) {
-    if (widget.timetableType == TimetableType.Tutor) {
       return timetableItem.activity.tutors.any((tutor) => tutor.id == widget.id);
-    }
-    return false;
   }
 
   List<Widget> stateToWidgets() {

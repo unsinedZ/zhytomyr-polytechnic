@@ -42,11 +42,11 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
       },
     ).first;
 
-    if (prefs.containsKey('timetable.teacher') &&
+    if (prefs.containsKey('timetable.tutor') &&
         userGroupId == id.toString() &&
         timetableData.expiredAt.isAfter(DateTime.now())) {
       Map<String, dynamic> json =
-          jsonDecode(prefs.getString('timetable.group.my')!);
+          jsonDecode(prefs.getString('timetable.tutor')!);
       json['data'] = (json['data'] as Map<String, dynamic>);
 
       Expirable<Map<String, dynamic>> expirableTimetableJson =
@@ -86,7 +86,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
         );
 
         prefs.setString(
-          'timetable.teacher',
+          'timetable.tutor',
           jsonEncode(expirableTimetableJson),
         );
       }

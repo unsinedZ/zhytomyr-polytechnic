@@ -1,4 +1,3 @@
-import 'package:authorization_bloc/authorization_bloc.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bot_toast/bot_toast.dart';
@@ -6,13 +5,13 @@ import 'package:timetable/timetable.dart';
 import 'package:provider/provider.dart';
 
 import 'package:error_bloc/error_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:zp_timetable_update/bl/repositories/main_firestore_repository.dart';
-import 'package:zp_timetable_update/bl/repositories/timetable_firestore_repository_factory.dart';
+import 'package:zp_timetable_update/bl/repositories/tutor_timetable_firestore_repository.dart';
 import 'package:zp_timetable_update/bl/services/text_localizer.dart';
 import 'package:zp_timetable_update/widgets/dependencies.dart';
 import 'package:zp_timetable_update/widgets/screens/authorization_screen.dart';
-import 'package:zp_timetable_update/widgets/screens/main_screen.dart';
 import 'package:zp_timetable_update/widgets/with_startup_actions.dart';
 
 class App extends StatelessWidget {
@@ -91,9 +90,14 @@ class App extends StatelessWidget {
             '/authentication': (context) => AuthorizationScreen(),
             '/main_screen': (context) => TimetableScreen(
                   textLocalizer: TextLocalizer(),
-                  timetableRepositoryFactory:
-                      TimetableFirestoreRepositoryFactory(),
+                  // timetableRepositoryFactory:
+                  //     TimetableFirestoreRepositoryFactory(),
                   tutorRepository: MainFirestoreRepository(),
+                  timetableRepositoryFactory: (client) =>
+                      TutorTimetableFirestoreRepository(
+                    client: client,
+                    sharedPreferences: SharedPreferences.getInstance(),
+                  ),
                   errorSink: context.read<ErrorBloc>().errorSink,
                   //clientStream: context.read<AuthorizationBloc>().authClient,
                 )
