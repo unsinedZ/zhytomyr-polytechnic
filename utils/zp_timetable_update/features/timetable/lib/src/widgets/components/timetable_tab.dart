@@ -62,7 +62,9 @@ class _TimetableTabState extends State<TimetableTab> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      key: Key(widget.weekNumber.toString() + '/' + widget.dayOfWeekNumber.toString()),
+      key: Key(widget.weekNumber.toString() +
+          '/' +
+          widget.dayOfWeekNumber.toString()),
       child: Column(
         children: <Widget>[
           Padding(
@@ -70,36 +72,43 @@ class _TimetableTabState extends State<TimetableTab> {
             child: Text(
               (widget.isTomorrow == true
                   ? widget.textLocalizer.localize('Tomorrow')
-                  : DateFormat('d MMMM', 'uk')
-                      .format(widget.dateTime)),
+                  : DateFormat('d MMMM', 'uk').format(widget.dateTime)),
             ),
           ),
           ...widgets,
-          if (widgets.isEmpty) ...[
-            SizedBox(
-              height: 20,
+
+          Container(
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () {},
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    'Додати нову пару',
+                    textScaleFactor: 1.3,
+                  ),
+                ),
+                style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.disabled)) {
+                      return Theme.of(context).disabledColor;
+                    }
+                    return Color(0xff36d02b);
+                  }),
+                ),
+              ),
             ),
-            Image.asset(
-              'assets/images/day_off.png',
-              package: 'timetable',
-              width: MediaQuery.of(context).size.width * 0.5,
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Text(
-              widget.textLocalizer.localize('DAY OFF'),
-              textScaleFactor: 1.5,
-              style: Theme.of(context).textTheme.headline3,
-            ),
-          ],
+          ),
         ],
       ),
     );
   }
 
   bool filterByTimetableType(TimetableItem timetableItem) {
-      return timetableItem.activity.tutors.any((tutor) => tutor.id == widget.id);
+    return timetableItem.activity.tutors.any((tutor) => tutor.id == widget.id);
   }
 
   List<Widget> stateToWidgets() {

@@ -142,6 +142,7 @@ class ActivityInfoDialog extends StatelessWidget {
             right: 3,
             top: 3,
             child: IconButton(
+              hoverColor: Color(0xFF0000),
               alignment: Alignment.topRight,
               padding: EdgeInsets.zero,
               onPressed: () {
