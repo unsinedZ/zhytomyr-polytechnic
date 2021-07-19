@@ -39,13 +39,6 @@ class App extends StatelessWidget {
             ),
             elevatedButtonTheme: ElevatedButtonThemeData(
               style: ButtonStyle(
-                // backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                //         (Set<MaterialState> states) {
-                //       if (states.contains(MaterialState.disabled)) {
-                //         return Color(0xffeeeeee);
-                //       }
-                //       return Color(0xfff4e83d);
-                //     }),
                 padding: MaterialStateProperty.resolveWith<EdgeInsetsGeometry>(
                   (Set<MaterialState> states) {
                     return EdgeInsets.all(0);
@@ -90,8 +83,6 @@ class App extends StatelessWidget {
             '/authentication': (context) => AuthorizationScreen(),
             '/main_screen': (context) => TimetableScreen(
                   textLocalizer: TextLocalizer(),
-                  // timetableRepositoryFactory:
-                  //     TimetableFirestoreRepositoryFactory(),
                   tutorRepository: MainFirestoreRepository(),
                   timetableRepositoryFactory: (client) =>
                       TutorTimetableFirestoreRepository(
@@ -99,7 +90,6 @@ class App extends StatelessWidget {
                     sharedPreferences: SharedPreferences.getInstance(),
                   ),
                   errorSink: context.read<ErrorBloc>().errorSink,
-                  //clientStream: context.read<AuthorizationBloc>().authClient,
                 )
           },
         ),

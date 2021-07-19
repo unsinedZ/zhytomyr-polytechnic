@@ -1,10 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:authorization_bloc/authorization_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:zp_timetable_update/bl/services/files_picker.dart';
+import 'package:http/http.dart';
+
 import 'package:provider/provider.dart';
+
+import 'package:authorization_bloc/authorization_bloc.dart';
+import 'package:googleapis_auth/auth_io.dart';
+
+import 'package:zp_timetable_update/bl/services/files_picker.dart';
 import 'package:zp_timetable_update/widgets/components/submit_button.dart';
 
 class AuthorizationScreen extends StatefulWidget {
@@ -52,10 +57,11 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: StreamBuilder<AuthClient?>(
+        body: StreamBuilder<Client?>(
+          initialData: Client(),
           stream: _authorizationBloc.authClient,
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
+            if (snapshot.hasData) {
               return Container(
                 alignment: Alignment.center,
                 child: CircularProgressIndicator(),

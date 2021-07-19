@@ -103,8 +103,6 @@ class _TimetableTabState extends State<TimetableTab> {
   }
 
   List<Widget> stateToWidgets() {
-    print(widget.timetableItemUpdates.length);
-    print(widget.timetable.items.length);
     List<TimetableItem> timetableItems = widget.timetable.items
         .where((timetableItem) =>
             timetableItem.weekNumber == widget.weekNumber &&
@@ -134,19 +132,19 @@ class _TimetableTabState extends State<TimetableTab> {
         )
         .toList();
 
-    // List<UpdatableTimetableItem> newUpdatableTimetableItems =
-    //     timetableItemUpdates
-    //         .where((timetableItemUpdate) => timetableItems.every(
-    //             (timetableItem) =>
-    //                 timetableItem.activity.time.start !=
-    //                     timetableItemUpdate.time &&
-    //                 timetableItemUpdate.timetableItem != null))
-    //         .map((timetableItemUpdate) => createUpdatableItem(
-    //             timetableItemUpdates: [],
-    //             timetableItemUpdate: timetableItemUpdate))
-    //         .toList();
-    //
-    // updatableTimetableItems.addAll(newUpdatableTimetableItems);
+    List<UpdatableTimetableItem> newUpdatableTimetableItems =
+        timetableItemUpdates
+            .where((timetableItemUpdate) => timetableItems.every(
+                (timetableItem) =>
+                    timetableItem.activity.time.start !=
+                        timetableItemUpdate.time &&
+                    timetableItemUpdate.timetableItem != null))
+            .map((timetableItemUpdate) => createUpdatableItem(
+                timetableItemUpdates: [],
+                timetableItemUpdate: timetableItemUpdate))
+            .toList();
+
+    updatableTimetableItems.addAll(newUpdatableTimetableItems);
 
     updatableTimetableItems = updatableTimetableItems
         .where((updatableTimetableItem) => !updatableTimetableItem.isEmpty)

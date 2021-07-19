@@ -9,6 +9,7 @@ void main() {
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     DesktopWindow.setMaxWindowSize(Size(800, 700));
     DesktopWindow.setMinWindowSize(Size(800, 700));
+    DesktopWindow.setWindowSize(Size(800, 700));
   }
 
   runApp(App());

@@ -59,10 +59,6 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
         isCurrentClass = true;
       }
     }
-    print(isNew);
-    print(isCancelled);
-    print(isReplaced);
-    print(isCurrentClass);
     super.initState();
   }
 
