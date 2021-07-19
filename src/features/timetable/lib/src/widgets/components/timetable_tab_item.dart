@@ -86,7 +86,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
                     activity: activityUpdate,
                     textLocalizer: widget.textLocalizer,
                   )
-                : ActivityCard.simple(
+                : isCancelled ? Container() : ActivityCard.simple(
                         activity: mainActivity,
                         textLocalizer: widget.textLocalizer,
                       ),
