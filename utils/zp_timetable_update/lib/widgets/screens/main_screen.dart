@@ -2,6 +2,9 @@ import 'package:authorization_bloc/authorization_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:googleapis/firestore/v1.dart';
 
+import 'package:provider/provider.dart';
+
+
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
 
@@ -10,11 +13,9 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  late final _authorizationBloc = context.read<AuthorizationBloc>();
   @override
   void initState() {
-
-
-
     super.initState();
   }
 
@@ -25,8 +26,23 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text("asd"),
+
+    return StreamBuilder<AuthClient?>(
+        stream: _authorizationBloc.authClient,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Container(
+              alignment: Alignment.center,
+              child: CircularProgressIndicator(),
+            );
+          }
+
+
+
+        return Container(
+          child: Text("asd"),
+        );
+      }
     );
   }
 }
