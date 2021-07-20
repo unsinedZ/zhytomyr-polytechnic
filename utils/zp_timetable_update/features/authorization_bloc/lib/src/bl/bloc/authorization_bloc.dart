@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:googleapis_auth/googleapis_auth.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthorizationBloc {
@@ -10,18 +11,18 @@ class AuthorizationBloc {
 
   AuthorizationBloc({required this.errorSink});
 
-  final StreamController<AuthClient?> _authorizationController =
-      StreamController.broadcast();
+  final BehaviorSubject<AuthClient?> _authClientSubject =
+      BehaviorSubject<AuthClient?>();
 
-  Stream<AuthClient?> get token => _authorizationController.stream;
+  Stream<AuthClient?> get authClient => _authClientSubject.stream;
 
   void loadUser() async {
     final storage = await SharedPreferences.getInstance();
     String? serviceAccount = storage.getString("account");
     if (serviceAccount == null) {
-      return _authorizationController.add(null);
+      return _authClientSubject.add(null);
     }
-    login(storage.getString("account")!);
+    login(serviceAccount);
   }
 
   void login(String serviceAccount) async {
@@ -37,9 +38,9 @@ class AuthorizationBloc {
         ],
       );
       storage.setString("account", serviceAccount);
-      _authorizationController.add(accessCredentials);
+      _authClientSubject.add(accessCredentials);
     } catch (error) {
-      _authorizationController.add(null);
+      _authClientSubject.add(null);
       errorSink.add(error.toString());
       print(error.toString());
     }
@@ -48,8 +49,6 @@ class AuthorizationBloc {
   void logout() async {
     final storage = await SharedPreferences.getInstance();
     await storage.clear();
-    _authorizationController.add(null);
+    _authClientSubject.add(null);
   }
-
-  
 }

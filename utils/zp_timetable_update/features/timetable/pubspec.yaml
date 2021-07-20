@@ -1,0 +1,29 @@
+name: timetable
+description: Package with timetable screen.
+version: 0.0.1
+author: Softwine
+
+publish_to: none
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=2.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  intl: ^0.17.0
+  easy_localization: ^3.0.0
+  mockito: ^5.0.3
+  rxdart: ^0.27.1
+  shimmer: ^2.0.0
+  googleapis_auth: ^1.1.0
+  provider: ^5.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  assets:
+    - assets/images/
