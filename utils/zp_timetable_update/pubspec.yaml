@@ -24,6 +24,7 @@ dependencies:
   timetable:
     path: ./features/timetable
   googleapis: ^3.0.0
+  uuid: ^3.0.4
 
 
 dev_dependencies:

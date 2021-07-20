@@ -88,8 +88,8 @@ void main() {
 
     when(timetableLoaderMock.getTimetableItemUpdates(0))
         .thenAnswer((_) => Future.value(<TimetableItemUpdate>[
-              TimetableItemUpdate(time: '1', timetableItem: null, date: '1'),
-              TimetableItemUpdate(time: '2', timetableItem: null, date: '2'),
+              TimetableItemUpdate(time: '1', timetableItem: null, date: '1', id: ''),
+              TimetableItemUpdate(time: '2', timetableItem: null, date: '2', id: ''),
             ]));
 
     List<List<TimetableItemUpdate>?> results = <List<TimetableItemUpdate>?>[];

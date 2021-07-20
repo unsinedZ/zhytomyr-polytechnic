@@ -38,9 +38,7 @@ class TimetableBloc {
   void loadTimetable() {
     _timetableController.add(null);
 
-    timetableRepository
-        .loadTimetableByReferenceId(tutorId)
-        .then((timetable) {
+    timetableRepository.loadTimetableByReferenceId(tutorId).then((timetable) {
       _timetableController.add(timetable);
     }).onError((error, stack) {
       print(error);
@@ -78,6 +76,19 @@ class TimetableBloc {
   Future<void> cancelLesson(Activity activity, DateTime dateTime) async {
     await timetableRepository
         .cancelLesson(activity, dateTime)
+        .then((_) => loadTimetableItemUpdates())
+        .onError((error, stackTrace) {
+      print(error);
+      print(stackTrace);
+      errorSink.add(error.toString());
+    });
+    return null;
+  }
+
+  Future<void> deleteTimetableUpdate(String id) async {
+    await timetableRepository
+        .deleteTimetableUpdate(id)
+        .then((_) => loadTimetableItemUpdates())
         .onError((error, stackTrace) {
       print(error);
       print(stackTrace);

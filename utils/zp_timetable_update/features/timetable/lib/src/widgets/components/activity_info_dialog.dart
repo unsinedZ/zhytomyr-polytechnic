@@ -7,11 +7,15 @@ class ActivityInfoDialog extends StatelessWidget {
   final ITextLocalizer textLocalizer;
   final Activity activity;
   final VoidCallback onCancel;
+  final VoidCallback onUpdateCancel;
+  final bool isUpdated;
 
   ActivityInfoDialog({
     required this.activity,
     required this.textLocalizer,
     required this.onCancel,
+    required this.onUpdateCancel,
+    required this.isUpdated,
   });
 
   @override
@@ -83,58 +87,91 @@ class ActivityInfoDialog extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 5,
-                ),
-                Container(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Створити заміну',
-                        textScaleFactor: 1.3,
+                if (!isUpdated) ...[
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Створити заміну',
+                          textScaleFactor: 1.3,
+                        ),
+                      ),
+                      style:
+                          Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.disabled)) {
+                            return Theme.of(context).disabledColor;
+                          }
+                          return Color(0xff36d02b);
+                        }),
                       ),
                     ),
-                    style:
-                    Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.disabled)) {
-                              return Theme.of(context).disabledColor;
-                            }
-                            return Color(0xff36d02b);
-                          }),
-                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Container(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: onCancel,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Відмінити',
-                        textScaleFactor: 1.3,
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: onCancel,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Відмінити',
+                          textScaleFactor: 1.3,
+                        ),
+                      ),
+                      style:
+                          Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.disabled)) {
+                            return Theme.of(context).disabledColor;
+                          }
+                          return Color(0xffff4b4b);
+                        }),
                       ),
                     ),
-                    style:
-                        Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.disabled)) {
-                          return Theme.of(context).disabledColor;
-                        }
-                        return Color(0xffff4b4b);
-                      }),
-                    ),
+                  )
+                ],
+                if (isUpdated) ...[
+                  SizedBox(
+                    height: 5,
                   ),
-                ),
+                  Container(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: onUpdateCancel,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Відмінити заміну',
+                          textScaleFactor: 1.3,
+                        ),
+                      ),
+                      style:
+                          Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.disabled)) {
+                            return Theme.of(context).disabledColor;
+                          }
+                          return Color(0xffff4b4b);
+                        }),
+                      ),
+                    ),
+                  )
+                ],
               ],
             ),
           ),
