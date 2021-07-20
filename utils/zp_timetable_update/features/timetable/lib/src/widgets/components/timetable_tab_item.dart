@@ -35,6 +35,9 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
   Activity get activityUpdate => widget
       .updatableTimetableItem.timetableItemUpdate!.timetableItem!.activity;
 
+  String? get activityUpdateId =>
+      widget.updatableTimetableItem.timetableItemUpdate?.id;
+
   @override
   void initState() {
     if (DateTime.now().asDate().isAtSameMomentAs(widget.dateTime.asDate())) {
@@ -71,6 +74,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
             activity: mainActivity,
             textLocalizer: widget.textLocalizer,
             dateTime: widget.dateTime,
+            updateId: activityUpdateId,
           ),
         if (isReplaced)
           Icon(
@@ -82,18 +86,23 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
                 activity: mainActivity,
                 textLocalizer: widget.textLocalizer,
                 dateTime: widget.dateTime,
+                updateId: activityUpdateId,
               )
             : isReplaced || isNew
                 ? ActivityCard.added(
                     activity: activityUpdate,
                     textLocalizer: widget.textLocalizer,
                     dateTime: widget.dateTime,
+                    updateId: activityUpdateId,
                   )
-                : isCancelled ? Container() : ActivityCard.simple(
-                    activity: mainActivity,
-                    textLocalizer: widget.textLocalizer,
-                    dateTime: widget.dateTime,
-                  ),
+                : isCancelled
+                    ? Container()
+                    : ActivityCard.simple(
+                        activity: mainActivity,
+                        textLocalizer: widget.textLocalizer,
+                        dateTime: widget.dateTime,
+                        updateId: activityUpdateId,
+                      ),
       ],
     );
   }

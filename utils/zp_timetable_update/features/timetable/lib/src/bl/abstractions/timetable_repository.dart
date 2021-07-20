@@ -6,4 +6,6 @@ abstract class TimetableRepository {
   Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int id);
 
   Future<void> cancelLesson(Activity activity, DateTime dateTime);
+
+  Future<void> deleteTimetableUpdate(String id);
 }

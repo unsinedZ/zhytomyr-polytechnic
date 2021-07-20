@@ -26,6 +26,7 @@ dependencies:
   googleapis: ^3.0.0
   update_form:
     path: ./features/update_form
+  uuid: ^3.0.4
 
 
 dev_dependencies:

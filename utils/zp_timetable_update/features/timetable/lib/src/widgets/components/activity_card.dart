@@ -11,30 +11,35 @@ class ActivityCard extends StatefulWidget {
   final Activity activity;
   final DateTime dateTime;
   final ITextLocalizer textLocalizer;
+  final String? updateId;
   final _ActivityCardType _activityCardType;
 
   ActivityCard.simple({
     required this.activity,
     required this.dateTime,
     required this.textLocalizer,
+    this.updateId,
   }) : this._activityCardType = _ActivityCardType.Simple;
 
   ActivityCard.canceled({
     required this.activity,
     required this.dateTime,
     required this.textLocalizer,
+    this.updateId,
   }) : this._activityCardType = _ActivityCardType.Canceled;
 
   ActivityCard.current({
     required this.activity,
     required this.dateTime,
     required this.textLocalizer,
+    this.updateId,
   }) : this._activityCardType = _ActivityCardType.Current;
 
   ActivityCard.added({
     required this.activity,
     required this.dateTime,
     required this.textLocalizer,
+    this.updateId,
   }) : this._activityCardType = _ActivityCardType.Added;
 
   @override
@@ -53,6 +58,7 @@ class _ActivityCardState extends State<ActivityCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      key: Key(widget.updateId == null ? '' : widget.updateId! + '/' + widget.dateTime.toString()),
       onTap: () {
         showDialog<void>(
           context: context,
@@ -63,9 +69,16 @@ class _ActivityCardState extends State<ActivityCard> {
               timetableBloc
                   .cancelLesson(widget.activity, widget.dateTime)
                   .then((_) {
-                    Navigator.pop(context);
-                    timetableBloc.loadTimetableItemUpdates();
-                  });
+                Navigator.pop(context);
+              });
+            },
+            isUpdated: widget.updateId != null,
+            onUpdateCancel: () {
+              if(widget.updateId != null) {
+                timetableBloc.deleteTimetableUpdate(widget.updateId!).then((_) {
+                  Navigator.pop(context);
+                });
+              }
             },
           ),
         );

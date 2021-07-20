@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:authorization_bloc/authorization_bloc.dart';
 import 'package:googleapis/firestore/v1.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:timetable/timetable.dart';
 
@@ -115,6 +116,8 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
 
   @override
   Future<void> cancelLesson(Activity activity, DateTime dateTime) async {
+    var uuid = Uuid();
+
     FirestoreApi firestoreApi =
         FirestoreApi(client, rootUrl: 'http://127.0.0.1:9190/');
 
@@ -129,6 +132,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
             : dateTime.day.toString());
 
     Document document = Document();
+    String id = uuid.v4();
     Map<String, Value> fields = {
       'date': Value()..stringValue = date,
       'time': Value()..stringValue = activity.time.start,
@@ -136,6 +140,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
         ..stringValue = 'group/' + activity.groups.first.id.toString(),
       'tutorKey': Value()
         ..stringValue = 'tutor/' + activity.tutors.first.id.toString(),
+      'id': Value()..stringValue = id,
     };
 
     document.fields = fields;
@@ -143,7 +148,20 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
     await firestoreApi.projects.databases.documents.createDocument(
         document,
         'projects/emulator/databases/(default)/documents',
-        'timetable_items_update');
+        'timetable_items_update',
+        documentId: id);
+    return null;
+  }
+
+  @override
+  Future<void> deleteTimetableUpdate(String id) async {
+    FirestoreApi firestoreApi =
+        FirestoreApi(client, rootUrl: 'http://127.0.0.1:9190/');
+
+    await firestoreApi.projects.databases.documents.delete(
+      'projects/emulator/databases/(default)/documents/timetable_items_update/' +
+          id,
+    );
     return null;
   }
 }
