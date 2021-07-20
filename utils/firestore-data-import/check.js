@@ -30,9 +30,9 @@ const {
 } = require("./models/TimetableItemUpdate");
 
 
-const getAllCollection = async (name, firestore) => [...(await firestore.collection(name).get()).docs.map((document) => document.data())];
+const getAllCollection = async(name, firestore) => [...(await firestore.collection(name).get()).docs.map((document) => document.data())];
 
-(async () => {
+(async() => {
     let firestore;
 
     if (params.emulator) {
@@ -62,7 +62,7 @@ const getAllCollection = async (name, firestore) => [...(await firestore.collect
         }, user);
     });
 
-    (await getAllCollection("faculty", firestore)).forEach((faculty) => {
+    (await getAllCollection("faculties", firestore)).forEach((faculty) => {
         compareKeys({
             id: null,
             imageUrl: null,
@@ -70,11 +70,11 @@ const getAllCollection = async (name, firestore) => [...(await firestore.collect
         }, faculty);
     });
 
-    (await getAllCollection("group", firestore)).forEach((group) => {
+    (await getAllCollection("groups", firestore)).forEach((group) => {
         compareKeys(new Group(), group);
     });
 
-    (await getAllCollection("tutor", firestore)).forEach((tutor) => {
+    (await getAllCollection("tutors", firestore)).forEach((tutor) => {
         compareKeys(new Tutor(), tutor);
     });
 
@@ -87,7 +87,7 @@ const getAllCollection = async (name, firestore) => [...(await firestore.collect
     });
 
 
-    (await getAllCollection("timetable", firestore)).forEach((timetableGroupItem) => {
+    (await getAllCollection("timetables", firestore)).forEach((timetableGroupItem) => {
         compareKeys({
             id: null,
             expiredAt: null,
@@ -97,16 +97,23 @@ const getAllCollection = async (name, firestore) => [...(await firestore.collect
         }, timetableGroupItem);
     });
 
-    (await getAllCollection("timetable_item_group", firestore)).forEach((timetableGroupItem) => {
+    (await getAllCollection("timetable_items_group", firestore)).forEach((timetableGroupItem) => {
         compareKeys(new TimetableItemGroup(), timetableGroupItem);
 
-        timetableGroupItem.items.length == 0 ? console.warn("No any TimetableItems in TimetableItemGroup: " + timetableGroupItem.key) : timetableGroupItem.items.forEach((timetableItem) => compareTimetableItem(timetableItem));
+        timetableGroupItem.items.length == 0 ? console.warn("No any TimetableItems in TimetableItemsGroup: " + timetableGroupItem.key) : timetableGroupItem.items.forEach((timetableItem) => compareTimetableItem(timetableItem));
     });
 
-    (await getAllCollection("timetable_item_update", firestore)).forEach((timetableUpdateItem) => {
+    (await getAllCollection("timetable_items_update", firestore)).forEach((timetableUpdateItem) => {
         compareKeys(new TimetableItemUpdate(), timetableUpdateItem);
         compareTimetableItem(timetableUpdateItem.item);
     });
+
+    (await getAllCollection("timetable_items_tutor", firestore)).forEach((timetableGroupItem) => {
+        compareKeys(new TimetableItemGroup(), timetableGroupItem);
+
+        timetableGroupItem.items.length == 0 ? console.warn("No any TimetableItems in TimetableItemsTutor: " + timetableGroupItem.key) : timetableGroupItem.items.forEach((timetableItem) => compareTimetableItem(timetableItem));
+    });
+
 
     exit(0);
 })().catch((error) => {
