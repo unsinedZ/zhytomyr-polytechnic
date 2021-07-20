@@ -24,6 +24,8 @@ dependencies:
   timetable:
     path: ./features/timetable
   googleapis: ^3.0.0
+  update_form:
+    path: ./features/update_form
 
 
 dev_dependencies:

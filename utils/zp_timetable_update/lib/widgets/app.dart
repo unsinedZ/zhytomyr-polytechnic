@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import 'package:error_bloc/error_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:update_form/update_form.dart';
 
 import 'package:zp_timetable_update/bl/repositories/main_firestore_repository.dart';
 import 'package:zp_timetable_update/bl/repositories/tutor_timetable_firestore_repository.dart';
@@ -90,7 +91,8 @@ class App extends StatelessWidget {
                     sharedPreferences: SharedPreferences.getInstance(),
                   ),
                   errorSink: context.read<ErrorBloc>().errorSink,
-                )
+                ),
+            '/update_form': (context) => UpdateFormScreen(),
           },
         ),
       ),
