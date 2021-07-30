@@ -1,22 +1,44 @@
 import 'package:flutter/material.dart';
 
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:provider/provider.dart';
+
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/bl/models/models.dart';
 
-class ActivityInfoDialog extends StatelessWidget {
+class ActivityInfoDialog extends StatefulWidget {
   final ITextLocalizer textLocalizer;
-  final Activity activity;
+  final TimetableItem timetableItem;
+  final DateTime dateTime;
   final VoidCallback onCancel;
   final VoidCallback onUpdateCancel;
+  final VoidCallback onUpdateCreated;
   final bool isUpdated;
+  final AuthClient authClient;
+  final Tutor tutor;
 
   ActivityInfoDialog({
-    required this.activity,
+    required this.timetableItem,
     required this.textLocalizer,
+    required this.dateTime,
     required this.onCancel,
     required this.onUpdateCancel,
+    required this.onUpdateCreated,
     required this.isUpdated,
+    required this.authClient,
+    required this.tutor,
   });
+
+  @override
+  _ActivityInfoDialogState createState() => _ActivityInfoDialogState();
+}
+
+class _ActivityInfoDialogState extends State<ActivityInfoDialog> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +56,7 @@ class ActivityInfoDialog extends StatelessWidget {
               children: [
                 Center(
                   child: Text(
-                    activity.name,
+                    widget.timetableItem.activity.name,
                     textScaleFactor: 1.5,
                   ),
                 ),
@@ -44,11 +66,11 @@ class ActivityInfoDialog extends StatelessWidget {
                 RichText(
                   textScaleFactor: 1.1,
                   text: TextSpan(
-                    text: textLocalizer.localize('Teacher: '),
+                    text: widget.textLocalizer.localize('Teacher: '),
                     style: Theme.of(context).textTheme.subtitle1,
                     children: <TextSpan>[
                       TextSpan(
-                          text: activity.tutors
+                          text: widget.timetableItem.activity.tutors
                               .map((tutor) => tutor.name)
                               .join(', '),
                           style: TextStyle(fontWeight: FontWeight.bold)),
@@ -61,11 +83,11 @@ class ActivityInfoDialog extends StatelessWidget {
                 RichText(
                   textScaleFactor: 1.1,
                   text: TextSpan(
-                    text: textLocalizer.localize('Groups: '),
+                    text: widget.textLocalizer.localize('Groups: '),
                     style: Theme.of(context).textTheme.subtitle1,
                     children: <TextSpan>[
                       TextSpan(
-                          text: activity.groups
+                          text: widget.timetableItem.activity.groups
                               .map((group) => group.name)
                               .join(', '),
                           style: TextStyle(fontWeight: FontWeight.bold)),
@@ -78,23 +100,34 @@ class ActivityInfoDialog extends StatelessWidget {
                 RichText(
                   textScaleFactor: 1.1,
                   text: TextSpan(
-                    text: textLocalizer.localize('Auditory: '),
+                    text: widget.textLocalizer.localize('Auditory: '),
                     style: Theme.of(context).textTheme.subtitle1,
                     children: <TextSpan>[
                       TextSpan(
-                          text: activity.room,
+                          text: widget.timetableItem.activity.room,
                           style: TextStyle(fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
-                if (!isUpdated) ...[
+                if (!widget.isUpdated) ...[
                   SizedBox(
                     height: 5,
                   ),
                   Container(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/update_form',
+                            arguments: {
+                              'client': widget.authClient,
+                              'timetableItemJson': widget.timetableItem.toJson(),
+                              'dateTime': widget.dateTime,
+                              'onUpdateCreated': widget.onUpdateCreated,
+                              'dayNumber': widget.timetableItem.dayNumber,
+                              'weekNumber': widget.timetableItem.weekNumber,
+                              'tutorJson': widget.tutor.toJson(),
+                            });
+                      },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
@@ -121,7 +154,7 @@ class ActivityInfoDialog extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: onCancel,
+                      onPressed: widget.onCancel,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
@@ -143,14 +176,14 @@ class ActivityInfoDialog extends StatelessWidget {
                     ),
                   )
                 ],
-                if (isUpdated) ...[
+                if (widget.isUpdated) ...[
                   SizedBox(
                     height: 5,
                   ),
                   Container(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: onUpdateCancel,
+                      onPressed: widget.onUpdateCancel,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(

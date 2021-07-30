@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:googleapis/firestore/v1.dart';
@@ -40,19 +41,46 @@ extension FirestoreRunQueryFixedExtension
     // final url =
     //     'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents$urlParentAddition:runQuery';
     final url =
-        'http://127.0.0.1:9190/v1/projects/emulator/databases/(default)/documents$urlParentAddition:runQuery'; // TODO delete
+        'http://127.0.0.1:8080/v1/projects/emulator/databases/(default)/documents$urlParentAddition:runQuery'; // TODO delete
     final body = json.encode(request.toJson());
-    final response = await client.post(Uri.parse(url), body: body);
-    final resBody = response.body;
-    final List<dynamic> decoded = json.decode(resBody) as List;
-    if (decoded[0]['error'] != null) {
-      throw Exception('Firestore Error: $resBody!');
-    }
-    final docs = [
-      for (final docJson in decoded)
-        if (docJson['document'] != null)
-          Document.fromJson(docJson['document'] as Map)
-    ];
-    return docs;
+    final response1 = await HttpClient().postUrl(
+      Uri.parse(url),
+    );
+    response1.headers.set(HttpHeaders.contentTypeHeader, "application/json; charset=UTF-8");
+    response1.write(body);
+    final response = await response1.close();
+    final resBody = await response.transform(utf8.decoder).first;
+
+      final List<dynamic> decoded = json.decode(resBody) as List;
+      if (decoded[0]['error'] != null) {
+        throw Exception('Firestore Error: $resBody!');
+      }
+      final docs = [
+        for (final docJson in decoded)
+          if (docJson['document'] != null)
+            Document.fromJson(docJson['document'] as Map)
+      ];
+      return docs;
+
+    // final response = await client.post(
+    //   Uri.parse(url),
+    //   body: body,
+    //   encoding: Encoding.getByName('utf-8'),
+    //   headers: {
+    //     "Accept": "application/json",
+    //     "Content-Type": "application/json"
+    //   },
+    // );
+    // final resBody = response.body;
+    // final List<dynamic> decoded = json.decode(resBody) as List;
+    // if (decoded[0]['error'] != null) {
+    //   throw Exception('Firestore Error: $resBody!');
+    // }
+    // final docs = [
+    //   for (final docJson in decoded)
+    //     if (docJson['document'] != null)
+    //       Document.fromJson(docJson['document'] as Map)
+    // ];
+    // return docs;
   }
 }

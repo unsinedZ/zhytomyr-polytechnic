@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:googleapis_auth/auth_io.dart';
 
 import 'package:provider/provider.dart';
 
@@ -8,35 +9,35 @@ import 'package:timetable/src/bl/models/models.dart';
 import 'package:timetable/src/widgets/components/activity_info_dialog.dart';
 
 class ActivityCard extends StatefulWidget {
-  final Activity activity;
+  final TimetableItem timetableItem;
   final DateTime dateTime;
   final ITextLocalizer textLocalizer;
   final String? updateId;
   final _ActivityCardType _activityCardType;
 
   ActivityCard.simple({
-    required this.activity,
+    required this.timetableItem,
     required this.dateTime,
     required this.textLocalizer,
     this.updateId,
   }) : this._activityCardType = _ActivityCardType.Simple;
 
   ActivityCard.canceled({
-    required this.activity,
+    required this.timetableItem,
     required this.dateTime,
     required this.textLocalizer,
     this.updateId,
   }) : this._activityCardType = _ActivityCardType.Canceled;
 
   ActivityCard.current({
-    required this.activity,
+    required this.timetableItem,
     required this.dateTime,
     required this.textLocalizer,
     this.updateId,
   }) : this._activityCardType = _ActivityCardType.Current;
 
   ActivityCard.added({
-    required this.activity,
+    required this.timetableItem,
     required this.dateTime,
     required this.textLocalizer,
     this.updateId,
@@ -48,38 +49,54 @@ class ActivityCard extends StatefulWidget {
 
 class _ActivityCardState extends State<ActivityCard> {
   late final TimetableBloc timetableBloc;
+  late final AuthClient authClient;
+  late final Tutor tutor;
 
   @override
   void initState() {
     timetableBloc = context.read<TimetableBloc>();
+    authClient = context.read<AuthClient>();
+    tutor = context.read<Tutor>();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      key: Key(widget.updateId == null ? '' : widget.updateId! + '/' + widget.dateTime.toString()),
+      key: Key(widget.updateId == null
+          ? ''
+          : widget.updateId! + '/' + widget.dateTime.toString()),
       onTap: () {
         showDialog<void>(
           context: context,
           builder: (context) => ActivityInfoDialog(
-            activity: widget.activity,
+            timetableItem: widget.timetableItem,
             textLocalizer: widget.textLocalizer,
             onCancel: () {
               timetableBloc
-                  .cancelLesson(widget.activity, widget.dateTime)
+                  .cancelLesson(widget.timetableItem.activity, widget.dateTime)
                   .then((_) {
                 Navigator.pop(context);
               });
             },
             isUpdated: widget.updateId != null,
             onUpdateCancel: () {
-              if(widget.updateId != null) {
+              if (widget.updateId != null) {
                 timetableBloc.deleteTimetableUpdate(widget.updateId!).then((_) {
                   Navigator.pop(context);
                 });
               }
             },
+            onUpdateCreated: () async {
+              await timetableBloc.loadTimetableItemUpdates().then((_) {
+
+                // Future.delayed(Duration(seconds: 1));
+                // Navigator.pop(context);
+              });
+            },
+            authClient: authClient,
+            dateTime: widget.dateTime,
+            tutor: tutor,
           ),
         );
       },
@@ -98,11 +115,11 @@ class _ActivityCardState extends State<ActivityCard> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        widget.activity.time.start,
+                        widget.timetableItem.activity.time.start,
                         textScaleFactor: 1.3,
                       ),
                       Text(
-                        widget.activity.time.end,
+                        widget.timetableItem.activity.time.end,
                         style: Theme.of(context).textTheme.headline2,
                         textScaleFactor: 1.3,
                       ),
@@ -126,7 +143,7 @@ class _ActivityCardState extends State<ActivityCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        widget.activity.name,
+                        widget.timetableItem.activity.name,
                         textScaleFactor: 1.3,
                       ),
                       SizedBox(
@@ -135,9 +152,9 @@ class _ActivityCardState extends State<ActivityCard> {
                       Text(
                         widget.textLocalizer.localize('aud.') +
                             ' ' +
-                            widget.activity.room +
+                            widget.timetableItem.activity.room +
                             ', ' +
-                            widget.activity.type,
+                            widget.timetableItem.activity.type,
                         style: Theme.of(context).textTheme.headline2,
                       ),
                     ],
@@ -150,7 +167,7 @@ class _ActivityCardState extends State<ActivityCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        widget.activity.tutors
+                        widget.timetableItem.activity.tutors
                             .map((tutor) => tutor.name)
                             .join(', '),
                         style: Theme.of(context).textTheme.headline2,

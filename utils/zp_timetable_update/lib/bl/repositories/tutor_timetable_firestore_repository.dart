@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:authorization_bloc/authorization_bloc.dart';
 import 'package:googleapis/firestore/v1.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:authorization_bloc/authorization_bloc.dart';
 import 'package:timetable/timetable.dart';
 
 import 'package:zp_timetable_update/bl/models/expireble.dart';
@@ -94,7 +94,6 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
 
   @override
   Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int id) async {
-    //return [];
     List<TimetableItemUpdate> timetableUpdates =
         await TimetableUpdateApi.runQuery(
       fieldPath: 'tutorKey',
@@ -119,7 +118,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
     var uuid = Uuid();
 
     FirestoreApi firestoreApi =
-        FirestoreApi(client, rootUrl: 'http://127.0.0.1:9190/');
+        FirestoreApi(client, rootUrl: 'http://127.0.0.1:8080/');
 
     String date = dateTime.year.toString() +
         '-' +
@@ -156,7 +155,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
   @override
   Future<void> deleteTimetableUpdate(String id) async {
     FirestoreApi firestoreApi =
-        FirestoreApi(client, rootUrl: 'http://127.0.0.1:9190/');
+        FirestoreApi(client, rootUrl: 'http://127.0.0.1:8080/');
 
     await firestoreApi.projects.databases.documents.delete(
       'projects/emulator/databases/(default)/documents/timetable_items_update/' +

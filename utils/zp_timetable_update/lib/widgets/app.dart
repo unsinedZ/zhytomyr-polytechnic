@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:update_form/update_form.dart';
 
 import 'package:zp_timetable_update/bl/repositories/main_firestore_repository.dart';
+import 'package:zp_timetable_update/bl/repositories/timetable_update_repository.dart';
 import 'package:zp_timetable_update/bl/repositories/tutor_timetable_firestore_repository.dart';
 import 'package:zp_timetable_update/bl/services/text_localizer.dart';
 import 'package:zp_timetable_update/widgets/dependencies.dart';
@@ -92,7 +93,11 @@ class App extends StatelessWidget {
                   ),
                   errorSink: context.read<ErrorBloc>().errorSink,
                 ),
-            '/update_form': (context) => UpdateFormScreen(),
+            '/update_form': (context) => UpdateFormScreen(
+                  groupsRepository: MainFirestoreRepository(),
+                  errorSink: context.read<ErrorBloc>().errorSink,
+                  timetableUpdateRepository: TimetableUpdateRepository(),
+                ),
           },
         ),
       ),

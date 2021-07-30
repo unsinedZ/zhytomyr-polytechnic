@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:googleapis_auth/auth_io.dart';
 
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
+import 'package:timetable/src/bl/bloc/timetable_bloc.dart';
 import 'package:timetable/src/bl/models/models.dart';
 import 'package:timetable/src/bl/extensions/date_time_extension.dart';
 import 'package:timetable/src/widgets/components/components.dart';
@@ -39,32 +42,45 @@ class TimetableTab extends StatefulWidget {
 }
 
 class _TimetableTabState extends State<TimetableTab> {
-  late List<Widget> widgets;
+  //late List<Widget> widgets;
   late List<TimetableItemUpdate> timetableItemUpdates;
+
+  late final AuthClient authClient;
+  late final Tutor tutor;
+  late final TimetableBloc timetableBloc;
 
   @override
   void initState() {
     initializeDateFormatting();
-    widgets = stateToWidgets();
+
+    timetableBloc = context.read<TimetableBloc>();
+    authClient = context.read<AuthClient>();
+    tutor = context.read<Tutor>();
+
+    //widgets = stateToWidgets();
 
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant TimetableTab oldWidget) {
-    setState(() {
-      widgets = stateToWidgets();
-    });
+    // setState(() {
+    //   widgets = stateToWidgets();
+    // });
 
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> widgets = stateToWidgets();
+
     return SingleChildScrollView(
       key: Key(widget.weekNumber.toString() +
           '/' +
-          widget.dayOfWeekNumber.toString()),
+          widget.dayOfWeekNumber.toString() +
+          '/' +
+          timetableItemUpdates.length.toString()),
       child: Column(
         children: <Widget>[
           Padding(
@@ -76,13 +92,23 @@ class _TimetableTabState extends State<TimetableTab> {
             ),
           ),
           ...widgets,
-
           Container(
             width: double.infinity,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/update_form', arguments: {
+                    'client': authClient,
+                    'dateTime': widget.dateTime,
+                    'onUpdateCreated': () async {
+                      await timetableBloc.loadTimetableItemUpdates().then((value) {});
+                    },
+                    'dayNumber': widget.dayOfWeekNumber,
+                    'weekNumber': widget.weekNumber,
+                    'tutorJson': tutor.toJson(),
+                  });
+                },
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Text(

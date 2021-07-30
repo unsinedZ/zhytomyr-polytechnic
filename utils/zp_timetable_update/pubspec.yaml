@@ -27,6 +27,7 @@ dependencies:
   update_form:
     path: ./features/update_form
   uuid: ^3.0.4
+  googleapis_auth: ^1.1.0
 
 
 dev_dependencies:

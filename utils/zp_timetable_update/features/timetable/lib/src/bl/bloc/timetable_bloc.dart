@@ -47,13 +47,14 @@ class TimetableBloc {
     });
   }
 
-  void loadTimetableItemUpdates() {
+  Future<void> loadTimetableItemUpdates() async {
     _timetableItemUpdatesController.add(null);
 
     timetableRepository
         .getTimetableItemUpdates(tutorId)
         .then((timetableItemUpdates) {
       _timetableItemUpdatesController.add(timetableItemUpdates);
+      print(timetableItemUpdates.length.toString() + ' - timetableItemUpdates.length');
     }).onError((error, stack) {
       print(error);
       print(stack);

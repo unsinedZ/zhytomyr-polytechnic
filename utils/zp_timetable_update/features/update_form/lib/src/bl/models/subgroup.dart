@@ -22,7 +22,7 @@ class Subgroup {
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    'id': id,
+    'id': id.toString(),
     'name': name,
   };
 }

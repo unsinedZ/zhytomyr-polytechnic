@@ -111,6 +111,8 @@ class _TimetableScreenState extends State<TimetableScreen> {
     return MultiProvider(
       providers: [
         Provider<TimetableBloc>(create: (_) => timetableBloc),
+        Provider<AuthClient>(create: (_) => client),
+        Provider<Tutor>(create: (_) => tutor!),
       ],
       child: DefaultTabController(
         initialIndex: initialIndex,
