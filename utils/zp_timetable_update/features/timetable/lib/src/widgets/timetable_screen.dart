@@ -129,12 +129,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
                       ))
                   .toList(),
             ),
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
             title: Text(
               title,
               style: Theme.of(context).textTheme.headline1,
