@@ -7,8 +7,7 @@ import 'package:update_form/src/bl/models/tutor.dart';
 abstract class ITimetableUpdateRepository {
   Future<void> addTimetableUpdate(
     AuthClient client,
-    Document document,
+    List<Document> documents,
     List<Group> groups,
-    List<Tutor> tutors,
   );
 }

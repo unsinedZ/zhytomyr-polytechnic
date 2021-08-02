@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
@@ -48,7 +49,8 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
   String groupsSelectionValidationMessage = '';
   String? startLessonTime;
   String? endLessonTime;
-  List<Group> groups = [];
+
+  //List<Group> selectedGroups = [];
   List<Tutor> tutors = [];
   String? timetableItemType;
   late int dayNumber;
@@ -58,11 +60,6 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
   late Future<void> Function() onUpdateCreated;
 
   TimetableItem? timetableItem;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void didChangeDependencies() {
@@ -83,9 +80,11 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
       lessonNameController.text = timetableItem!.activity.name;
       auditoryController.text = timetableItem!.activity.room;
       startLessonTime = timetableItem!.activity.time.start;
-      groups = timetableItem!.activity.groups.divide();
+      //selectedGroups = timetableItem!.activity.groups.divide();
       tutors = timetableItem!.activity.tutors;
       timetableItemType = timetableItem!.activity.type;
+
+      updateFormBloc.setSelectedGroups(timetableItem!.activity.groups.divide());
     }
 
     updateFormBloc.loadGroups(authClient);
@@ -106,7 +105,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
           ),
         ),
         body: StreamBuilder<List<Group>>(
-            stream: updateFormBloc.groups,
+            stream: updateFormBloc.groups.map((event) => event.divide()),
             builder: (context, snapshot) {
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return Center(
@@ -114,7 +113,17 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
                 );
               }
 
-              List<Group> allGroups = snapshot.data!.divide();
+              List<MultiSelectItem<Group>> items = snapshot.data!.map((group) {
+                return MultiSelectItem(
+                    group,
+                    group.name +
+                        (group.subgroups.isNotEmpty
+                            ? ('(' +
+                            group.subgroups.first
+                                .name +
+                            ')')
+                            : ''));
+              }).toList();
 
               return SingleChildScrollView(
                 child: Padding(
@@ -188,88 +197,122 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: MultiSelectDialogField<dynamic>(
-                            items: allGroups
-                                .map((group) => MultiSelectItem(
-                                    group,
-                                    group.name +
-                                        (group.subgroups.isNotEmpty
-                                            ? ('(' +
-                                                group.subgroups.first.name +
-                                                ')')
-                                            : '')))
-                                .toList(),
-                            listType: MultiSelectListType.CHIP,
-                            onConfirm: (values) {
-                              groups =
-                                  values.map((e) => e as Group).toList();
-                            },
-                            initialValue: allGroups
-                                .where((g) =>
-                                    groups.any((g1) => g1.id == g.id))
-                                .toList(),
-                            searchable: true,
-                            buttonText: Text('Вибрати групи'),
-                            buttonIcon: Icon(
-                              Icons.arrow_downward,
-                              color: Colors.black,
-                            ),
-                            searchIcon: Icon(
-                              Icons.search,
-                              color: Colors.black,
-                            ),
-                            closeSearchIcon: Icon(
-                              Icons.close,
-                              color: Colors.black,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty)
-                                return 'validation error';
-                            },
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Створити заміну',
-                                textScaleFactor: 1.4,
-                              ),
-                            ),
-                            onPressed: () async {
-                              if (!_formKey.currentState!.validate() ||
-                                  groups.isEmpty) {
-                                return;
-                              }
-                              TimetableItemUpdate timetableItemUpdate =
-                                  _createTimetableUpdate();
-                              await updateFormBloc.createTimetableUpdate(
-                                  authClient,
-                                  timetableItemUpdate.toDocument(),
-                                  groups,
-                                  tutors);
-                              await onUpdateCreated();
-                              Navigator.pop(context);
-                            },
-                            style: Theme.of(context)
-                                .elevatedButtonTheme
-                                .style!
-                                .copyWith(
-                              backgroundColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                      (Set<MaterialState> states) {
-                                if (states.contains(MaterialState.disabled)) {
-                                  return Theme.of(context).disabledColor;
-                                }
-                                return Color(0xff36d02b);
-                              }),
-                            ),
-                          ),
-                        ),
+                        StreamBuilder<List<Group>>(
+                            stream: updateFormBloc.selectedGroups,
+                            initialData: [],
+                            builder: (context, selectedGroupsSnapshot) {
+                              return Column(
+                                children: [
+                                  Padding(
+                                    key: Key(
+                                        selectedGroupsSnapshot.data!.join('/')),
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: MultiSelectDialogField<Group?>(
+                                      items: items,
+                                      listType: MultiSelectListType.CHIP,
+                                      onConfirm: (values) {
+                                        updateFormBloc.setSelectedGroups(values
+                                            .map((group) => group!)
+                                            .toList());
+                                      },
+                                      chipDisplay:
+                                          MultiSelectChipDisplay.none(),
+                                      initialValue: selectedGroupsSnapshot.data,
+                                      searchable: true,
+                                      buttonText: Text('Вибрати групи'),
+                                      buttonIcon: Icon(
+                                        Icons.arrow_downward,
+                                        color: Colors.black,
+                                      ),
+                                      searchIcon: Icon(
+                                        Icons.search,
+                                        color: Colors.black,
+                                      ),
+                                      closeSearchIcon: Icon(
+                                        Icons.close,
+                                        color: Colors.black,
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty)
+                                          return 'Виберіть мінімум 1 групу';
+                                      },
+                                    ),
+                                  ),
+                                  MultiSelectChipDisplay<Group?>(
+                                    items: selectedGroupsSnapshot.data!
+                                        .map((group) => MultiSelectItem(
+                                            group,
+                                            group.name +
+                                                (group.subgroups.isNotEmpty
+                                                    ? ('(' +
+                                                        group.subgroups.first
+                                                            .name +
+                                                        ')')
+                                                    : '')))
+                                        .toList(),
+                                    height: 50,
+                                    onTap: (value) {
+                                      Group group = selectedGroupsSnapshot.data!
+                                          .firstWhere((group) =>
+                                              group == (value as Group));
+                                      print(group.toString());
+                                      updateFormBloc
+                                          .removeFromSelectedGroup(group);
+                                      print(
+                                          selectedGroupsSnapshot.data!.length);
+                                    },
+                                  ),
+                                  SizedBox(
+                                    height: 7,
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          'Створити заміну',
+                                          textScaleFactor: 1.4,
+                                        ),
+                                      ),
+                                      onPressed: () async {
+                                        if (!_formKey.currentState!
+                                            .validate()) {
+                                          return;
+                                        }
+                                        TimetableItemUpdate
+                                            timetableItemUpdate =
+                                            _createTimetableUpdate(
+                                                selectedGroupsSnapshot.data!);
+                                        await updateFormBloc
+                                            .createTimetableUpdate(
+                                                authClient,
+                                                timetableItemUpdate
+                                                    .toDocuments(),
+                                                selectedGroupsSnapshot.data!);
+                                        await onUpdateCreated();
+                                        Navigator.pop(context);
+                                      },
+                                      style: Theme.of(context)
+                                          .elevatedButtonTheme
+                                          .style!
+                                          .copyWith(
+                                        backgroundColor: MaterialStateProperty
+                                            .resolveWith<Color>(
+                                                (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.disabled)) {
+                                            return Theme.of(context)
+                                                .disabledColor;
+                                          }
+                                          return Color(0xff36d02b);
+                                        }),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }),
                       ],
                     ),
                   ),
@@ -280,7 +323,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
     );
   }
 
-  TimetableItemUpdate _createTimetableUpdate() {
+  TimetableItemUpdate _createTimetableUpdate(List<Group> selectedGroups) {
     var uuid = Uuid();
     String id = uuid.v4();
 
@@ -307,7 +350,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
             end: startEndLessonMap[startLessonTime!]!,
           ),
           tutors: [tutor],
-          groups: groups.compose(),
+          groups: selectedGroups.compose(),
           name: lessonNameController.text,
         ),
       ),

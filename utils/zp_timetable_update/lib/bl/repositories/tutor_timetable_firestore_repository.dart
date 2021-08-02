@@ -102,12 +102,12 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
       valueType: ValueType.String,
       client: client,
     ).then(
-      (docs) => docs
-          .map(
-            (timetableItemUpdateJson) => TimetableItemUpdate.fromJson(
-                timetableItemUpdateJson.toJsonFixed()),
-          )
-          .toList(),
+      (docs) => docs.map(
+        (timetableItemUpdate) {
+          return TimetableItemUpdate.fromJson(
+              timetableItemUpdate.toJsonFixed());
+        },
+      ).toList(),
     );
 
     return timetableUpdates;
@@ -116,10 +116,68 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
   @override
   Future<void> cancelLesson(Activity activity, DateTime dateTime) async {
     var uuid = Uuid();
-
+    String id = uuid.v4();
     FirestoreApi firestoreApi =
         FirestoreApi(client, rootUrl: 'http://127.0.0.1:8080/');
 
+    var futures = <Future>[];
+
+    activity.groups.forEach((group) async {
+      futures.add(_createTimetableUpdate(
+          activity: activity,
+          dateTime: dateTime,
+          id: id,
+          firestoreApi: firestoreApi,
+          key: 'groupKey',
+          keyValue: 'group/' + group.id.toString()));
+    });
+
+    activity.tutors.forEach((tutor) async {
+      futures.add(_createTimetableUpdate(
+          activity: activity,
+          dateTime: dateTime,
+          id: id,
+          firestoreApi: firestoreApi,
+          key: 'tutorKey',
+          keyValue: 'tutor/' + tutor.id.toString()));
+    });
+
+    await Future.wait(futures);
+
+    return null;
+  }
+
+  @override
+  Future<void> deleteTimetableUpdate(String id) async {
+    FirestoreApi firestoreApi =
+        FirestoreApi(client, rootUrl: 'http://127.0.0.1:8080/');
+
+    await TimetableUpdateApi.runQuery(
+      fieldPath: 'id',
+      fieldValue: id,
+      collectionId: 'timetable_items_update',
+      valueType: ValueType.String,
+      client: client,
+    ).then(
+      (docs) => docs.map(
+        (timetableItemUpdate) async {
+          await firestoreApi.projects.databases.documents
+              .delete(timetableItemUpdate.name!);
+        },
+      ).toList(),
+    );
+
+    return null;
+  }
+
+  Future<dynamic> _createTimetableUpdate({
+    required Activity activity,
+    required DateTime dateTime,
+    required String key,
+    required String keyValue,
+    required String id,
+    required FirestoreApi firestoreApi,
+  }) {
     String date = dateTime.year.toString() +
         '-' +
         (dateTime.month < 10
@@ -131,36 +189,19 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
             : dateTime.day.toString());
 
     Document document = Document();
-    String id = uuid.v4();
+
     Map<String, Value> fields = {
       'date': Value()..stringValue = date,
       'time': Value()..stringValue = activity.time.start,
-      'groupKey': Value()
-        ..stringValue = 'group/' + activity.groups.first.id.toString(),
-      'tutorKey': Value()
-        ..stringValue = 'tutor/' + activity.tutors.first.id.toString(),
+      key: Value()..stringValue = keyValue,
       'id': Value()..stringValue = id,
     };
 
     document.fields = fields;
 
-    await firestoreApi.projects.databases.documents.createDocument(
+    return firestoreApi.projects.databases.documents.createDocument(
         document,
         'projects/emulator/databases/(default)/documents',
-        'timetable_items_update',
-        documentId: id);
-    return null;
-  }
-
-  @override
-  Future<void> deleteTimetableUpdate(String id) async {
-    FirestoreApi firestoreApi =
-        FirestoreApi(client, rootUrl: 'http://127.0.0.1:8080/');
-
-    await firestoreApi.projects.databases.documents.delete(
-      'projects/emulator/databases/(default)/documents/timetable_items_update/' +
-          id,
-    );
-    return null;
+        'timetable_items_update');
   }
 }

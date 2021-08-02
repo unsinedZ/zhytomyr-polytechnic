@@ -89,9 +89,7 @@ class _ActivityCardState extends State<ActivityCard> {
             },
             onUpdateCreated: () async {
               await timetableBloc.loadTimetableItemUpdates().then((_) {
-
-                // Future.delayed(Duration(seconds: 1));
-                // Navigator.pop(context);
+                Navigator.pop(context);
               });
             },
             authClient: authClient,

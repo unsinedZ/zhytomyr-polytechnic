@@ -77,4 +77,24 @@ class Group {
 
     return groupMapValue;
   }
+
+  @override
+  String toString() {
+    String groupString = id.toString();
+
+    if(subgroups.isNotEmpty) {
+      groupString = groupString + '/' + subgroups.first.name;
+    }
+
+    return groupString;
+  }
+
+  @override
+  bool operator ==(other) {
+    return this.toString() == other.toString();
+  }
+
+  @override
+  int get hashCode => super.hashCode;
+
 }

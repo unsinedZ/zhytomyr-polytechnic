@@ -20,10 +20,17 @@ class UpdateFormBloc {
     required this.errorSink,
   });
 
+  List<Group> selectedGroupsList = [];
+
   final BehaviorSubject<List<Group>> _groupsSubject =
       BehaviorSubject<List<Group>>();
 
+  final BehaviorSubject<List<Group>> _selectedGroupsSubject =
+      BehaviorSubject<List<Group>>();
+
   Stream<List<Group>> get groups => _groupsSubject.stream;
+
+  Stream<List<Group>> get selectedGroups => _selectedGroupsSubject.stream;
 
   void loadGroups(AuthClient client) {
     _groupsSubject.add([]);
@@ -37,26 +44,23 @@ class UpdateFormBloc {
     });
   }
 
-  // void loadTutor(AuthClient client) {
-  //   _tutorController.add(null);
-  //
-  //   tutorRepository.getTutorById(tutorId, client).then((tutor) {
-  //     _tutorController.add(tutor);
-  //   }).onError((error, stack) {
-  //     print(error);
-  //     print(stack);
-  //     errorSink.add(error.toString());
-  //   });
-  // }
+  void setSelectedGroups(List<Group> groups) {
+    selectedGroupsList = groups;
+    _selectedGroupsSubject.add(selectedGroupsList);
+  }
+
+  void removeFromSelectedGroup(Group group) {
+    selectedGroupsList.remove(group);
+    _selectedGroupsSubject.add(selectedGroupsList);
+  }
 
   Future<void> createTimetableUpdate(
     AuthClient client,
-    Document document,
+    List<Document> documents,
     List<Group> groups,
-    List<Tutor> tutors,
   ) async {
     timetableUpdateRepository
-        .addTimetableUpdate(client, document, groups, tutors)
+        .addTimetableUpdate(client, documents, groups)
         .then((_) {})
         .onError((error, stack) {
       print(error);
@@ -67,5 +71,6 @@ class UpdateFormBloc {
 
   void dispose() {
     _groupsSubject.close();
+    _selectedGroupsSubject.close();
   }
 }

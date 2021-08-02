@@ -19,33 +19,46 @@ class TimetableItemUpdate {
         id: json['id'],
         date: json['date'],
         time: json['time'],
-        timetableItem: json['item'] != null ? TimetableItem.fromJson(
-            json['item']) : null,
+        timetableItem:
+            json['item'] != null ? TimetableItem.fromJson(json['item']) : null,
       );
 
+  List<Document> toDocuments() {
+    List<Document> documents = <Document>[];
 
-  Document toDocument() {
+    timetableItem!.activity.groups.forEach((group) {
+      documents.add(createDocument('groupKey', 'group/' + group.id.toString()));
+    });
+
+    timetableItem!.activity.tutors.forEach((tutor) {
+      documents.add(createDocument('tutorKey', 'tutor/' + tutor.id.toString()));
+    });
+
+    return documents;
+  }
+
+  Document createDocument(String key, String keyValue) {
     Document timetableDocument = Document();
 
     MapValue timetableItemMapValue = MapValue();
 
     timetableItemMapValue.fields = {
       'dayNumber': Value()..integerValue = timetableItem!.dayNumber.toString(),
-      'weekNumber': Value()..integerValue = timetableItem!.weekNumber.toString(),
+      'weekNumber': Value()
+        ..integerValue = timetableItem!.weekNumber.toString(),
       'activity': Value()..mapValue = timetableItem!.activity.toMapValue(),
     };
 
     Map<String, Value> fields = {
-    'date': Value()..stringValue = date,
-    'groupKey': Value()..stringValue = 'group/' + timetableItem!.activity.groups.first.id.toString(),
-    'tutorKey': Value()..stringValue = 'tutor/' + timetableItem!.activity.tutors.first.id.toString(),
-    'time': Value()..stringValue = time,
-    'item': Value()..mapValue = timetableItemMapValue,
-    'id': Value()..stringValue = id,
+      'date': Value()..stringValue = date,
+      key: Value()..stringValue = keyValue,
+      'time': Value()..stringValue = time,
+      'item': Value()..mapValue = timetableItemMapValue,
+      'id': Value()..stringValue = id,
     };
 
     timetableDocument.fields = fields;
 
     return timetableDocument;
-    }
+  }
 }
