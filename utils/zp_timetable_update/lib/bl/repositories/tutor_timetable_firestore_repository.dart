@@ -131,6 +131,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
           firestoreApi: firestoreApi,
           key: 'groupKey',
           keyValue: 'group/' + group.id.toString()));
+      CommonRepository.createNotification(client, group.id.toString());
     });
 
     activity.tutors.forEach((tutor) async {
@@ -170,6 +171,4 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
 
     return null;
   }
-
-
 }
