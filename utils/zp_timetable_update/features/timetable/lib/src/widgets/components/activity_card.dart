@@ -72,25 +72,21 @@ class _ActivityCardState extends State<ActivityCard> {
           builder: (context) => ActivityInfoDialog(
             timetableItem: widget.timetableItem,
             textLocalizer: widget.textLocalizer,
-            onCancel: () {
-              timetableBloc
-                  .cancelLesson(widget.timetableItem.activity, widget.dateTime)
-                  .then((_) {
-                Navigator.pop(context);
-              });
+            onCancel: () async {
+              Navigator.pop(context);
+              await timetableBloc.cancelLesson(
+                  widget.timetableItem.activity, widget.dateTime);
             },
             isUpdated: widget.updateId != null,
-            onUpdateCancel: () {
+            onUpdateCancel: () async {
               if (widget.updateId != null) {
-                timetableBloc.deleteTimetableUpdate(widget.updateId!).then((_) {
-                  Navigator.pop(context);
-                });
+                Navigator.pop(context);
+                await timetableBloc.deleteTimetableUpdate(widget.updateId!);
               }
             },
             onUpdateCreated: () async {
-              await timetableBloc.loadTimetableItemUpdates().then((_) {
-                Navigator.pop(context);
-              });
+              Navigator.pop(context);
+              timetableBloc.loadTimetableItemUpdates();
             },
             authClient: authClient,
             dateTime: widget.dateTime,

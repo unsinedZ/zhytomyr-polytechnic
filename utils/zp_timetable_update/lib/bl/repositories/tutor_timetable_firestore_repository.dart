@@ -154,6 +154,8 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
     FirestoreApi firestoreApi =
         FirestoreApi(client, rootUrl: 'http://127.0.0.1:8080/');
 
+    var futures = <Future>[];
+
     await TimetableUpdateApi.runQuery(
       fieldPath: 'id',
       fieldValue: id,
@@ -163,11 +165,17 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
     ).then(
       (docs) => docs.map(
         (timetableItemUpdate) async {
+          Value? groupKeyValue = timetableItemUpdate.fields?['groupKey'];
+          if(groupKeyValue != null && groupKeyValue.stringValue != null && groupKeyValue.stringValue != '') {
+            CommonRepository.createNotification(client, groupKeyValue.stringValue!.substring(6));
+          }
           await firestoreApi.projects.databases.documents
               .delete(timetableItemUpdate.name!);
         },
       ).toList(),
     );
+
+    await Future.wait(futures);
 
     return null;
   }

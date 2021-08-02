@@ -139,6 +139,18 @@ class _TimetableScreenState extends State<TimetableScreen> {
               title,
               style: Theme.of(context).textTheme.headline1,
             ),
+            actions: [
+              Padding(
+                  padding: EdgeInsets.only(right: 20.0),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.refresh,
+                    ),
+                    onPressed: () {
+                      timetableBloc.loadTimetableItemUpdates();
+                    },
+                  )),
+            ],
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {

@@ -29,9 +29,14 @@ class UpdateFormBloc {
   final BehaviorSubject<List<Group>> _selectedGroupsSubject =
       BehaviorSubject<List<Group>>();
 
+  final BehaviorSubject<bool> _isUpdateCreatingSubject =
+  BehaviorSubject<bool>();
+
   Stream<List<Group>> get groups => _groupsSubject.stream;
 
   Stream<List<Group>> get selectedGroups => _selectedGroupsSubject.stream;
+
+  Stream<bool> get isUpdateCreating => _isUpdateCreatingSubject.stream;
 
   void loadGroups(AuthClient client) {
     _groupsSubject.add([]);
@@ -61,7 +66,8 @@ class UpdateFormBloc {
     List<Group> groups,
     List<Group>? initialGroups,
   ) async {
-    timetableUpdateRepository
+    _isUpdateCreatingSubject.add(true);
+    await timetableUpdateRepository
         .addTimetableUpdate(client, timetableItemUpdate, groups, initialGroups)
         .then((_) {})
         .onError((error, stack) {
@@ -69,10 +75,12 @@ class UpdateFormBloc {
       print(stack);
       errorSink.add(error.toString());
     });
+    _isUpdateCreatingSubject.add(false);
   }
 
   void dispose() {
     _groupsSubject.close();
     _selectedGroupsSubject.close();
+    _isUpdateCreatingSubject.close();
   }
 }

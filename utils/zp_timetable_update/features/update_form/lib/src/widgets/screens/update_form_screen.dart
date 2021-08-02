@@ -62,6 +62,31 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
   TimetableItem? timetableItem;
 
   @override
+  void initState() {
+    updateFormBloc.isUpdateCreating.listen((isUpdateCreating) {
+      if(isUpdateCreating == true){
+        Navigator.of(context).push(
+          PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (_, __, ___) {
+              return Container(
+                color: Color(0x43000000),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            },
+          ),
+        );
+      } else {
+        Navigator.pop(context);
+      }
+    });
+
+    super.initState();
+  }
+
+  @override
   void didChangeDependencies() {
     final arguments =
         (ModalRoute.of(context)!.settings.arguments) as Map<String, dynamic>;
@@ -289,8 +314,8 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
                                                 selectedGroupsSnapshot.data!
                                                     .compose(),
                                                 initialGroups);
-                                        await onUpdateCreated();
                                         Navigator.pop(context);
+                                        onUpdateCreated();
                                       },
                                       style: Theme.of(context)
                                           .elevatedButtonTheme

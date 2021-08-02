@@ -35,13 +35,13 @@ class TimetableUpdateRepository implements ITimetableUpdateRepository {
           .where((initialGroup) =>
               groups.every((group) => group.id != initialGroup.id))
           .forEach((group) {
-        CommonRepository.cancelActivity(
+        futures.add(CommonRepository.cancelActivity(
             activityTimeStart: timetableItemUpdate.timetableItem!.activity.time.start,
             dateTime: DateTime.parse(timetableItemUpdate.date.replaceAll('/', '-')),
             key: 'groupKey',
             keyValue: 'group/' + group.id.toString(),
             id: documents.first.fields!['id']!.stringValue!,
-            firestoreApi: firestoreApi);
+            firestoreApi: firestoreApi));
       });
     }
 

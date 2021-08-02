@@ -18,19 +18,9 @@ class CommonRepository {
 
     print(requestMessage.topic);
 
-    AndroidConfig androidConfig = AndroidConfig();
-    AndroidNotification androidNotification = AndroidNotification();
-
-    androidNotification.title = 'title';
-    androidNotification.body = 'body';
-
-    androidConfig.notification = androidNotification;
-
-    requestMessage.android = androidConfig;
-
     Notification notification = Notification();
     notification.title = 'Зміни в розкладі';
-    notification.body = 'В ваш розклад були додані зміни';
+    notification.body = 'В ваш розклад були внесені зміни';
 
     requestMessage.notification = notification;
 
