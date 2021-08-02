@@ -1,4 +1,5 @@
 import 'package:googleapis/fcm/v1.dart';
+import 'package:googleapis/firestore/v1.dart';
 import 'package:googleapis_auth/auth_io.dart';
 
 class CommonRepository {
@@ -39,5 +40,40 @@ class CommonRepository {
         .send(request, 'projects/zhytomyr-politechnic-dev');
     print(message.name);
     print(message.topic);
+  }
+
+  static Future<dynamic> cancelActivity({
+    required String activityTimeStart,
+    required DateTime dateTime,
+    required String key,
+    required String keyValue,
+    required String id,
+    required FirestoreApi firestoreApi,
+  }) {
+    String date = dateTime.year.toString() +
+        '-' +
+        (dateTime.month < 10
+            ? ('0' + dateTime.month.toString())
+            : dateTime.month.toString()) +
+        '-' +
+        (dateTime.day < 10
+            ? '0' + dateTime.day.toString()
+            : dateTime.day.toString());
+
+    Document document = Document();
+
+    Map<String, Value> fields = {
+      'date': Value()..stringValue = date,
+      'time': Value()..stringValue = activityTimeStart,
+      key: Value()..stringValue = keyValue,
+      'id': Value()..stringValue = id,
+    };
+
+    document.fields = fields;
+
+    return firestoreApi.projects.databases.documents.createDocument(
+        document,
+        'projects/emulator/databases/(default)/documents',
+        'timetable_items_update');
   }
 }

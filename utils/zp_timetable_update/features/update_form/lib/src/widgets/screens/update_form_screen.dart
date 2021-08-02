@@ -50,7 +50,6 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
   String? startLessonTime;
   String? endLessonTime;
 
-  //List<Group> selectedGroups = [];
   List<Tutor> tutors = [];
   String? timetableItemType;
   late int dayNumber;
@@ -58,6 +57,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
   late Tutor tutor;
   late DateTime dateTime;
   late Future<void> Function() onUpdateCreated;
+  late List<Group>? initialGroups;
 
   TimetableItem? timetableItem;
 
@@ -76,11 +76,11 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
         ? TimetableItem.fromJson(arguments['timetableItemJson'])
         : null;
 
+    initialGroups = timetableItem?.activity.groups;
     if (timetableItem != null) {
       lessonNameController.text = timetableItem!.activity.name;
       auditoryController.text = timetableItem!.activity.room;
       startLessonTime = timetableItem!.activity.time.start;
-      //selectedGroups = timetableItem!.activity.groups.divide();
       tutors = timetableItem!.activity.tutors;
       timetableItemType = timetableItem!.activity.type;
 
@@ -118,10 +118,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
                     group,
                     group.name +
                         (group.subgroups.isNotEmpty
-                            ? ('(' +
-                            group.subgroups.first
-                                .name +
-                            ')')
+                            ? ('(' + group.subgroups.first.name + ')')
                             : ''));
               }).toList();
 
@@ -280,6 +277,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
                                             .validate()) {
                                           return;
                                         }
+
                                         TimetableItemUpdate
                                             timetableItemUpdate =
                                             _createTimetableUpdate(
@@ -287,9 +285,10 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
                                         await updateFormBloc
                                             .createTimetableUpdate(
                                                 authClient,
-                                                timetableItemUpdate
-                                                    .toDocuments(),
-                                                selectedGroupsSnapshot.data!);
+                                                timetableItemUpdate,
+                                                selectedGroupsSnapshot.data!
+                                                    .compose(),
+                                                initialGroups);
                                         await onUpdateCreated();
                                         Navigator.pop(context);
                                       },

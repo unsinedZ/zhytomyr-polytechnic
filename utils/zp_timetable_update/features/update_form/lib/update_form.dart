@@ -6,3 +6,4 @@ export 'src/bl/abstractions/timetable_update_repository.dart';
 
 export 'src/bl/models/group.dart';
 export 'src/bl/models/tutor.dart';
+export 'src/bl/models/timetable_item_update.dart';

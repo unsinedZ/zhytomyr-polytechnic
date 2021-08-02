@@ -10,6 +10,7 @@ import 'package:timetable/timetable.dart';
 import 'package:zp_timetable_update/bl/models/expireble.dart';
 import 'package:zp_timetable_update/bl/extensions/document_extension.dart';
 import 'package:zp_timetable_update/bl/api/timetable_update_api.dart';
+import 'package:zp_timetable_update/bl/repositories/common_repository.dart';
 
 class TutorTimetableFirestoreRepository implements TimetableRepository {
   final AuthClient client;
@@ -123,8 +124,8 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
     var futures = <Future>[];
 
     activity.groups.forEach((group) async {
-      futures.add(_createTimetableUpdate(
-          activity: activity,
+      futures.add(CommonRepository.cancelActivity(
+          activityTimeStart: activity.time.start,
           dateTime: dateTime,
           id: id,
           firestoreApi: firestoreApi,
@@ -133,8 +134,8 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
     });
 
     activity.tutors.forEach((tutor) async {
-      futures.add(_createTimetableUpdate(
-          activity: activity,
+      futures.add(CommonRepository.cancelActivity(
+          activityTimeStart: activity.time.start,
           dateTime: dateTime,
           id: id,
           firestoreApi: firestoreApi,
@@ -170,38 +171,5 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
     return null;
   }
 
-  Future<dynamic> _createTimetableUpdate({
-    required Activity activity,
-    required DateTime dateTime,
-    required String key,
-    required String keyValue,
-    required String id,
-    required FirestoreApi firestoreApi,
-  }) {
-    String date = dateTime.year.toString() +
-        '-' +
-        (dateTime.month < 10
-            ? ('0' + dateTime.month.toString())
-            : dateTime.month.toString()) +
-        '-' +
-        (dateTime.day < 10
-            ? '0' + dateTime.day.toString()
-            : dateTime.day.toString());
 
-    Document document = Document();
-
-    Map<String, Value> fields = {
-      'date': Value()..stringValue = date,
-      'time': Value()..stringValue = activity.time.start,
-      key: Value()..stringValue = keyValue,
-      'id': Value()..stringValue = id,
-    };
-
-    document.fields = fields;
-
-    return firestoreApi.projects.databases.documents.createDocument(
-        document,
-        'projects/emulator/databases/(default)/documents',
-        'timetable_items_update');
-  }
 }
