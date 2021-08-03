@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,8 @@ class BodyWrapper extends StatefulWidget {
 class _BodyWrapperState extends State<BodyWrapper> {
   @override
   void initState() {
+
+
     context.read<UpdateCheckBloc>().version.listen((version) {
       if (version != null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -31,6 +34,7 @@ class _BodyWrapperState extends State<BodyWrapper> {
               }
             },
           ),
+          behavior: SnackBarBehavior.floating,
         ));
       }
     });
@@ -41,5 +45,11 @@ class _BodyWrapperState extends State<BodyWrapper> {
   @override
   Widget build(BuildContext context) {
     return widget.child;
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
