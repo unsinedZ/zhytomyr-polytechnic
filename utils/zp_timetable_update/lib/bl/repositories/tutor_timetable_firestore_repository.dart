@@ -169,8 +169,8 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
           if(groupKeyValue != null && groupKeyValue.stringValue != null && groupKeyValue.stringValue != '') {
             CommonRepository.createNotification(client, groupKeyValue.stringValue!.substring(6));
           }
-          await firestoreApi.projects.databases.documents
-              .delete(timetableItemUpdate.name!);
+          futures.add(firestoreApi.projects.databases.documents
+              .delete(timetableItemUpdate.name!));
         },
       ).toList(),
     );
