@@ -13,10 +13,19 @@ class CommonRepository {
     SendMessageRequest request = SendMessageRequest();
     Message requestMessage = Message();
 
-    requestMessage.name = 'someTestName';
     requestMessage.topic = 'group.' + groupId;
 
-    print(requestMessage.topic);
+    AndroidConfig androidConfig = AndroidConfig();
+    AndroidNotification androidNotification = AndroidNotification();
+
+    androidNotification.tag = 'timetable update';
+    androidNotification.visibility = 'PUBLIC';
+
+    androidConfig.notification = androidNotification;
+    androidConfig.directBootOk = true;
+
+
+    requestMessage.android = androidConfig;
 
     Notification notification = Notification();
     notification.title = 'Зміни в розкладі';
@@ -28,8 +37,6 @@ class CommonRepository {
 
     Message message = await firebaseCloudMessagingApi.projects.messages
         .send(request, 'projects/zhytomyr-politechnic-dev');
-    print(message.name);
-    print(message.topic);
   }
 
   static Future<dynamic> cancelActivity({

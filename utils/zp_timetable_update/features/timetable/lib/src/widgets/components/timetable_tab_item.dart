@@ -29,8 +29,8 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
 
   bool get isReplaced => widget.updatableTimetableItem.isReplaced;
 
-  TimetableItem get mainTimetableItem =>
-      widget.updatableTimetableItem.timetableItem!;
+  TimetableItem? get mainTimetableItem =>
+      widget.updatableTimetableItem.timetableItem;
 
   TimetableItem get timetableItemUpdate => widget
       .updatableTimetableItem.timetableItemUpdate!.timetableItem!;
@@ -46,7 +46,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
       if (isNew) {
         timetableItem = timetableItemUpdate;
       } else {
-        timetableItem = mainTimetableItem;
+        timetableItem = mainTimetableItem!;
       }
 
       List<String> timeStart = timetableItem.activity.time.start.split(':');
@@ -71,7 +71,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
       children: [
         if (isCancelled || isReplaced)
           ActivityCard.canceled(
-            timetableItem: mainTimetableItem,
+            timetableItem: mainTimetableItem!,
             textLocalizer: widget.textLocalizer,
             dateTime: widget.dateTime,
             updateId: activityUpdateId,
@@ -83,7 +83,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
           ),
         isCurrentClass
             ? ActivityCard.current(
-          timetableItem: mainTimetableItem,
+          timetableItem: mainTimetableItem ?? timetableItemUpdate, // TODO fix it in main app
                 textLocalizer: widget.textLocalizer,
                 dateTime: widget.dateTime,
                 updateId: activityUpdateId,
@@ -98,7 +98,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
                 : isCancelled
                     ? Container()
                     : ActivityCard.simple(
-          timetableItem: mainTimetableItem,
+          timetableItem: mainTimetableItem!,
                         textLocalizer: widget.textLocalizer,
                         dateTime: widget.dateTime,
                         updateId: activityUpdateId,
