@@ -29,8 +29,8 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
 
   bool get isReplaced => widget.updatableTimetableItem.isReplaced;
 
-  Activity get mainActivity =>
-      widget.updatableTimetableItem.timetableItem!.activity;
+  Activity? get mainActivity =>
+      widget.updatableTimetableItem.timetableItem?.activity;
 
   Activity get activityUpdate => widget
       .updatableTimetableItem.timetableItemUpdate!.timetableItem!.activity;
@@ -43,7 +43,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
       if (isNew) {
         activity = activityUpdate;
       } else {
-        activity = mainActivity;
+        activity = mainActivity!;
       }
 
       List<String> timeStart = activity.time.start.split(':');
@@ -68,7 +68,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
       children: [
         if (isCancelled || isReplaced)
           ActivityCard.canceled(
-            activity: mainActivity,
+            activity: mainActivity!,
             textLocalizer: widget.textLocalizer,
           ),
         if (isReplaced)
@@ -78,7 +78,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
           ),
         isCurrentClass
             ? ActivityCard.current(
-                activity: mainActivity,
+                activity: mainActivity ?? activityUpdate,
                 textLocalizer: widget.textLocalizer,
               )
             : isReplaced || isNew
@@ -87,7 +87,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
                     textLocalizer: widget.textLocalizer,
                   )
                 : isCancelled ? Container() : ActivityCard.simple(
-                        activity: mainActivity,
+                        activity: mainActivity!,
                         textLocalizer: widget.textLocalizer,
                       ),
       ],

@@ -8,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 class PushNotificationBloc {
   final StreamSink<String> errorSink;
   final StreamController<String?> _pushNotificationController =
-      StreamController.broadcast();
+  StreamController.broadcast();
 
   PushNotificationBloc({required this.errorSink});
 
@@ -17,14 +17,15 @@ class PushNotificationBloc {
   void subscribeToNew(String groupId, String subgroupId) =>
       Stream.value(Group(groupId: groupId, subgroupId: subgroupId))
           .doOnData((group) =>
-              FirebaseMessaging.instance.subscribeToTopic(group.toTopic))
-          .switchMap((group) => pushNotification
+          FirebaseMessaging.instance.subscribeToTopic(group.toTopic))
+          .switchMap((group) =>
+          pushNotification
               .take(1)
               .doOnData((_) => _pushNotificationController.add(group.toTopic))
               .where((lastTopic) =>
-                  lastTopic != group.toTopic && lastTopic!.isNotEmpty)
+          lastTopic != group.toTopic && lastTopic!.isNotEmpty)
               .asyncMap((lastTopic) =>
-                  FirebaseMessaging.instance.unsubscribeFromTopic(lastTopic!))
+              FirebaseMessaging.instance.unsubscribeFromTopic(lastTopic!)) // TODO - rework, it don`t work
               .doOnError((error, _) => errorSink.add(error.toString())))
           .toList();
 
