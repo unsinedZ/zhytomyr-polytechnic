@@ -18,7 +18,7 @@ extension DocumentExtensions on List<Group> {
     }).toList();
   }
 
-  List<Group> compose() {
+  List<Group> compress() {
     List<Group> groups = [];
 
     this.forEach((group) {

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:googleapis/firestore/v1.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -8,7 +7,6 @@ import 'package:update_form/src/bl/abstractions/groups_repository.dart';
 import 'package:update_form/src/bl/abstractions/timetable_update_repository.dart';
 import 'package:update_form/src/bl/models/group.dart';
 import 'package:update_form/src/bl/models/timetable_item_update.dart';
-import 'package:update_form/src/bl/models/tutor.dart';
 
 class UpdateFormBloc {
   final IGroupsRepository groupsRepository;

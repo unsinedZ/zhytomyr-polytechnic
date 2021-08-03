@@ -1,9 +1,7 @@
 import 'package:authorization_bloc/authorization_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:googleapis/firestore/v1.dart';
 
 import 'package:provider/provider.dart';
-
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);

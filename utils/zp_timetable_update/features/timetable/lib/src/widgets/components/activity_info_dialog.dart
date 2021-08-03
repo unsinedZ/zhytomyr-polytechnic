@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:googleapis_auth/auth_io.dart';
-import 'package:provider/provider.dart';
 
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/bl/models/models.dart';

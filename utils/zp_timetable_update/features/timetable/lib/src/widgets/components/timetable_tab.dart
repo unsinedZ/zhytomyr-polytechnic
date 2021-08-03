@@ -57,17 +57,11 @@ class _TimetableTabState extends State<TimetableTab> {
     authClient = context.read<AuthClient>();
     tutor = context.read<Tutor>();
 
-    //widgets = stateToWidgets();
-
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant TimetableTab oldWidget) {
-    // setState(() {
-    //   widgets = stateToWidgets();
-    // });
-
     super.didUpdateWidget(oldWidget);
   }
 

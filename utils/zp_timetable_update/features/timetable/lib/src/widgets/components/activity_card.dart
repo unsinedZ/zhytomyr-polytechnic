@@ -66,36 +66,9 @@ class _ActivityCardState extends State<ActivityCard> {
       key: Key(widget.updateId == null
           ? ''
           : widget.updateId! + '/' + widget.dateTime.toString()),
-      onTap: () {
-        showDialog<void>(
-          context: context,
-          builder: (context) => ActivityInfoDialog(
-            timetableItem: widget.timetableItem,
-            textLocalizer: widget.textLocalizer,
-            onCancel: () async {
-              Navigator.pop(context);
-              await timetableBloc.cancelLesson(
-                  widget.timetableItem.activity, widget.dateTime);
-            },
-            isUpdated: widget.updateId != null,
-            onUpdateCancel: () async {
-              if (widget.updateId != null) {
-                Navigator.pop(context);
-                await timetableBloc.deleteTimetableUpdate(widget.updateId!);
-              }
-            },
-            onUpdateCreated: () async {
-              Navigator.pop(context);
-              timetableBloc.loadTimetableItemUpdates();
-            },
-            authClient: authClient,
-            dateTime: widget.dateTime,
-            tutor: tutor,
-          ),
-        );
-      },
+      onTap: _showActivityInfoDialog,
       child: Container(
-        color: getBackgroundColor(context),
+        color: _getBackgroundColor(context),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 12),
           child: IntrinsicHeight(
@@ -185,7 +158,7 @@ class _ActivityCardState extends State<ActivityCard> {
     );
   }
 
-  Color? getBackgroundColor(BuildContext context) {
+  Color? _getBackgroundColor(BuildContext context) {
     switch (this.widget._activityCardType) {
       case _ActivityCardType.Simple:
         return Theme.of(context).canvasColor;
@@ -196,6 +169,35 @@ class _ActivityCardState extends State<ActivityCard> {
       case _ActivityCardType.Current:
         return Theme.of(context).hoverColor;
     }
+  }
+
+  void _showActivityInfoDialog() {
+    showDialog<void>(
+      context: context,
+      builder: (context) => ActivityInfoDialog(
+        timetableItem: widget.timetableItem,
+        textLocalizer: widget.textLocalizer,
+        onCancel: () async {
+          Navigator.pop(context);
+          await timetableBloc.cancelLesson(
+              widget.timetableItem.activity, widget.dateTime);
+        },
+        isUpdated: widget.updateId != null,
+        onUpdateCancel: () async {
+          if (widget.updateId != null) {
+            Navigator.pop(context);
+            await timetableBloc.deleteTimetableUpdate(widget.updateId!);
+          }
+        },
+        onUpdateCreated: () async {
+          Navigator.pop(context);
+          timetableBloc.loadTimetableItemUpdates();
+        },
+        authClient: authClient,
+        dateTime: widget.dateTime,
+        tutor: tutor,
+      ),
+    );
   }
 }
 

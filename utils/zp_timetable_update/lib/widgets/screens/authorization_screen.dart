@@ -7,7 +7,6 @@ import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 import 'package:authorization_bloc/authorization_bloc.dart';
-import 'package:googleapis_auth/auth_io.dart';
 
 import 'package:zp_timetable_update/bl/services/files_picker.dart';
 import 'package:zp_timetable_update/widgets/components/submit_button.dart';

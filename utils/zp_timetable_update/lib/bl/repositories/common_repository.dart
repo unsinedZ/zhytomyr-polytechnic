@@ -7,7 +7,6 @@ class CommonRepository {
     FirebaseCloudMessagingApi firebaseCloudMessagingApi =
     FirebaseCloudMessagingApi(
       client,
-      // rootUrl: 'http://127.0.0.1:8080/',
     );
 
     SendMessageRequest request = SendMessageRequest();
@@ -35,7 +34,7 @@ class CommonRepository {
 
     request.message = requestMessage;
 
-    Message message = await firebaseCloudMessagingApi.projects.messages
+    firebaseCloudMessagingApi.projects.messages
         .send(request, 'projects/zhytomyr-politechnic-dev');
   }
 

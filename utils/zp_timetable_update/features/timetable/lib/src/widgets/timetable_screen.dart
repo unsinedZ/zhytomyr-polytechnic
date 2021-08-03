@@ -87,10 +87,9 @@ class _TimetableScreenState extends State<TimetableScreen> {
     );
 
     timetableBloc.loadTimetableItemUpdates();
-
     timetableBloc.loadTimetable();
-
     timetableBloc.loadTutor(client);
+
     timetableBloc.tutor.listen((tutor) {
       setState(() {
         this.tutor = tutor;
@@ -120,7 +119,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
         child: Scaffold(
           appBar: AppBar(
             bottom: TabBar(
-              indicatorColor: Colors.amberAccent,
+              indicatorColor: Theme.of(context).focusColor,
               labelColor: Colors.white,
               unselectedLabelColor: Color(0xc3ffffff),
               tabs: _weekDaysNames
@@ -147,29 +146,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
             ],
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              showModalBottomSheet(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                ),
-                context: context,
-                builder: (context) => FiltersBottomSheet(
-                  onCurrentWeekChanged: (int newWeekNumber) {
-                    setState(() {
-                      weekNumber = newWeekNumber;
-                      isWeekChanged = !isWeekChanged;
-                    });
-                  },
-                  currentWeekNumber: weekNumber,
-                  group: group,
-                  currentSubgroupId: subgroupId,
-                  textLocalizer: widget.textLocalizer,
-                ),
-              );
-            },
+            onPressed: _showFilterBottomSheet,
             child: Icon(Icons.filter_alt_outlined),
           ),
           body: StreamBuilder<List<dynamic>>(
@@ -222,6 +199,30 @@ class _TimetableScreenState extends State<TimetableScreen> {
             },
           ),
         ),
+      ),
+    );
+  }
+
+  void _showFilterBottomSheet() {
+    showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      context: context,
+      builder: (context) => FiltersBottomSheet(
+        onCurrentWeekChanged: (int newWeekNumber) {
+          setState(() {
+            weekNumber = newWeekNumber;
+            isWeekChanged = !isWeekChanged;
+          });
+        },
+        currentWeekNumber: weekNumber,
+        group: group,
+        currentSubgroupId: subgroupId,
+        textLocalizer: widget.textLocalizer,
       ),
     );
   }
