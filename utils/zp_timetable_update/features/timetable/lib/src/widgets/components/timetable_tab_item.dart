@@ -83,7 +83,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
           ),
         isCurrentClass
             ? ActivityCard.current(
-          timetableItem: mainTimetableItem ?? timetableItemUpdate, // TODO fix it in main app
+          timetableItem: mainTimetableItem ?? timetableItemUpdate,
                 textLocalizer: widget.textLocalizer,
                 dateTime: widget.dateTime,
                 updateId: activityUpdateId,

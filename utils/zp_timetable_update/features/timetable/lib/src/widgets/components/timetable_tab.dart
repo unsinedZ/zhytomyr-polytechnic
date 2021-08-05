@@ -231,7 +231,7 @@ class _TimetableTabState extends State<TimetableTab> {
           timetableItemUpdate = updates.first;
         }
       }
-    } // TODO - fix it in main app
+    }
 
     if (timetableItem != null || timetableItemUpdate != null) {
       return UpdatableTimetableItem(

@@ -121,40 +121,40 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
     FirestoreApi firestoreApi =
         FirestoreApi(client, rootUrl: 'http://127.0.0.1:8080/');
 
-    var futures = <Future>[];
+    CommitRequest commitRequest = CommitRequest();
+
+    commitRequest.writes = [];
 
     activity.groups.forEach((group) async {
-      futures.add(CommonRepository.cancelActivity(
-          activityTimeStart: activity.time.start,
-          dateTime: dateTime,
-          id: id,
-          firestoreApi: firestoreApi,
-          key: 'groupKey',
-          keyValue: 'group/' + group.id.toString()));
+      commitRequest.writes!.add(Write()
+        ..update = CommonRepository.createActivityCancelDocument(
+            activityTimeStart: activity.time.start,
+            dateTime: dateTime,
+            id: id,
+            key: 'groupKey',
+            keyValue: 'group/' + group.id.toString()));
+
       CommonRepository.createNotification(client, group.id.toString());
     });
 
     activity.tutors.forEach((tutor) async {
-      futures.add(CommonRepository.cancelActivity(
-          activityTimeStart: activity.time.start,
-          dateTime: dateTime,
-          id: id,
-          firestoreApi: firestoreApi,
-          key: 'tutorKey',
-          keyValue: 'tutor/' + tutor.id.toString()));
+      commitRequest.writes!.add(Write()
+        ..update = CommonRepository.createActivityCancelDocument(
+            activityTimeStart: activity.time.start,
+            dateTime: dateTime,
+            id: id,
+            key: 'tutorKey',
+            keyValue: 'tutor/' + tutor.id.toString()));
     });
 
-    await Future.wait(futures);
-
-    return null;
+    await firestoreApi.projects.databases.documents.commit(commitRequest,
+        'projects/emulator/databases/(default)'); // TODO - change
   }
 
   @override
   Future<void> deleteTimetableUpdate(String id) async {
     FirestoreApi firestoreApi =
         FirestoreApi(client, rootUrl: 'http://127.0.0.1:8080/');
-
-    var futures = <Future>[];
 
     await TimetableUpdateApi.runQuery(
       fieldPath: 'id',
@@ -163,20 +163,24 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
       valueType: ValueType.String,
       client: client,
     ).then(
-      (docs) => docs.map(
-        (timetableItemUpdate) async {
-          Value? groupKeyValue = timetableItemUpdate.fields?['groupKey'];
-          if(groupKeyValue != null && groupKeyValue.stringValue != null && groupKeyValue.stringValue != '') {
-            CommonRepository.createNotification(client, groupKeyValue.stringValue!.substring(6));
+      (docs) async {
+        CommitRequest commitRequest = CommitRequest();
+
+        commitRequest.writes = docs.map((doc) {
+          Value? groupKeyValue = doc.fields?['groupKey'];
+          if (groupKeyValue != null &&
+              groupKeyValue.stringValue != null &&
+              groupKeyValue.stringValue != '') {
+            CommonRepository.createNotification(
+                client, groupKeyValue.stringValue!.substring(6));
           }
-          futures.add(firestoreApi.projects.databases.documents
-              .delete(timetableItemUpdate.name!));
-        },
-      ).toList(),
+
+          return (Write()..delete = doc.name!);
+        }).toList();
+
+        await firestoreApi.projects.databases.documents.commit(commitRequest,
+            'projects/emulator/databases/(default)'); // TODO - change
+      },
     );
-
-    await Future.wait(futures);
-
-    return null;
   }
 }

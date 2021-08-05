@@ -48,7 +48,7 @@ class MainFirestoreRepository implements TutorRepository, IGroupsRepository {
     groups.addAll(groupsResponse.documents!
         .map((groupDocument) => Group.fromJson(groupDocument.toJsonFixed())));
 
-    //print(groupsResponse.nextPageToken);
+    //print(groupsResponse.nextPageToken); // TODO - check with real firestore
 
     while (groupsResponse.nextPageToken != null) {
       groupsResponse = await firestoreApi.projects.databases.documents.list(

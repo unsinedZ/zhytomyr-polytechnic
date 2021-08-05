@@ -1,11 +1,13 @@
 import 'package:googleapis/fcm/v1.dart';
 import 'package:googleapis/firestore/v1.dart';
 import 'package:googleapis_auth/auth_io.dart';
+import 'package:uuid/uuid.dart';
 
 class CommonRepository {
-  static Future<void> createNotification(AuthClient client, String groupId) async {
+  static Future<void> createNotification(
+      AuthClient client, String groupId) async {
     FirebaseCloudMessagingApi firebaseCloudMessagingApi =
-    FirebaseCloudMessagingApi(
+        FirebaseCloudMessagingApi(
       client,
     );
 
@@ -19,12 +21,23 @@ class CommonRepository {
 
     androidNotification.tag = 'timetable update';
     androidNotification.visibility = 'PUBLIC';
+    androidNotification.notificationPriority = 'PRIORITY_HIGH';
 
     androidConfig.notification = androidNotification;
     androidConfig.directBootOk = true;
 
-
     requestMessage.android = androidConfig;
+
+    ApnsConfig apnsConfig = ApnsConfig();
+
+    apnsConfig.payload = {
+      "aps": {
+        "contentAvailable": true,
+      },
+      "category": "timetable_update",
+    };
+
+    requestMessage.apns = apnsConfig;
 
     Notification notification = Notification();
     notification.title = 'Зміни в розкладі';
@@ -34,18 +47,19 @@ class CommonRepository {
 
     request.message = requestMessage;
 
-    firebaseCloudMessagingApi.projects.messages
+    await firebaseCloudMessagingApi.projects.messages
         .send(request, 'projects/zhytomyr-politechnic-dev');
   }
 
-  static Future<dynamic> cancelActivity({
+  static Document createActivityCancelDocument({
     required String activityTimeStart,
     required DateTime dateTime,
     required String key,
     required String keyValue,
     required String id,
-    required FirestoreApi firestoreApi,
   }) {
+    var uuid = Uuid();
+
     String date = dateTime.year.toString() +
         '-' +
         (dateTime.month < 10
@@ -66,10 +80,8 @@ class CommonRepository {
     };
 
     document.fields = fields;
+    document.name = 'projects/emulator/databases/(default)/documents/timetable_items_update/' + uuid.v4(); // TODO - change
 
-    return firestoreApi.projects.databases.documents.createDocument(
-        document,
-        'projects/emulator/databases/(default)/documents',
-        'timetable_items_update');
+    return document;
   }
 }

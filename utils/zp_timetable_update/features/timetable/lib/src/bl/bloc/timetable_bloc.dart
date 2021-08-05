@@ -50,7 +50,7 @@ class TimetableBloc {
   Future<void> loadTimetableItemUpdates() async {
     _timetableItemUpdatesController.add(null);
 
-    timetableRepository
+    await timetableRepository
         .getTimetableItemUpdates(tutorId)
         .then((timetableItemUpdates) {
       _timetableItemUpdatesController.add(timetableItemUpdates);
