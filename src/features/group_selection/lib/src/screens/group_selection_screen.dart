@@ -8,7 +8,6 @@ import 'package:group_selection/src/bl/bloc/group_selection_bloc.dart';
 import 'package:group_selection/src/bl/models/models.dart';
 import 'package:group_selection/src/components/checkbox_with_title.dart';
 import 'package:group_selection/src/components/submit_button.dart';
-import 'package:notification_permissions/notification_permissions.dart';
 
 class GroupSelectionScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;

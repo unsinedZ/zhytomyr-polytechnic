@@ -547,7 +547,7 @@ packages:
     source: hosted
     version: "1.0.0"
   notification_permissions:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: notification_permissions
       url: "https://pub.dartlang.org"

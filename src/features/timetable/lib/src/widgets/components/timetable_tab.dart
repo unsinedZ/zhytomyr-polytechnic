@@ -187,18 +187,31 @@ class _TimetableTabState extends State<TimetableTab> {
     TimetableItemUpdate? timetableItemUpdate,
   }) {
     if (timetableItemUpdates.isNotEmpty) {
-      timetableItemUpdates.forEach((timetableUpdate) {
+      List<TimetableItemUpdate> updates =
+      timetableItemUpdates.where((timetableUpdate) {
         String updateItemTime = timetableUpdate.time;
         String activityStartTime = timetableItem!.activity.time.start;
 
         DateTime dateTime =
-            DateTime.parse(timetableUpdate.date.replaceAll('/', '-'));
+        DateTime.parse(timetableUpdate.date.replaceAll('/', '-'));
 
-        if (widget.dateTime.asDate().isAtSameMomentAs(dateTime) &&
-            updateItemTime == activityStartTime) {
-          timetableItemUpdate = timetableUpdate;
+        return widget.dateTime.asDate().isAtSameMomentAs(dateTime) &&
+            updateItemTime == activityStartTime;
+      }).toList();
+
+      if (updates.length == 1) {
+        timetableItemUpdate = updates.first;
+      }
+
+      if (updates.length > 1) {
+        List<TimetableItemUpdate> updatesWithItem =
+        updates.where((update) => update.timetableItem != null).toList();
+        if(updatesWithItem.isNotEmpty) {
+          timetableItemUpdate = updatesWithItem.first;
+        } else {
+          timetableItemUpdate = updates.first;
         }
-      });
+      }
     }
 
     if (timetableItem != null || timetableItemUpdate != null) {

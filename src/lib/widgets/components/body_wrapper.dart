@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:notification_permissions/notification_permissions.dart';
 
 import 'package:provider/provider.dart';
 
 import 'package:update_check/update_check.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 
 class BodyWrapper extends StatefulWidget {
