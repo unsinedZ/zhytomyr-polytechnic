@@ -30,6 +30,9 @@ class _WithStartupActionsState extends State<WithStartupActions> {
   void initState() {
     final userSyncBloc = context.read<UserSyncBloc>();
 
+    context
+        .read<PushNotificationBloc>().init();
+
     userSyncBloc.syncUser
         .where((user) => user != null && !user.isEmpty)
         .listen((user) {

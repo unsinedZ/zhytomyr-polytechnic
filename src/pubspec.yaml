@@ -17,6 +17,7 @@ dependencies:
   rxdart: ^0.26.0
   fluttertoast: ^8.0.3
   firebase_core: ^1.1.0
+  flutter_local_notifications: ^8.0.0
   faculty_list: 
     path: features/faculty_list
   provider: ^5.0.0
