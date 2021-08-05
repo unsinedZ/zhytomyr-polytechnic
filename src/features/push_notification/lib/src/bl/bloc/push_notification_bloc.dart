@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:push_notification/src/bl/models/group.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:rxdart/rxdart.dart';
 
 class PushNotificationBloc {
   final StreamSink<String> errorSink;
