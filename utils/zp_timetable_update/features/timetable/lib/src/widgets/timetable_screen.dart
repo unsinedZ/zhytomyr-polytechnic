@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/widgets/components/components.dart';
 import 'package:timetable/src/bl/bloc/timetable_bloc.dart';
-import 'package:timetable/src/bl/abstractions/tutor_repository.dart';
 import 'package:timetable/src/bl/models/models.dart';
 import 'package:timetable/src/widgets/components/filters_bottom_sheet.dart';
 import 'package:timetable/src/widgets/components/timetable_tab_shimmer.dart';
@@ -18,15 +17,12 @@ import 'package:timetable/timetable.dart';
 
 class TimetableScreen extends StatefulWidget {
   final ITextLocalizer textLocalizer;
-  final TutorRepository tutorRepository;
-  final TimetableRepository Function(AuthClient client)
-      timetableRepositoryFactory;
+  final TimetableBloc timetableBloc;
   final StreamSink<String> errorSink;
 
   TimetableScreen({
     required this.textLocalizer,
-    required this.tutorRepository,
-    required this.timetableRepositoryFactory,
+    required this.timetableBloc,
     required this.errorSink,
   });
 
@@ -42,7 +38,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
   bool isWeekChanged = false;
   bool isNextDay = false;
 
-  late TimetableBloc timetableBloc;
   late int weekNumber;
   late int id;
   late AuthClient client;
@@ -77,28 +72,22 @@ class _TimetableScreenState extends State<TimetableScreen> {
         (ModalRoute.of(context)!.settings.arguments) as Map<String, dynamic>;
 
     id = arguments['id'];
+
     client = arguments['client'];
 
-    timetableBloc = TimetableBloc(
-      timetableRepository: widget.timetableRepositoryFactory(client),
-      errorSink: widget.errorSink,
-      tutorRepository: widget.tutorRepository,
-      tutorId: id,
-    );
+    widget.timetableBloc.loadTimetableItemUpdates(id, client);
+    widget.timetableBloc.loadTimetable(id, client);
+    widget.timetableBloc.loadTutor(client, id);
 
-    timetableBloc.loadTimetableItemUpdates();
-    timetableBloc.loadTimetable();
-    timetableBloc.loadTutor(client);
-
-    timetableBloc.tutor.listen((tutor) {
+    widget.timetableBloc.tutor.listen((tutor) {
       setState(() {
         this.tutor = tutor;
       });
     });
 
     dataStream = Rx.combineLatest2(
-      timetableBloc.timetable,
-      timetableBloc.timetableItemUpdates,
+      widget.timetableBloc.timetable,
+      widget.timetableBloc.timetableItemUpdates,
       (a, b) => <dynamic>[a, b],
     );
 
@@ -109,7 +98,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<TimetableBloc>(create: (_) => timetableBloc),
+        Provider<TimetableBloc>(create: (_) => widget.timetableBloc),
         Provider<AuthClient>(create: (_) => client),
         Provider<Tutor>(create: (_) => tutor!),
       ],
@@ -140,7 +129,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                       Icons.refresh,
                     ),
                     onPressed: () {
-                      timetableBloc.loadTimetableItemUpdates();
+                      widget.timetableBloc.loadTimetableItemUpdates(id, client);
                     },
                   )),
             ],

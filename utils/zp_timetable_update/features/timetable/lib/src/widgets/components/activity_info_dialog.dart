@@ -11,7 +11,6 @@ class ActivityInfoDialog extends StatefulWidget {
   final DateTime dateTime;
   final VoidCallback onCancel;
   final VoidCallback onUpdateCancel;
-  final VoidCallback onUpdateCreated;
   final bool isUpdated;
   final AuthClient authClient;
   final Tutor tutor;
@@ -22,7 +21,6 @@ class ActivityInfoDialog extends StatefulWidget {
     required this.dateTime,
     required this.onCancel,
     required this.onUpdateCancel,
-    required this.onUpdateCreated,
     required this.isUpdated,
     required this.authClient,
     required this.tutor,
@@ -121,7 +119,6 @@ class _ActivityInfoDialogState extends State<ActivityInfoDialog> {
                               'client': widget.authClient,
                               'timetableItemJson': widget.timetableItem.toJson(),
                               'dateTime': widget.dateTime,
-                              'onUpdateCreated': widget.onUpdateCreated,
                               'dayNumber': widget.timetableItem.dayNumber,
                               'weekNumber': widget.timetableItem.weekNumber,
                               'tutorJson': widget.tutor.toJson(),

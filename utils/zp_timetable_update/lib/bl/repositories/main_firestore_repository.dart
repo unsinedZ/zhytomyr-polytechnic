@@ -7,7 +7,7 @@ import 'package:update_form/update_form.dart' hide Tutor;
 import 'package:zp_timetable_update/bl/api/timetable_update_api.dart';
 import 'package:zp_timetable_update/bl/extensions/document_extension.dart';
 
-class MainFirestoreRepository implements TutorRepository, IGroupsRepository {
+class MainFirestoreRepository implements TutorRepository, IGroupsRepository, ITutorAuthRepository {
   @override
   Future<Tutor?> getTutorById(int teacherId, AuthClient client) async {
     List<Tutor> tutors = (await TimetableUpdateApi.runQuery(
@@ -39,7 +39,7 @@ class MainFirestoreRepository implements TutorRepository, IGroupsRepository {
       'projects/emulator/databases/(default)/documents',
       'groups',
       pageSize: 1000,
-    ); // TODO delete emulator
+    ); // TODO change
 
     if (groupsResponse.documents == null) {
       return [];
@@ -51,14 +51,28 @@ class MainFirestoreRepository implements TutorRepository, IGroupsRepository {
     //print(groupsResponse.nextPageToken); // TODO - check with real firestore
 
     while (groupsResponse.nextPageToken != null) {
-      groupsResponse = await firestoreApi.projects.databases.documents.list(
-          'projects/emulator/databases/(default)/documents', 'groups',
-          pageSize: 10000, pageToken: groupsResponse.nextPageToken);
+      groupsResponse = await firestoreApi.projects.databases.documents
+          .list('projects/emulator/databases/(default)/documents', 'groups',
+              // TODO - change
+              pageSize: 10000,
+              pageToken: groupsResponse.nextPageToken);
 
       groups.addAll(groupsResponse.documents!
           .map((groupDocument) => Group.fromJson(groupDocument.toJsonFixed())));
     }
 
     return groups;
+  }
+
+  @override
+  Future<int> loadTutorId(AuthClient client, String clientId) async {
+    FirestoreApi firestoreApi =
+        FirestoreApi(client);
+
+    Document tutorDocument = await firestoreApi.projects.databases.documents.get(
+        'projects/zhytomyr-politechnic-dev/databases/(default)/documents/service_accounts/' +
+            clientId);
+
+    return int.parse(tutorDocument.fields!['tutorId']!.integerValue!);
   }
 }

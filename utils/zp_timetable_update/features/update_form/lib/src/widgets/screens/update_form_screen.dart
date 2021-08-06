@@ -7,8 +7,6 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:update_form/src/widgets/components/groupsMultiSelect.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:update_form/src/bl/abstractions/groups_repository.dart';
-import 'package:update_form/src/bl/abstractions/timetable_update_repository.dart';
 import 'package:update_form/src/bl/bloc/update_form_bloc.dart';
 import 'package:update_form/src/bl/extensions/groups_list_extension.dart';
 import 'package:update_form/src/bl/models/activity.dart';
@@ -19,14 +17,12 @@ import 'package:update_form/src/bl/models/timetable_item_update.dart';
 import 'package:update_form/src/bl/models/tutor.dart';
 
 class UpdateFormScreen extends StatefulWidget {
-  final IGroupsRepository groupsRepository;
-  final ITimetableUpdateRepository timetableUpdateRepository;
+  final UpdateFormBloc updateFormBloc;
   final StreamSink<String> errorSink;
 
   const UpdateFormScreen({
     Key? key,
-    required this.groupsRepository,
-    required this.timetableUpdateRepository,
+    required this.updateFormBloc,
     required this.errorSink,
   }) : super(key: key);
 
@@ -35,16 +31,12 @@ class UpdateFormScreen extends StatefulWidget {
 }
 
 class _UpdateFormScreenState extends State<UpdateFormScreen> {
-  late final UpdateFormBloc updateFormBloc = UpdateFormBloc(
-    groupsRepository: widget.groupsRepository,
-    errorSink: widget.errorSink,
-    timetableUpdateRepository: widget.timetableUpdateRepository,
-  );
   final TextEditingController lessonNameController = TextEditingController();
   final TextEditingController auditoryController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   late AuthClient authClient;
+  late StreamSubscription isUpdatingStreamSubscription;
 
   String groupsSelectionValidationMessage = '';
   String? startLessonTime;
@@ -56,14 +48,13 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
   late int weekNumber;
   late Tutor tutor;
   late DateTime dateTime;
-  late Future<void> Function() onUpdateCreated;
   late List<Group>? initialGroups;
 
   TimetableItem? timetableItem;
 
   @override
   void initState() {
-    updateFormBloc.isUpdateCreating.listen((isUpdateCreating) {
+    isUpdatingStreamSubscription = widget.updateFormBloc.isUpdateCreating.listen((isUpdateCreating) {
       if (isUpdateCreating == true) {
         Navigator.of(context).push(
           PageRouteBuilder(
@@ -93,7 +84,6 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
 
     authClient = arguments['client'];
     dateTime = arguments['dateTime'];
-    onUpdateCreated = arguments['onUpdateCreated'];
     dayNumber = arguments['dayNumber'];
     weekNumber = arguments['weekNumber'];
     tutor = Tutor.fromJson(arguments['tutorJson']);
@@ -109,12 +99,11 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
       tutors = timetableItem!.activity.tutors;
       timetableItemType = timetableItem!.activity.type;
 
-      updateFormBloc.setSelectedGroups(timetableItem!.activity.groups.divide());
+      widget.updateFormBloc
+          .setSelectedGroups(timetableItem!.activity.groups.divide());
     }
 
-    updateFormBloc.loadGroups(authClient);
-
-    widget.groupsRepository.getGroups(authClient);
+    widget.updateFormBloc.loadGroups(authClient);
 
     super.didChangeDependencies();
   }
@@ -129,7 +118,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
         ),
       ),
       body: StreamBuilder<List<Group>>(
-          stream: updateFormBloc.groups.map((event) => event.divide()),
+          stream: widget.updateFormBloc.groups.map((event) => event.divide()),
           builder: (context, snapshot) {
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Center(
@@ -218,7 +207,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
                       ),
                     ),
                     StreamBuilder<List<Group>>(
-                        stream: updateFormBloc.selectedGroups,
+                        stream: widget.updateFormBloc.selectedGroups,
                         initialData: [],
                         builder: (context, selectedGroupsSnapshot) {
                           return Column(
@@ -226,11 +215,12 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
                               GroupsMultiSelect(
                                 items: items,
                                 removeGroup: (group) {
-                                  updateFormBloc.removeFromSelectedGroup(group);
+                                  widget.updateFormBloc
+                                      .removeFromSelectedGroup(group);
                                 },
                                 selectedGroups: selectedGroupsSnapshot.data!,
                                 onConfirm: (values) {
-                                  updateFormBloc.setSelectedGroups(
+                                  widget.updateFormBloc.setSelectedGroups(
                                       values.map((group) => group!).toList());
                                 },
                               ),
@@ -283,10 +273,12 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
     }
 
     TimetableItemUpdate timetableItemUpdate = _createTimetableUpdate(groups);
-    await updateFormBloc.createTimetableUpdate(
+    await widget.updateFormBloc.createTimetableUpdate(
         authClient, timetableItemUpdate, groups.compress(), initialGroups);
     Navigator.pop(context);
-    onUpdateCreated();
+    if(timetableItem != null) {
+      Navigator.pop(context);
+    }
   }
 
   TimetableItemUpdate _createTimetableUpdate(List<Group> selectedGroups) {
@@ -324,6 +316,13 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
 
     return timetableItemUpdate;
   }
+
+  @override
+  void dispose() {
+    isUpdatingStreamSubscription.cancel();
+    super.dispose();
+  }
+
 }
 
 Map<String, String> startEndLessonMap = {
@@ -333,7 +332,7 @@ Map<String, String> startEndLessonMap = {
   '13:30': '14:50',
   '15:00': '16:20',
   '16:30': '17:50',
-}; // TODO - transfer to cloud config
+};
 
 _defaultValidator(String? value, validationMessage) {
   if (value == null || value.isEmpty) {

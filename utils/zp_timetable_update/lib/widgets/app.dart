@@ -5,12 +5,8 @@ import 'package:timetable/timetable.dart';
 import 'package:provider/provider.dart';
 
 import 'package:error_bloc/error_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:update_form/update_form.dart';
 
-import 'package:zp_timetable_update/bl/repositories/main_firestore_repository.dart';
-import 'package:zp_timetable_update/bl/repositories/timetable_update_repository.dart';
-import 'package:zp_timetable_update/bl/repositories/tutor_timetable_firestore_repository.dart';
 import 'package:zp_timetable_update/bl/services/text_localizer.dart';
 import 'package:zp_timetable_update/widgets/dependencies.dart';
 import 'package:zp_timetable_update/widgets/screens/authorization_screen.dart';
@@ -83,20 +79,14 @@ class App extends StatelessWidget {
           initialRoute: '/authentication',
           routes: {
             '/authentication': (context) => AuthorizationScreen(),
-            '/main_screen': (context) => TimetableScreen(
+            '/timetable_screen': (context) => TimetableScreen(
                   textLocalizer: TextLocalizer(),
-                  tutorRepository: MainFirestoreRepository(),
-                  timetableRepositoryFactory: (client) =>
-                      TutorTimetableFirestoreRepository(
-                    client: client,
-                    sharedPreferences: SharedPreferences.getInstance(),
-                  ),
+                  timetableBloc: context.read<TimetableBloc>(),
                   errorSink: context.read<ErrorBloc>().errorSink,
                 ),
             '/update_form': (context) => UpdateFormScreen(
-                  groupsRepository: MainFirestoreRepository(),
+                  updateFormBloc: context.read<UpdateFormBloc>(),
                   errorSink: context.read<ErrorBloc>().errorSink,
-                  timetableUpdateRepository: TimetableUpdateRepository(),
                 ),
           },
         ),

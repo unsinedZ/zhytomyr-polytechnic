@@ -30,10 +30,13 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     _tokenSubscription = _authorizationBloc.authClient
         .where((client) => client != null)
         .listen((client) {
-      Navigator.pushReplacementNamed(context, "/main_screen", arguments: {
-        'id': 60,
-        'client': client,
-      });
+          if(_authorizationBloc.tutorId.hasValue && _authorizationBloc.tutorId.value != -1) {
+        Navigator.pushReplacementNamed(context, "/timetable_screen",
+            arguments: {
+              'id': _authorizationBloc.tutorId.value,
+              'client': client,
+            });
+      }
     });
     super.initState();
   }

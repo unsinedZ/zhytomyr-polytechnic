@@ -27,14 +27,19 @@ class UpdateFormBloc {
   final BehaviorSubject<List<Group>> _selectedGroupsSubject =
       BehaviorSubject<List<Group>>();
 
-  final BehaviorSubject<bool> _isUpdateCreatingSubject =
-  BehaviorSubject<bool>();
+  final StreamController<bool> _isUpdateCreatingSubject =
+      StreamController<bool>.broadcast();
+
+  final StreamController<void> _onUpdateCreatedController =
+      StreamController<void>();
 
   Stream<List<Group>> get groups => _groupsSubject.stream;
 
   Stream<List<Group>> get selectedGroups => _selectedGroupsSubject.stream;
 
   Stream<bool> get isUpdateCreating => _isUpdateCreatingSubject.stream;
+
+  Stream<void> get onUpdateCreated => _onUpdateCreatedController.stream;
 
   void loadGroups(AuthClient client) {
     _groupsSubject.add([]);
@@ -67,8 +72,9 @@ class UpdateFormBloc {
     _isUpdateCreatingSubject.add(true);
     await timetableUpdateRepository
         .addTimetableUpdate(client, timetableItemUpdate, groups, initialGroups)
-        .then((_) {})
-        .onError((error, stack) {
+        .then((_) {
+      _onUpdateCreatedController.add(null);
+    }).onError((error, stack) {
       print(error);
       print(stack);
       errorSink.add(error.toString());
@@ -80,5 +86,6 @@ class UpdateFormBloc {
     _groupsSubject.close();
     _selectedGroupsSubject.close();
     _isUpdateCreatingSubject.close();
+    _onUpdateCreatedController.close();
   }
 }

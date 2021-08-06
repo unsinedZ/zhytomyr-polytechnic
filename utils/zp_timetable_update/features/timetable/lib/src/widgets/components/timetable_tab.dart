@@ -42,7 +42,6 @@ class TimetableTab extends StatefulWidget {
 }
 
 class _TimetableTabState extends State<TimetableTab> {
-  //late List<Widget> widgets;
   late List<TimetableItemUpdate> timetableItemUpdates;
 
   late final AuthClient authClient;
@@ -58,11 +57,6 @@ class _TimetableTabState extends State<TimetableTab> {
     tutor = context.read<Tutor>();
 
     super.initState();
-  }
-
-  @override
-  void didUpdateWidget(covariant TimetableTab oldWidget) {
-    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -95,11 +89,6 @@ class _TimetableTabState extends State<TimetableTab> {
                   Navigator.pushNamed(context, '/update_form', arguments: {
                     'client': authClient,
                     'dateTime': widget.dateTime,
-                    'onUpdateCreated': () async {
-                      await timetableBloc
-                          .loadTimetableItemUpdates()
-                          .then((value) {});
-                    },
                     'dayNumber': widget.dayOfWeekNumber,
                     'weekNumber': widget.weekNumber,
                     'tutorJson': tutor.toJson(),
@@ -130,7 +119,9 @@ class _TimetableTabState extends State<TimetableTab> {
   }
 
   bool filterByTimetableType(TimetableItem timetableItem) {
-    return timetableItem.activity.tutors.any((tutor) => tutor.id == widget.id);
+    return timetableItem.activity.tutors.any((tutor) {
+      return tutor.id == widget.id;
+    });
   }
 
   List<Widget> stateToWidgets() {

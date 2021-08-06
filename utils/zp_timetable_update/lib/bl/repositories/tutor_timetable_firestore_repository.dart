@@ -7,23 +7,23 @@ import 'package:uuid/uuid.dart';
 import 'package:authorization_bloc/authorization_bloc.dart';
 import 'package:timetable/timetable.dart';
 
-import 'package:zp_timetable_update/bl/models/expireble.dart';
+import 'package:zp_timetable_update/bl/models/expirable.dart';
 import 'package:zp_timetable_update/bl/extensions/document_extension.dart';
 import 'package:zp_timetable_update/bl/api/timetable_update_api.dart';
 import 'package:zp_timetable_update/bl/repositories/common_repository.dart';
 
 class TutorTimetableFirestoreRepository implements TimetableRepository {
-  final AuthClient client;
   final Future<SharedPreferences> sharedPreferences;
 
   TutorTimetableFirestoreRepository({
-    required this.client,
     required this.sharedPreferences,
   });
 
   @override
-  Future<Timetable> loadTimetableByReferenceId(int id) async {
+  Future<Timetable> loadTimetableByReferenceId(int id, AuthClient client) async {
     final SharedPreferences prefs = await sharedPreferences;
+
+    prefs.remove('timetable.tutor');
 
     Timetable? timetable;
     TimetableData timetableData;
@@ -94,7 +94,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
   }
 
   @override
-  Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int id) async {
+  Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int id, AuthClient client) async {
     List<TimetableItemUpdate> timetableUpdates =
         await TimetableUpdateApi.runQuery(
       fieldPath: 'tutorKey',
@@ -115,7 +115,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
   }
 
   @override
-  Future<void> cancelLesson(Activity activity, DateTime dateTime) async {
+  Future<void> cancelLesson(Activity activity, DateTime dateTime, AuthClient client) async {
     var uuid = Uuid();
     String id = uuid.v4();
     FirestoreApi firestoreApi =
@@ -152,9 +152,11 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
   }
 
   @override
-  Future<void> deleteTimetableUpdate(String id) async {
-    FirestoreApi firestoreApi =
-        FirestoreApi(client, rootUrl: 'http://127.0.0.1:8080/');
+  Future<void> deleteTimetableUpdate(String id, AuthClient client) async {
+    FirestoreApi firestoreApi = FirestoreApi(
+      client,
+      rootUrl: 'http://127.0.0.1:8080/', // TODO - delete
+    );
 
     await TimetableUpdateApi.runQuery(
       fieldPath: 'id',

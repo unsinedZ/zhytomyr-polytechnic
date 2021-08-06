@@ -180,18 +180,22 @@ class _ActivityCardState extends State<ActivityCard> {
         onCancel: () async {
           Navigator.pop(context);
           await timetableBloc.cancelLesson(
-              widget.timetableItem.activity, widget.dateTime);
+            widget.timetableItem.activity,
+            widget.dateTime,
+            tutor.id,
+            authClient,
+          );
         },
         isUpdated: widget.updateId != null,
         onUpdateCancel: () async {
           if (widget.updateId != null) {
             Navigator.pop(context);
-            await timetableBloc.deleteTimetableUpdate(widget.updateId!);
+            await timetableBloc.deleteTimetableUpdate(
+              widget.updateId!,
+              tutor.id,
+              authClient,
+            );
           }
-        },
-        onUpdateCreated: () async {
-          Navigator.pop(context);
-          timetableBloc.loadTimetableItemUpdates();
         },
         authClient: authClient,
         dateTime: widget.dateTime,
