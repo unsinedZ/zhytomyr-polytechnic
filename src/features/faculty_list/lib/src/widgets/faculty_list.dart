@@ -8,6 +8,7 @@ import 'package:faculty_list/src/bl/abstractions/faculty_repository.dart';
 import 'package:faculty_list/src/bl/abstractions/text_localizer.dart';
 import 'package:faculty_list/src/widgets/components/faculty_icon.dart';
 import 'package:faculty_list/src/widgets/components/faculty_list_shimmer.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 
 class FacultyList extends StatefulWidget {
   final FacultyRepository facultyRepository;
@@ -32,6 +33,23 @@ class _FacultyListState extends State<FacultyList> {
 
   @override
   void initState() {
+    NotificationPermissions.getNotificationPermissionStatus()
+        .then((permissionStatus) {
+      if (permissionStatus == PermissionStatus.unknown ||
+          permissionStatus == PermissionStatus.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+          Text(widget.textLocalizer.localize('You can miss a lesson if you don\'t turn on notifications')),
+          duration: Duration(seconds: 5),
+          action: SnackBarAction(
+              label: widget.textLocalizer.localize('Turn on'), onPressed: () {
+            NotificationPermissions.requestNotificationPermissions();
+            ScaffoldMessenger.of(context).clearSnackBars();
+          }),
+        ));
+      }
+    });
+
     _facultyListBloc = FacultyListBloc(
       facultyRepository: widget.facultyRepository,
       errorSink: widget.errorSink,

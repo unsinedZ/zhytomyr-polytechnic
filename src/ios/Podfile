@@ -28,6 +28,7 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 flutter_ios_podfile_setup
 
 target 'Runner' do
+  use_frameworks!
   pod 'Firebase/Analytics', '~> 7.2-M1'
   pod 'Firebase/Auth', '~> 7.2-M1'
   pod 'Firebase/Firestore', '~> 7.2-M1'

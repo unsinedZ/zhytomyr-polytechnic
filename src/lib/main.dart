@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
@@ -49,3 +50,4 @@ Future<void> initAsync() async {
   initNotification();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }
+

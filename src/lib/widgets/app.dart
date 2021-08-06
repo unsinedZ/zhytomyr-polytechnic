@@ -1,12 +1,14 @@
-import 'package:apple_authentication/apple_authentication.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 
+import 'package:apple_authentication/apple_authentication.dart';
 import 'package:google_authentication/google_authentication.dart';
 import 'package:facebook_authentication/facebook_authentication.dart';
+import 'package:push_notification/push_notification.dart';
 import 'package:terms_and_conditions/terms_and_conditions.dart'
     hide TextLocalizer;
 import 'package:timetable/timetable.dart'
@@ -155,6 +157,9 @@ class _AppState extends State<App> {
                                     .logout();
                                 break;
                             }
+                            context
+                                .read<PushNotificationBloc>()
+                                .unsubscribeFromCurrentTopic();
                           }
                         });
                       },

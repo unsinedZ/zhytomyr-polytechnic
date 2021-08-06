@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:update_check/update_check.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 
 class BodyWrapper extends StatefulWidget {
@@ -18,6 +19,8 @@ class BodyWrapper extends StatefulWidget {
 class _BodyWrapperState extends State<BodyWrapper> {
   @override
   void initState() {
+
+
     context.read<UpdateCheckBloc>().version.listen((version) {
       if (version != null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -31,6 +34,7 @@ class _BodyWrapperState extends State<BodyWrapper> {
               }
             },
           ),
+          behavior: SnackBarBehavior.floating,
         ));
       }
     });
@@ -41,5 +45,11 @@ class _BodyWrapperState extends State<BodyWrapper> {
   @override
   Widget build(BuildContext context) {
     return widget.child;
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
