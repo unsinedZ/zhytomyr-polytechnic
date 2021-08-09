@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 
-import 'package:googleapis_auth/auth_io.dart';
-
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
 import 'package:timetable/src/bl/models/models.dart';
 
-class ActivityInfoDialog extends StatefulWidget {
+class ActivityInfoDialog extends StatelessWidget {
   final ITextLocalizer textLocalizer;
   final TimetableItem timetableItem;
   final DateTime dateTime;
   final VoidCallback onCancel;
   final VoidCallback onUpdateCancel;
   final bool isUpdated;
-  final AuthClient authClient;
   final Tutor tutor;
 
   ActivityInfoDialog({
@@ -22,20 +19,8 @@ class ActivityInfoDialog extends StatefulWidget {
     required this.onCancel,
     required this.onUpdateCancel,
     required this.isUpdated,
-    required this.authClient,
     required this.tutor,
   });
-
-  @override
-  _ActivityInfoDialogState createState() => _ActivityInfoDialogState();
-}
-
-class _ActivityInfoDialogState extends State<ActivityInfoDialog> {
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +38,7 @@ class _ActivityInfoDialogState extends State<ActivityInfoDialog> {
               children: [
                 Center(
                   child: Text(
-                    widget.timetableItem.activity.name,
+                    timetableItem.activity.name,
                     textScaleFactor: 1.5,
                   ),
                 ),
@@ -63,11 +48,11 @@ class _ActivityInfoDialogState extends State<ActivityInfoDialog> {
                 RichText(
                   textScaleFactor: 1.1,
                   text: TextSpan(
-                    text: widget.textLocalizer.localize('Teacher: '),
+                    text: textLocalizer.localize('Teacher: '),
                     style: Theme.of(context).textTheme.subtitle1,
                     children: <TextSpan>[
                       TextSpan(
-                          text: widget.timetableItem.activity.tutors
+                          text: timetableItem.activity.tutors
                               .map((tutor) => tutor.name)
                               .join(', '),
                           style: TextStyle(fontWeight: FontWeight.bold)),
@@ -80,11 +65,11 @@ class _ActivityInfoDialogState extends State<ActivityInfoDialog> {
                 RichText(
                   textScaleFactor: 1.1,
                   text: TextSpan(
-                    text: widget.textLocalizer.localize('Groups: '),
+                    text: textLocalizer.localize('Groups: '),
                     style: Theme.of(context).textTheme.subtitle1,
                     children: <TextSpan>[
                       TextSpan(
-                          text: widget.timetableItem.activity.groups
+                          text: timetableItem.activity.groups
                               .map((group) => group.name)
                               .join(', '),
                           style: TextStyle(fontWeight: FontWeight.bold)),
@@ -97,16 +82,16 @@ class _ActivityInfoDialogState extends State<ActivityInfoDialog> {
                 RichText(
                   textScaleFactor: 1.1,
                   text: TextSpan(
-                    text: widget.textLocalizer.localize('Auditory: '),
+                    text: textLocalizer.localize('Auditory: '),
                     style: Theme.of(context).textTheme.subtitle1,
                     children: <TextSpan>[
                       TextSpan(
-                          text: widget.timetableItem.activity.room,
+                          text: timetableItem.activity.room,
                           style: TextStyle(fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
-                if (!widget.isUpdated) ...[
+                if (!isUpdated) ...[
                   SizedBox(
                     height: 5,
                   ),
@@ -116,12 +101,11 @@ class _ActivityInfoDialogState extends State<ActivityInfoDialog> {
                       onPressed: () {
                         Navigator.pushNamed(context, '/update_form',
                             arguments: {
-                              'client': widget.authClient,
-                              'timetableItemJson': widget.timetableItem.toJson(),
-                              'dateTime': widget.dateTime,
-                              'dayNumber': widget.timetableItem.dayNumber,
-                              'weekNumber': widget.timetableItem.weekNumber,
-                              'tutorJson': widget.tutor.toJson(),
+                              'timetableItemJson': timetableItem.toJson(),
+                              'dateTime': dateTime,
+                              'dayNumber': timetableItem.dayNumber,
+                              'weekNumber': timetableItem.weekNumber,
+                              'tutorJson': tutor.toJson(),
                             });
                       },
                       child: Padding(
@@ -150,7 +134,7 @@ class _ActivityInfoDialogState extends State<ActivityInfoDialog> {
                   Container(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: widget.onCancel,
+                      onPressed: onCancel,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
@@ -172,14 +156,14 @@ class _ActivityInfoDialogState extends State<ActivityInfoDialog> {
                     ),
                   )
                 ],
-                if (widget.isUpdated) ...[
+                if (isUpdated) ...[
                   SizedBox(
                     height: 5,
                   ),
                   Container(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: widget.onUpdateCancel,
+                      onPressed: onUpdateCancel,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:googleapis_auth/auth_io.dart';
 import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:provider/provider.dart';
@@ -39,8 +38,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
   bool isNextDay = false;
 
   late int weekNumber;
-  late int id;
-  late AuthClient client;
   late Stream<List<dynamic>> dataStream;
 
   StreamSubscription? groupStreamSubscription;
@@ -68,16 +65,9 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   void didChangeDependencies() {
-    final arguments =
-        (ModalRoute.of(context)!.settings.arguments) as Map<String, dynamic>;
-
-    id = arguments['id'];
-
-    client = arguments['client'];
-
-    widget.timetableBloc.loadTimetableItemUpdates(id, client);
-    widget.timetableBloc.loadTimetable(id, client);
-    widget.timetableBloc.loadTutor(client, id);
+    widget.timetableBloc.loadTimetable();
+    widget.timetableBloc.loadTimetableItemUpdates();
+    widget.timetableBloc.loadTutor();
 
     widget.timetableBloc.tutor.listen((tutor) {
       setState(() {
@@ -99,7 +89,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
     return MultiProvider(
       providers: [
         Provider<TimetableBloc>(create: (_) => widget.timetableBloc),
-        Provider<AuthClient>(create: (_) => client),
         Provider<Tutor>(create: (_) => tutor!),
       ],
       child: DefaultTabController(
@@ -129,7 +118,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                       Icons.refresh,
                     ),
                     onPressed: () {
-                      widget.timetableBloc.loadTimetableItemUpdates(id, client);
+                      widget.timetableBloc.loadTimetableItemUpdates();
                     },
                   )),
             ],
@@ -172,7 +161,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
                               days: -initialIndex +
                                   index +
                                   (isWeekChanged ? 7 : 0))),
-                          id: id,
                           subgroupId: subgroupId,
                           isTomorrow: initialIndex == index &&
                                   isNextDay == true &&

@@ -21,11 +21,7 @@ class _WithStartupActionState extends State<WithStartupAction> {
   @override
   void initState() {
     context.read<UpdateFormBloc>().onUpdateCreated.listen((_) {
-      AuthorizationBloc authorizationBloc = context.read<AuthorizationBloc>();
-      context.read<TimetableBloc>().loadTimetableItemUpdates(
-            authorizationBloc.tutorId.value,
-            authorizationBloc.authClient.value!,
-          );
+      context.read<TimetableBloc>().loadTimetableItemUpdates();
     });
 
     context

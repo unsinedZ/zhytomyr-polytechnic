@@ -7,5 +7,4 @@ export 'src/bl/bloc/timetable_bloc.dart';
 
 export 'src/bl/abstractions/text_localizer.dart';
 export 'src/bl/abstractions/timetable_repository.dart';
-export 'src/bl/abstractions/timetable_repository_factory.dart';
 export 'src/bl/abstractions/tutor_repository.dart';

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:googleapis_auth/auth_io.dart';
 
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
-
+import 'package:googleapis_auth/auth_io.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
@@ -21,7 +20,6 @@ class TimetableTab extends StatefulWidget {
   final int weekNumber;
   final int dayOfWeekNumber;
   final DateTime dateTime;
-  final int id;
   final bool isTomorrow;
   final int? subgroupId;
 
@@ -32,7 +30,6 @@ class TimetableTab extends StatefulWidget {
     required this.weekNumber,
     required this.dayOfWeekNumber,
     required this.dateTime,
-    required this.id,
     required this.isTomorrow,
     this.subgroupId,
   }) : super();
@@ -53,7 +50,6 @@ class _TimetableTabState extends State<TimetableTab> {
     initializeDateFormatting();
 
     timetableBloc = context.read<TimetableBloc>();
-    authClient = context.read<AuthClient>();
     tutor = context.read<Tutor>();
 
     super.initState();
@@ -87,7 +83,6 @@ class _TimetableTabState extends State<TimetableTab> {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/update_form', arguments: {
-                    'client': authClient,
                     'dateTime': widget.dateTime,
                     'dayNumber': widget.dayOfWeekNumber,
                     'weekNumber': widget.weekNumber,
@@ -118,18 +113,11 @@ class _TimetableTabState extends State<TimetableTab> {
     );
   }
 
-  bool filterByTimetableType(TimetableItem timetableItem) {
-    return timetableItem.activity.tutors.any((tutor) {
-      return tutor.id == widget.id;
-    });
-  }
-
   List<Widget> stateToWidgets() {
     List<TimetableItem> timetableItems = widget.timetable.items
         .where((timetableItem) =>
             timetableItem.weekNumber == widget.weekNumber &&
             timetableItem.dayNumber == widget.dayOfWeekNumber)
-        .where((timetableItem) => filterByTimetableType(timetableItem))
         .toList();
 
     timetableItemUpdates =
@@ -138,10 +126,7 @@ class _TimetableTabState extends State<TimetableTab> {
           DateTime.parse(timetableItemUpdate.date.replaceAll('/', '-'));
 
       if (widget.dateTime.asDate().isAtSameMomentAs(dateTime.asDate())) {
-        if (timetableItemUpdate.timetableItem == null ||
-            filterByTimetableType(timetableItemUpdate.timetableItem!)) {
-          return true;
-        }
+        return true;
       }
       return false;
     }).toList();
@@ -216,7 +201,7 @@ class _TimetableTabState extends State<TimetableTab> {
       if (updates.length > 1) {
         List<TimetableItemUpdate> updatesWithItem =
             updates.where((update) => update.timetableItem != null).toList();
-        if(updatesWithItem.isNotEmpty) {
+        if (updatesWithItem.isNotEmpty) {
           timetableItemUpdate = updatesWithItem.first;
         } else {
           timetableItemUpdate = updates.first;

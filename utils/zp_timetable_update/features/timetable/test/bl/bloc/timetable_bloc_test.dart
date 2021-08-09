@@ -1,6 +1,7 @@
 // import 'dart:async';
 //
 // import 'package:flutter_test/flutter_test.dart';
+// import 'package:googleapis_auth/auth_io.dart';
 //
 // import 'package:mockito/mockito.dart';
 //
@@ -11,11 +12,11 @@
 //
 // class TimetableLoaderMock extends Mock implements TimetableRepository {
 //   @override
-//   Future<Timetable> loadTimetableByReferenceId(int? referenceId,
+//   Future<Timetable> loadTimetableByReferenceId(int? referenceId, AuthClient? client,
 //           [String? userGroupId]) =>
 //       super.noSuchMethod(
 //         Invocation.method(
-//             #loadTimetableByReferenceId, [referenceId, userGroupId]),
+//             #loadTimetableByReferenceId, [referenceId, userGroupId, client]),
 //         returnValue: Future.value(
 //           Timetable(
 //             items: [],
@@ -31,11 +32,14 @@
 //       );
 //
 //   @override
-//   Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int? id) =>
-//       super.noSuchMethod(Invocation.method(#getTimetableItemUpdates, [id]),
+//   Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int? id, AuthClient? client) =>
+//       super.noSuchMethod(Invocation.method(#getTimetableItemUpdates, [id, client]),
 //           returnValue: Future.value(<TimetableItemUpdate>[]));
 // }
 //
+// class AuthClientMock extends Mock implements AuthClient {
+//
+// }
 //
 // class TutorRepositoryMock extends Mock implements TutorRepository {}
 //
@@ -68,7 +72,7 @@
 //     List<Timetable?> results = <Timetable?>[];
 //
 //     timetableBloc.timetable.listen((groups) => results.add(groups));
-//     timetableBloc.loadTimetable(0);
+//     timetableBloc.loadTimetable(0, AuthClientMock());
 //
 //     await Future.delayed(const Duration());
 //
@@ -86,7 +90,7 @@
 //       tutorRepository: TutorRepositoryMock()
 //     );
 //
-//     when(timetableLoaderMock.getTimetableItemUpdates(0))
+//     when(timetableLoaderMock.getTimetableItemUpdates(0, AuthClientMock()))
 //         .thenAnswer((_) => Future.value(<TimetableItemUpdate>[
 //               TimetableItemUpdate(time: '1', timetableItem: null, date: '1', id: ''),
 //               TimetableItemUpdate(time: '2', timetableItem: null, date: '2', id: ''),
@@ -96,7 +100,7 @@
 //
 //     timetableBloc.timetableItemUpdates
 //         .listen((timetableItemUpdates) => results.add(timetableItemUpdates));
-//     timetableBloc.loadTimetableItemUpdates(0);
+//     timetableBloc.loadTimetableItemUpdates(0, AuthClientMock());
 //
 //     await Future.delayed(const Duration());
 //

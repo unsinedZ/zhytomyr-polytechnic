@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:googleapis/firestore/v1.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -14,13 +15,24 @@ import 'package:zp_timetable_update/bl/repositories/common_repository.dart';
 
 class TutorTimetableFirestoreRepository implements TimetableRepository {
   final Future<SharedPreferences> sharedPreferences;
+  final ValueStream<AuthClient?> clientStream;
+  final ValueStream<int?> tutorIdStream;
 
   TutorTimetableFirestoreRepository({
     required this.sharedPreferences,
+    required this.clientStream,
+    required this.tutorIdStream,
   });
 
   @override
-  Future<Timetable> loadTimetableByReferenceId(int id, AuthClient client) async {
+  Future<Timetable> loadTimetableByReferenceId() async {
+    if (!clientStream.hasValue ||
+        !tutorIdStream.hasValue ||
+        clientStream.value == null ||
+        tutorIdStream.value == null) {
+      throw 'Unauthorized';
+    }
+
     final SharedPreferences prefs = await sharedPreferences;
 
     prefs.remove('timetable.tutor');
@@ -33,7 +45,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
       fieldValue: '1',
       collectionId: 'timetables',
       valueType: ValueType.Int,
-      client: client,
+      client: clientStream.value!,
     ))
         .map(
       (timetableDataDoc) {
@@ -64,10 +76,10 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
     if (timetable == null) {
       timetable = await TimetableUpdateApi.runQuery(
         fieldPath: 'key',
-        fieldValue: 'tutor/' + id.toString(),
+        fieldValue: 'tutor/' + tutorIdStream.value!.toString(),
         collectionId: 'timetable_items_tutor',
         valueType: ValueType.String,
-        client: client,
+        client: clientStream.value!,
       ).then(
         (docs) {
           return Timetable(
@@ -94,14 +106,21 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
   }
 
   @override
-  Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int id, AuthClient client) async {
+  Future<List<TimetableItemUpdate>> getTimetableItemUpdates() async {
+    if (!clientStream.hasValue ||
+        !tutorIdStream.hasValue ||
+        clientStream.value == null ||
+        tutorIdStream.value == null) {
+      throw 'Unauthorized';
+    }
+
     List<TimetableItemUpdate> timetableUpdates =
         await TimetableUpdateApi.runQuery(
       fieldPath: 'tutorKey',
-      fieldValue: 'tutor/' + id.toString(),
+      fieldValue: 'tutor/' + tutorIdStream.value!.toString(),
       collectionId: 'timetable_items_update',
       valueType: ValueType.String,
-      client: client,
+      client: clientStream.value!,
     ).then(
       (docs) => docs.map(
         (timetableItemUpdate) {
@@ -115,11 +134,18 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
   }
 
   @override
-  Future<void> cancelLesson(Activity activity, DateTime dateTime, AuthClient client) async {
+  Future<void> cancelLesson(Activity activity, DateTime dateTime) async {
+    if (!clientStream.hasValue ||
+        !tutorIdStream.hasValue ||
+        clientStream.value == null ||
+        tutorIdStream.value == null) {
+      throw 'Unauthorized';
+    }
+
     var uuid = Uuid();
     String id = uuid.v4();
     FirestoreApi firestoreApi =
-        FirestoreApi(client, rootUrl: 'http://127.0.0.1:8080/');
+        FirestoreApi(clientStream.value!, rootUrl: 'http://127.0.0.1:8080/');
 
     CommitRequest commitRequest = CommitRequest();
 
@@ -134,7 +160,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
             key: 'groupKey',
             keyValue: 'group/' + group.id.toString()));
 
-      CommonRepository.createNotification(client, group.id.toString());
+      CommonRepository.createNotification(clientStream.value!, group.id.toString());
     });
 
     activity.tutors.forEach((tutor) async {
@@ -152,9 +178,16 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
   }
 
   @override
-  Future<void> deleteTimetableUpdate(String id, AuthClient client) async {
+  Future<void> deleteTimetableUpdate(String id) async {
+    if (!clientStream.hasValue ||
+        !tutorIdStream.hasValue ||
+        clientStream.value == null ||
+        tutorIdStream.value == null) {
+      throw 'Unauthorized';
+    }
+
     FirestoreApi firestoreApi = FirestoreApi(
-      client,
+      clientStream.value!,
       rootUrl: 'http://127.0.0.1:8080/', // TODO - delete
     );
 
@@ -163,7 +196,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
       fieldValue: id,
       collectionId: 'timetable_items_update',
       valueType: ValueType.String,
-      client: client,
+      client: clientStream.value!,
     ).then(
       (docs) async {
         CommitRequest commitRequest = CommitRequest();
@@ -174,7 +207,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
               groupKeyValue.stringValue != null &&
               groupKeyValue.stringValue != '') {
             CommonRepository.createNotification(
-                client, groupKeyValue.stringValue!.substring(6));
+                clientStream.value!, groupKeyValue.stringValue!.substring(6));
           }
 
           return (Write()..delete = doc.name!);

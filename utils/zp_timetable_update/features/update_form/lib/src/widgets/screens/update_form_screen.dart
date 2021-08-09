@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:googleapis_auth/auth_io.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:update_form/src/widgets/components/groupsMultiSelect.dart';
 import 'package:uuid/uuid.dart';
@@ -35,7 +34,6 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
   final TextEditingController auditoryController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  late AuthClient authClient;
   late StreamSubscription isUpdatingStreamSubscription;
 
   String groupsSelectionValidationMessage = '';
@@ -82,7 +80,6 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
     final arguments =
         (ModalRoute.of(context)!.settings.arguments) as Map<String, dynamic>;
 
-    authClient = arguments['client'];
     dateTime = arguments['dateTime'];
     dayNumber = arguments['dayNumber'];
     weekNumber = arguments['weekNumber'];
@@ -103,7 +100,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
           .setSelectedGroups(timetableItem!.activity.groups.divide());
     }
 
-    widget.updateFormBloc.loadGroups(authClient);
+    widget.updateFormBloc.loadGroups();
 
     super.didChangeDependencies();
   }
@@ -273,8 +270,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
     }
 
     TimetableItemUpdate timetableItemUpdate = _createTimetableUpdate(groups);
-    await widget.updateFormBloc.createTimetableUpdate(
-        authClient, timetableItemUpdate, groups.compress(), initialGroups);
+    await widget.updateFormBloc.createTimetableUpdate(timetableItemUpdate, groups.compress(), initialGroups);
     Navigator.pop(context);
     if(timetableItem != null) {
       Navigator.pop(context);

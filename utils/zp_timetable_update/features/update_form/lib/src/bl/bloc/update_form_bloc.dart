@@ -41,10 +41,10 @@ class UpdateFormBloc {
 
   Stream<void> get onUpdateCreated => _onUpdateCreatedController.stream;
 
-  void loadGroups(AuthClient client) {
+  void loadGroups() {
     _groupsSubject.add([]);
 
-    groupsRepository.getGroups(client).then((groups) {
+    groupsRepository.getGroups().then((groups) {
       _groupsSubject.add(groups);
     }).onError((error, stack) {
       print(error);
@@ -64,14 +64,13 @@ class UpdateFormBloc {
   }
 
   Future<void> createTimetableUpdate(
-    AuthClient client,
     TimetableItemUpdate timetableItemUpdate,
     List<Group> groups,
     List<Group>? initialGroups,
   ) async {
     _isUpdateCreatingSubject.add(true);
     await timetableUpdateRepository
-        .addTimetableUpdate(client, timetableItemUpdate, groups, initialGroups)
+        .addTimetableUpdate(timetableItemUpdate, groups, initialGroups)
         .then((_) {
       _onUpdateCreatedController.add(null);
     }).onError((error, stack) {

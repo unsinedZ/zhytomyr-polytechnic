@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:googleapis_auth/auth_io.dart';
 
 import 'package:provider/provider.dart';
 
@@ -49,13 +48,11 @@ class ActivityCard extends StatefulWidget {
 
 class _ActivityCardState extends State<ActivityCard> {
   late final TimetableBloc timetableBloc;
-  late final AuthClient authClient;
   late final Tutor tutor;
 
   @override
   void initState() {
     timetableBloc = context.read<TimetableBloc>();
-    authClient = context.read<AuthClient>();
     tutor = context.read<Tutor>();
     super.initState();
   }
@@ -179,25 +176,20 @@ class _ActivityCardState extends State<ActivityCard> {
         textLocalizer: widget.textLocalizer,
         onCancel: () async {
           Navigator.pop(context);
-          await timetableBloc.cancelLesson(
+          timetableBloc.cancelLesson(
             widget.timetableItem.activity,
             widget.dateTime,
-            tutor.id,
-            authClient,
           );
         },
         isUpdated: widget.updateId != null,
         onUpdateCancel: () async {
           if (widget.updateId != null) {
             Navigator.pop(context);
-            await timetableBloc.deleteTimetableUpdate(
+            timetableBloc.deleteTimetableUpdate(
               widget.updateId!,
-              tutor.id,
-              authClient,
             );
           }
         },
-        authClient: authClient,
         dateTime: widget.dateTime,
         tutor: tutor,
       ),

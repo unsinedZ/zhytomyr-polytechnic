@@ -1,13 +1,12 @@
 import 'dart:async';
 
-import 'package:googleapis_auth/auth_io.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:timetable/src/bl/abstractions/timetable_repository.dart';
 import 'package:timetable/src/bl/abstractions/tutor_repository.dart';
 import 'package:timetable/src/bl/models/models.dart';
 
-class TimetableBloc { // TODO - to dependencies
+class TimetableBloc {
   final TimetableRepository timetableRepository;
   final StreamSink<String> errorSink;
   final TutorRepository tutorRepository;
@@ -16,7 +15,6 @@ class TimetableBloc { // TODO - to dependencies
     required this.timetableRepository,
     required this.errorSink,
     required this.tutorRepository,
-    // required this.tutorId, // TODO - delete
   });
 
   final BehaviorSubject<Timetable?> _timetableController =
@@ -34,10 +32,12 @@ class TimetableBloc { // TODO - to dependencies
 
   Stream<Tutor?> get tutor => _tutorController.stream;
 
-  void loadTimetable(int tutorId, AuthClient client) {
+  void loadTimetable() {
     _timetableController.add(null);
 
-    timetableRepository.loadTimetableByReferenceId(tutorId, client).then((timetable) {
+    timetableRepository
+        .loadTimetableByReferenceId()
+        .then((timetable) {
       _timetableController.add(timetable);
     }).onError((error, stack) {
       print(error);
@@ -46,27 +46,26 @@ class TimetableBloc { // TODO - to dependencies
     });
   }
 
-  Future<void> loadTimetableItemUpdates(int tutorId, AuthClient client) async {
-    try {
-      _timetableItemUpdatesController.add(null);
+  void loadTimetableItemUpdates() {
+    _timetableItemUpdatesController.add(null);
 
-      List<TimetableItemUpdate> timetableItemUpdates =
-          await timetableRepository.getTimetableItemUpdates(tutorId, client);
-
+    timetableRepository
+        .getTimetableItemUpdates()
+        .then((timetableItemUpdates) {
       _timetableItemUpdatesController.add(timetableItemUpdates);
       print(timetableItemUpdates.length.toString() +
           ' - timetableItemUpdates.length');
-    } catch (error, stack) {
+    }).onError((error, stackTrace) {
       print(error);
-      print(stack);
+      print(stackTrace);
       errorSink.add(error.toString());
-    }
+    });
   }
 
-  void loadTutor(AuthClient client, int tutorId) {
+  void loadTutor() {
     _tutorController.add(null);
 
-    tutorRepository.getTutorById(tutorId, client).then((tutor) {
+    tutorRepository.getTutorById().then((tutor) {
       _tutorController.add(tutor);
     }).onError((error, stack) {
       print(error);
@@ -75,28 +74,27 @@ class TimetableBloc { // TODO - to dependencies
     });
   }
 
-  Future<void> cancelLesson(Activity activity, DateTime dateTime, int tutorId, AuthClient client) async {
-    await timetableRepository
-        .cancelLesson(activity, dateTime, client)
-        .then((_) => loadTimetableItemUpdates(tutorId, client))
+  void cancelLesson(
+      Activity activity, DateTime dateTime) {
+    timetableRepository
+        .cancelLesson(activity, dateTime)
+        .then((_) => loadTimetableItemUpdates())
         .onError((error, stackTrace) {
       print(error);
       print(stackTrace);
       errorSink.add(error.toString());
     });
-    return null;
   }
 
-  Future<void> deleteTimetableUpdate(String id, int tutorId, AuthClient client) async {
-    await timetableRepository
-        .deleteTimetableUpdate(id, client)
-        .then((_) => loadTimetableItemUpdates(tutorId, client))
+  void deleteTimetableUpdate(String id) {
+    timetableRepository
+        .deleteTimetableUpdate(id)
+        .then((_) => loadTimetableItemUpdates())
         .onError((error, stackTrace) {
       print(error);
       print(stackTrace);
       errorSink.add(error.toString());
     });
-    return null;
   }
 
   void dispose() {

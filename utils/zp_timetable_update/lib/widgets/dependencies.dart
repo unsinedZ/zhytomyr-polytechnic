@@ -10,6 +10,7 @@ import 'package:update_form/update_form.dart';
 
 import 'package:zp_timetable_update/bl/repositories/main_firestore_repository.dart';
 import 'package:zp_timetable_update/bl/repositories/timetable_update_repository.dart';
+import 'package:zp_timetable_update/bl/repositories/tutor_auth_repository.dart';
 import 'package:zp_timetable_update/bl/repositories/tutor_timetable_firestore_repository.dart';
 
 class Dependencies extends StatelessWidget {
@@ -27,11 +28,11 @@ class Dependencies extends StatelessWidget {
         child: MultiProvider(
             providers: [
               Provider<AuthorizationBloc>(create: getAuthorizationBloc),
-              Provider<UpdateFormBloc>(create: getUpdateFormBloc),
             ],
             child: MultiProvider(
               providers: [
                 Provider<TimetableBloc>(create: getTimetableBloc),
+                Provider<UpdateFormBloc>(create: getUpdateFormBloc),
               ],
               child: this.child,
             )),
@@ -42,19 +43,31 @@ class Dependencies extends StatelessWidget {
   AuthorizationBloc getAuthorizationBloc(BuildContext context) =>
       AuthorizationBloc(
         errorSink: context.read<ErrorBloc>().errorSink,
-        tutorAuthRepository: MainFirestoreRepository(),
+        tutorAuthRepository: TutorAuthRepository(),
       );
 
   TimetableBloc getTimetableBloc(BuildContext context) => TimetableBloc(
         errorSink: context.read<ErrorBloc>().errorSink,
-        tutorRepository: MainFirestoreRepository(),
+        tutorRepository: MainFirestoreRepository(
+          context.read<AuthorizationBloc>().authClient,
+          context.read<AuthorizationBloc>().tutorId,
+        ),
         timetableRepository: TutorTimetableFirestoreRepository(
-            sharedPreferences: SharedPreferences.getInstance()),
+          sharedPreferences: SharedPreferences.getInstance(),
+          clientStream: context.read<AuthorizationBloc>().authClient,
+          tutorIdStream: context.read<AuthorizationBloc>().tutorId,
+        ),
       );
 
   UpdateFormBloc getUpdateFormBloc(BuildContext context) => UpdateFormBloc(
         errorSink: context.read<ErrorBloc>().errorSink,
-        groupsRepository: MainFirestoreRepository(),
-        timetableUpdateRepository: TimetableUpdateRepository(),
+        groupsRepository: MainFirestoreRepository(
+          context.read<AuthorizationBloc>().authClient,
+          context.read<AuthorizationBloc>().tutorId,
+        ),
+        timetableUpdateRepository: TimetableUpdateRepository(
+          context.read<AuthorizationBloc>().authClient,
+          context.read<AuthorizationBloc>().tutorId,
+        ),
       );
 }

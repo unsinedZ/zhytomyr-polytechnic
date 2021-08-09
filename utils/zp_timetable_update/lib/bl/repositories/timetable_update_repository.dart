@@ -1,5 +1,6 @@
 import 'package:googleapis/firestore/v1.dart';
 import 'package:googleapis_auth/auth_io.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'package:update_form/update_form.dart';
 import 'package:uuid/uuid.dart';
@@ -7,16 +8,30 @@ import 'package:uuid/uuid.dart';
 import 'common_repository.dart';
 
 class TimetableUpdateRepository implements ITimetableUpdateRepository {
+  final ValueStream<AuthClient?> clientStream;
+  final ValueStream<int?> tutorIdStream;
+
+  TimetableUpdateRepository(
+    this.clientStream,
+    this.tutorIdStream,
+  );
+
   @override
   Future<void> addTimetableUpdate(
-    AuthClient client,
     TimetableItemUpdate timetableItemUpdate,
     List<Group> groups,
     List<Group>? initialGroups,
   ) async {
+    if (!clientStream.hasValue ||
+        !tutorIdStream.hasValue ||
+        clientStream.value == null ||
+        tutorIdStream.value == null) {
+      throw 'Unauthorized';
+    }
+
     var uuid = Uuid();
     FirestoreApi firestoreApi =
-        FirestoreApi(client, rootUrl: 'http://127.0.0.1:8080/');
+        FirestoreApi(clientStream.value!, rootUrl: 'http://127.0.0.1:8080/');
 
     List<Document> documents = timetableItemUpdate.toDocuments();
 
@@ -32,7 +47,7 @@ class TimetableUpdateRepository implements ITimetableUpdateRepository {
     });
 
     groups.forEach((group) {
-      CommonRepository.createNotification(client, group.id.toString());
+      CommonRepository.createNotification(clientStream.value!, group.id.toString());
     });
 
     if (initialGroups != null) {
@@ -40,7 +55,7 @@ class TimetableUpdateRepository implements ITimetableUpdateRepository {
           .where((initialGroup) =>
               groups.every((group) => group.id != initialGroup.id))
           .forEach((group) {
-        CommonRepository.createNotification(client, group.id.toString());
+        CommonRepository.createNotification(clientStream.value!, group.id.toString());
 
         commitRequest.writes!.add(Write()
           ..update = CommonRepository.createActivityCancelDocument(
