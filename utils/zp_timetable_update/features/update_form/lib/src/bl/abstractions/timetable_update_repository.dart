@@ -1,5 +1,3 @@
-import 'package:googleapis_auth/auth_io.dart';
-
 import 'package:update_form/src/bl/models/group.dart';
 import 'package:update_form/src/bl/models/timetable_item_update.dart';
 
