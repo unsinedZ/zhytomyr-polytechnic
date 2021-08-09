@@ -26,6 +26,8 @@ dependencies:
   googleapis: ^3.0.0
   update_form:
     path: ./features/update_form
+  navigation_drawer:
+    path: ./features/navigation_drawer
   uuid: ^3.0.4
   googleapis_auth: ^1.1.0
 

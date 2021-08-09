@@ -18,11 +18,13 @@ class TimetableScreen extends StatefulWidget {
   final ITextLocalizer textLocalizer;
   final TimetableBloc timetableBloc;
   final StreamSink<String> errorSink;
+  final Widget navigationDrawer;
 
   TimetableScreen({
     required this.textLocalizer,
     required this.timetableBloc,
     required this.errorSink,
+    required this.navigationDrawer,
   });
 
   @override
@@ -95,6 +97,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
         initialIndex: initialIndex,
         length: 6,
         child: Scaffold(
+          drawer: widget.navigationDrawer,
           appBar: AppBar(
             bottom: TabBar(
               indicatorColor: Theme.of(context).focusColor,

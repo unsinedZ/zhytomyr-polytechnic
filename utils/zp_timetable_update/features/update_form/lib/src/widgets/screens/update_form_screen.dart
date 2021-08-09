@@ -318,7 +318,6 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
     isUpdatingStreamSubscription.cancel();
     super.dispose();
   }
-
 }
 
 Map<String, String> startEndLessonMap = {
