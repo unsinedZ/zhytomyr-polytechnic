@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:googleapis_auth/auth_io.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:update_form/src/bl/abstractions/groups_repository.dart';
@@ -19,8 +18,6 @@ class UpdateFormBloc {
     required this.errorSink,
   });
 
-  List<Group> selectedGroupsList = [];
-
   final BehaviorSubject<List<Group>> _groupsSubject =
       BehaviorSubject<List<Group>>();
 
@@ -35,7 +32,7 @@ class UpdateFormBloc {
 
   Stream<List<Group>> get groups => _groupsSubject.stream;
 
-  Stream<List<Group>> get selectedGroups => _selectedGroupsSubject.stream;
+  ValueStream<List<Group>> get selectedGroups => _selectedGroupsSubject.stream;
 
   Stream<bool> get isUpdateCreating => _isUpdateCreatingSubject.stream;
 
@@ -54,11 +51,11 @@ class UpdateFormBloc {
   }
 
   void setSelectedGroups(List<Group> groups) {
-    selectedGroupsList = groups;
-    _selectedGroupsSubject.add(selectedGroupsList);
+    _selectedGroupsSubject.add(groups);
   }
 
   void removeFromSelectedGroup(Group group) {
+    List<Group> selectedGroupsList = selectedGroups.value;
     selectedGroupsList.remove(group);
     _selectedGroupsSubject.add(selectedGroupsList);
   }
