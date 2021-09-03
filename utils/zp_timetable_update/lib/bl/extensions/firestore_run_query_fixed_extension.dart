@@ -33,51 +33,51 @@ extension FirestoreRunQueryFixedExtension
   /// this method will complete with the same error.
   Future<List<Document>> runQueryFixed(RunQueryRequest request,
       {required http.Client client, String? parent}) async {
-    // final projectId = 'zhytomyr-politechnic-dev';
+    final projectId = 'zhytomyr-politechnic-dev';
     final urlParentAddition = parent != null ? '/$parent' : '';
-    // final url =
-    //     'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents$urlParentAddition:runQuery';
     final url =
-        'http://127.0.0.1:8080/v1/projects/emulator/databases/(default)/documents$urlParentAddition:runQuery'; // TODO delete
+        'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents$urlParentAddition:runQuery';
+    // final url =
+    //     'http://127.0.0.1:8080/v1/projects/emulator/databases/(default)/documents$urlParentAddition:runQuery'; // TODO delete
     final body = json.encode(request.toJson());
-    final response1 = await HttpClient().postUrl(
-      Uri.parse(url),
-    );
-    response1.headers.set(HttpHeaders.contentTypeHeader, "application/json; charset=UTF-8");
-    response1.write(body);
-    final response = await response1.close();
-    final resBody = await response.transform(utf8.decoder).first;
-
-      final List<dynamic> decoded = json.decode(resBody) as List;
-      if (decoded[0]['error'] != null) {
-        throw Exception('Firestore Error: $resBody!');
-      }
-      final docs = [
-        for (final docJson in decoded)
-          if (docJson['document'] != null)
-            Document.fromJson(docJson['document'] as Map)
-      ];
-      return docs;
-
-    // final response = await client.post(
+    // final response1 = await HttpClient().postUrl(
     //   Uri.parse(url),
-    //   body: body,
-    //   encoding: Encoding.getByName('utf-8'),
-    //   headers: {
-    //     "Accept": "application/json",
-    //     "Content-Type": "application/json"
-    //   },
     // );
-    // final resBody = response.body;
-    // final List<dynamic> decoded = json.decode(resBody) as List;
-    // if (decoded[0]['error'] != null) {
-    //   throw Exception('Firestore Error: $resBody!');
-    // }
-    // final docs = [
-    //   for (final docJson in decoded)
-    //     if (docJson['document'] != null)
-    //       Document.fromJson(docJson['document'] as Map)
-    // ];
-    // return docs;
+    // response1.headers.set(HttpHeaders.contentTypeHeader, "application/json; charset=UTF-8");
+    // response1.write(body);
+    // final response = await response1.close();
+    // final resBody = await response.transform(utf8.decoder).first;
+    //
+    //   final List<dynamic> decoded = json.decode(resBody) as List;
+    //   if (decoded[0]['error'] != null) {
+    //     throw Exception('Firestore Error: $resBody!');
+    //   }
+    //   final docs = [
+    //     for (final docJson in decoded)
+    //       if (docJson['document'] != null)
+    //         Document.fromJson(docJson['document'] as Map)
+    //   ];
+    //   return docs;
+
+    final response = await client.post(
+      Uri.parse(url),
+      body: body,
+      encoding: Encoding.getByName('utf-8'),
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+    );
+    final resBody = response.body;
+    final List<dynamic> decoded = json.decode(resBody) as List;
+    if (decoded[0]['error'] != null) {
+      throw Exception('Firestore Error: $resBody!');
+    }
+    final docs = [
+      for (final docJson in decoded)
+        if (docJson['document'] != null)
+          Document.fromJson(docJson['document'] as Map)
+    ];
+    return docs;
   }
 }

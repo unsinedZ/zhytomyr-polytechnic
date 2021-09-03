@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 
 import 'package:authorization_bloc/authorization_bloc.dart';
 import 'package:timetable/timetable.dart';
+import 'package:zp_timetable_update/bl/const.dart';
 
 import 'package:zp_timetable_update/bl/models/expirable.dart';
 import 'package:zp_timetable_update/bl/extensions/document_extension.dart';
@@ -144,8 +145,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
 
     var uuid = Uuid();
     String id = uuid.v4();
-    FirestoreApi firestoreApi =
-        FirestoreApi(clientStream.value!, rootUrl: 'http://127.0.0.1:8080/'); // TODO - delete rootUrl
+    FirestoreApi firestoreApi = FirestoreApi(clientStream.value!);
 
     CommitRequest commitRequest = CommitRequest();
 
@@ -160,7 +160,8 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
             key: 'groupKey',
             keyValue: 'group/' + group.id.toString()));
 
-      CommonRepository.createNotification(clientStream.value!, group.id.toString());
+      CommonRepository.createNotification(
+          clientStream.value!, group.id.toString());
     });
 
     activity.tutors.forEach((tutor) async {
@@ -174,7 +175,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
     });
 
     await firestoreApi.projects.databases.documents.commit(commitRequest,
-        'projects/emulator/databases/(default)'); // TODO - change
+        'projects/${Const.FirebaseProjectId}/databases/(default)');
   }
 
   @override
@@ -186,10 +187,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
       throw 'Unauthorized';
     }
 
-    FirestoreApi firestoreApi = FirestoreApi(
-      clientStream.value!,
-      rootUrl: 'http://127.0.0.1:8080/', // TODO - delete
-    );
+    FirestoreApi firestoreApi = FirestoreApi(clientStream.value!);
 
     await TimetableUpdateApi.runQuery(
       fieldPath: 'id',
@@ -214,7 +212,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
         }).toList();
 
         await firestoreApi.projects.databases.documents.commit(commitRequest,
-            'projects/emulator/databases/(default)'); // TODO - change
+            'projects/${Const.FirebaseProjectId}/databases/(default)');
       },
     );
   }

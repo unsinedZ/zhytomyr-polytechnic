@@ -1,6 +1,7 @@
 import 'package:googleapis/firestore/v1.dart';
 
 import 'package:authorization_bloc/authorization_bloc.dart';
+import 'package:zp_timetable_update/bl/const.dart';
 
 class TutorAuthRepository
     implements ITutorAuthRepository {
@@ -10,7 +11,7 @@ class TutorAuthRepository
     FirestoreApi firestoreApi = FirestoreApi(client);
 
     Document tutorDocument = await firestoreApi.projects.databases.documents.get(
-        'projects/zhytomyr-politechnic-dev/databases/(default)/documents/service_accounts/' +
+        'projects/${Const.FirebaseProjectId}/databases/(default)/documents/service_accounts/' +
             clientId);
 
     return int.parse(tutorDocument.fields!['tutorId']!.integerValue!);

@@ -2,6 +2,7 @@ import 'package:googleapis/fcm/v1.dart';
 import 'package:googleapis/firestore/v1.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:uuid/uuid.dart';
+import 'package:zp_timetable_update/bl/const.dart';
 
 class CommonRepository {
   static Future<void> createNotification(
@@ -48,7 +49,7 @@ class CommonRepository {
     request.message = requestMessage;
 
     await firebaseCloudMessagingApi.projects.messages
-        .send(request, 'projects/zhytomyr-politechnic-dev');
+        .send(request, 'projects/${Const.FirebaseProjectId}');
   }
 
   static Document createActivityCancelDocument({
@@ -80,7 +81,7 @@ class CommonRepository {
     };
 
     document.fields = fields;
-    document.name = 'projects/emulator/databases/(default)/documents/timetable_items_update/' + uuid.v4(); // TODO - change
+    document.name = 'projects/${Const.FirebaseProjectId}/databases/(default)/documents/timetable_items_update/' + uuid.v4();
 
     return document;
   }

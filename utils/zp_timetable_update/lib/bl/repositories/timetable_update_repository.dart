@@ -4,6 +4,7 @@ import 'package:rxdart/rxdart.dart';
 
 import 'package:update_form/update_form.dart';
 import 'package:uuid/uuid.dart';
+import 'package:zp_timetable_update/bl/const.dart';
 
 import 'common_repository.dart';
 
@@ -31,7 +32,7 @@ class TimetableUpdateRepository implements ITimetableUpdateRepository {
 
     var uuid = Uuid();
     FirestoreApi firestoreApi =
-        FirestoreApi(clientStream.value!, rootUrl: 'http://127.0.0.1:8080/');
+        FirestoreApi(clientStream.value!);
 
     List<Document> documents = timetableItemUpdate.toDocuments();
 
@@ -41,7 +42,7 @@ class TimetableUpdateRepository implements ITimetableUpdateRepository {
 
     documents.forEach((document) {
       document.name =
-          'projects/emulator/databases/(default)/documents/timetable_items_update/' + // TODO - change
+          'projects/${Const.FirebaseProjectId}/databases/(default)/documents/timetable_items_update/' +
               uuid.v4();
       commitRequest.writes!.add(Write()..update = document);
     });
@@ -71,6 +72,6 @@ class TimetableUpdateRepository implements ITimetableUpdateRepository {
     }
 
     await firestoreApi.projects.databases.documents.commit(commitRequest,
-        'projects/emulator/databases/(default)'); // TODO - change
+        'projects/${Const.FirebaseProjectId}/databases/(default)');
   }
 }

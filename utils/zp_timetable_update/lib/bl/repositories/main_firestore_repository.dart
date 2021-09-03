@@ -6,6 +6,7 @@ import 'package:timetable/timetable.dart' hide Group;
 import 'package:update_form/update_form.dart' hide Tutor;
 
 import 'package:zp_timetable_update/bl/api/timetable_update_api.dart';
+import 'package:zp_timetable_update/bl/const.dart';
 import 'package:zp_timetable_update/bl/extensions/document_extension.dart';
 
 class MainFirestoreRepository
@@ -54,16 +55,16 @@ class MainFirestoreRepository
     }
 
     FirestoreApi firestoreApi =
-        FirestoreApi(clientStream.value!, rootUrl: 'http://127.0.0.1:8080/');
+        FirestoreApi(clientStream.value!);
 
     List<Group> groups = [];
 
     ListDocumentsResponse groupsResponse =
         await firestoreApi.projects.databases.documents.list(
-      'projects/emulator/databases/(default)/documents',
+      'projects/${Const.FirebaseProjectId}/databases/(default)/documents',
       'groups',
       pageSize: 1000,
-    ); // TODO change
+    );
 
     if (groupsResponse.documents == null) {
       return [];
@@ -72,12 +73,9 @@ class MainFirestoreRepository
     groups.addAll(groupsResponse.documents!
         .map((groupDocument) => Group.fromJson(groupDocument.toJsonFixed())));
 
-    //print(groupsResponse.nextPageToken); // TODO - check with real firestore
-
     while (groupsResponse.nextPageToken != null) {
       groupsResponse = await firestoreApi.projects.databases.documents
-          .list('projects/emulator/databases/(default)/documents', 'groups',
-              // TODO - change
+          .list('projects/${Const.FirebaseProjectId}/databases/(default)/documents', 'groups',
               pageSize: 10000,
               pageToken: groupsResponse.nextPageToken);
 
