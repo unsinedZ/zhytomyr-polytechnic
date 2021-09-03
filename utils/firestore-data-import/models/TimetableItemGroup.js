@@ -37,8 +37,7 @@ class TimetableItemGroup {
                 findedActivity.activity_hour_id === activity.activity_hour_id &&
                 findedActivity.activity_tag_id === activity.activity_tag_id &&
                 findedActivity.activity_room_id === activity.activity_room_id &&
-                findedActivity.activity_subject_id === activity.activity_subject_id &&
-                findedActivity.activity_subgroup_id === activity.activity_subgroup_id
+                findedActivity.activity_subject_id === activity.activity_subject_id
             ))
         )
     }
