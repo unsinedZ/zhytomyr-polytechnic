@@ -1,5 +1,6 @@
-import 'package:authorization_bloc/authorization_bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
+
+import 'package:authorization_bloc/authorization_bloc.dart';
 import 'package:error_bloc/error_bloc.dart';
 import 'package:provider/provider.dart';
 

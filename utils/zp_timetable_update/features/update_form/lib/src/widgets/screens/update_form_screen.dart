@@ -52,7 +52,8 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
 
   @override
   void initState() {
-    isUpdatingStreamSubscription = widget.updateFormBloc.isUpdateCreating.listen((isUpdateCreating) {
+    isUpdatingStreamSubscription =
+        widget.updateFormBloc.isUpdateCreating.listen((isUpdateCreating) {
       if (isUpdateCreating == true) {
         Navigator.of(context).push(
           PageRouteBuilder(
@@ -98,6 +99,8 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
 
       widget.updateFormBloc
           .setSelectedGroups(timetableItem!.activity.groups.divide());
+    } else {
+      widget.updateFormBloc.setSelectedGroups([]);
     }
 
     widget.updateFormBloc.loadGroups();
@@ -270,9 +273,10 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
     }
 
     TimetableItemUpdate timetableItemUpdate = _createTimetableUpdate(groups);
-    await widget.updateFormBloc.createTimetableUpdate(timetableItemUpdate, groups.compress(), initialGroups);
+    await widget.updateFormBloc.createTimetableUpdate(
+        timetableItemUpdate, groups.compress(), initialGroups);
     Navigator.pop(context);
-    if(timetableItem != null) {
+    if (timetableItem != null) {
       Navigator.pop(context);
     }
   }

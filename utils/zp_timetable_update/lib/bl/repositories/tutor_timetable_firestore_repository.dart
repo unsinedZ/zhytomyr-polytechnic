@@ -145,7 +145,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
     var uuid = Uuid();
     String id = uuid.v4();
     FirestoreApi firestoreApi =
-        FirestoreApi(clientStream.value!, rootUrl: 'http://127.0.0.1:8080/');
+        FirestoreApi(clientStream.value!, rootUrl: 'http://127.0.0.1:8080/'); // TODO - delete rootUrl
 
     CommitRequest commitRequest = CommitRequest();
 

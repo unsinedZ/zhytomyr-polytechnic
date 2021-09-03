@@ -7,8 +7,6 @@ class TutorAuthRepository
 
   @override
   Future<int> loadTutorId(AuthClient client, String clientId) async {
-
-
     FirestoreApi firestoreApi = FirestoreApi(client);
 
     Document tutorDocument = await firestoreApi.projects.databases.documents.get(
