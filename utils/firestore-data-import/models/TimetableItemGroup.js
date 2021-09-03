@@ -33,25 +33,30 @@ class TimetableItemGroup {
         }
         return sqlOutput["activities"].filter((activities) => activities.activity_teacher_id == uniqueId).filter((activity, index, self) =>
             index === self.findIndex((findedActivity) => (
-                findedActivity.activity_teacher_id === activity.activity_teacher_id
+                findedActivity.activity_day_id === activity.activity_day_id &&
+                findedActivity.activity_hour_id === activity.activity_hour_id &&
+                findedActivity.activity_tag_id === activity.activity_tag_id &&
+                findedActivity.activity_room_id === activity.activity_room_id &&
+                findedActivity.activity_subject_id === activity.activity_subject_id &&
+                findedActivity.activity_subgroup_id === activity.activity_subgroup_id
             ))
         )
     }
 
-    static fromGroup(sqlOutput, id, timetableId, key) {
-        const timetableItem = this.fromKeyActivities(sqlOutput, key).map((activity) => {
+    static fromGroup(sqlOutput, id, timetableKey, key) {
+        const timetableItems = this.fromKeyActivities(sqlOutput, key).map((activity) => {
             return Object.assign({}, TimetableItem.fromSQL(sqlOutput, activity.activity_id));
         });
 
-        if (!timetableItem) {
+        if (!timetableItems) {
             return;
         }
-
+        timetableItems
         return new TimetableItemGroup(
             id,
-            timetableId,
+            timetableKey,
             key,
-            timetableItem
+            timetableItems
         )
     }
 }
