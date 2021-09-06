@@ -10,15 +10,23 @@ class PushNotificationBloc {
   final StreamSink<String> errorSink;
   final StreamController<String?> _pushNotificationController =
       StreamController.broadcast();
+  final StreamController<String?> _onNotificationOpenedController =
+      StreamController();
 
   PushNotificationBloc({required this.errorSink});
 
   String? lastTopic;
 
   Stream<String?> get pushNotification => _pushNotificationController.stream;
-  Stream<Map<String, dynamic>> get onMessageOpened => FirebaseMessaging.onMessageOpenedApp.map((message) => message.data);
+  Stream<String?> get onMessageOpened => _onNotificationOpenedController.stream;
 
   void init() async {
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        _onNotificationOpenedController.add(message.data.toString());
+      }
+    });
+
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
     const AndroidInitializationSettings initializationSettingsAndroid =
@@ -31,9 +39,11 @@ class PushNotificationBloc {
         InitializationSettings(
             android: initializationSettingsAndroid,
             iOS: initializationSettingsIOS);
-    await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-    );
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: (payload) async {
+      _onNotificationOpenedController.add(payload);
+    });
 
     if (Platform.isIOS) {
       await flutterLocalNotificationsPlugin
@@ -49,20 +59,20 @@ class PushNotificationBloc {
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null && message.notification != null) {
         _showInAppNotification(
-          flutterLocalNotificationsPlugin,
-          message.notification!.title ?? '',
-          message.notification!.body ?? '',
-        );
+            flutterLocalNotificationsPlugin,
+            message.notification!.title ?? '',
+            message.notification!.body ?? '',
+            message.data);
       }
     });
 
     FirebaseMessaging.onMessage.listen((message) {
       if (message.notification != null) {
         _showInAppNotification(
-          flutterLocalNotificationsPlugin,
-          message.notification!.title ?? '',
-          message.notification!.body ?? '',
-        );
+            flutterLocalNotificationsPlugin,
+            message.notification!.title ?? '',
+            message.notification!.body ?? '',
+            message.data);
       }
     });
   }
@@ -90,7 +100,8 @@ class PushNotificationBloc {
   void _showInAppNotification(
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
       String title,
-      String body) async {
+      String body,
+      Map<String, dynamic> payload) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
             'zp_chanel', 'zp', 'chanel for timetable update notifications',
@@ -104,11 +115,12 @@ class PushNotificationBloc {
       title,
       body,
       platformChannelSpecifics,
+      payload: payload.toString(),
     );
   }
 
   void unsubscribeFromCurrentTopic() {
-    if(lastTopic != null) {
+    if (lastTopic != null) {
       FirebaseMessaging.instance.unsubscribeFromTopic(lastTopic!);
       lastTopic = null;
     }

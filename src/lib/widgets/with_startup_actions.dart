@@ -30,8 +30,14 @@ class _WithStartupActionsState extends State<WithStartupActions> {
   void initState() {
     final userSyncBloc = context.read<UserSyncBloc>();
 
+    context.read<PushNotificationBloc>().init();
+
     context
-        .read<PushNotificationBloc>().init();
+        .read<PushNotificationBloc>()
+        .onMessageOpened
+        .listen((event) {
+          print("smth: " + event.toString());
+        });
 
     userSyncBloc.syncUser
         .where((user) => user != null && !user.isEmpty)
@@ -91,8 +97,6 @@ class _WithStartupActionsState extends State<WithStartupActions> {
     if (Platform.isIOS) {
       context.read<AppleAuthenticationBloc>().loadUser();
     }
-
-    context.read<PushNotificationBloc>().onMessageOpened.listen((event) => print(event));
 
     super.initState();
   }
