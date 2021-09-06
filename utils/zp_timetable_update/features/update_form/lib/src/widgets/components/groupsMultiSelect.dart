@@ -9,47 +9,50 @@ class GroupsMultiSelect extends StatelessWidget {
   final List<Group> selectedGroups;
   final void Function(List<Group?>) onConfirm;
   final void Function(Group) removeGroup;
+  final bool isAllowToChange;
 
   GroupsMultiSelect({
     required this.items,
     required this.selectedGroups,
     required this.onConfirm,
     required this.removeGroup,
+    required this.isAllowToChange,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          key: Key(selectedGroups.join('/')),
-          padding: const EdgeInsets.all(8.0),
-          child: MultiSelectDialogField<Group?>(
-            items: items,
-            listType: MultiSelectListType.CHIP,
-            onConfirm: onConfirm,
-            chipDisplay: MultiSelectChipDisplay.none(),
-            initialValue: selectedGroups,
-            searchable: true,
-            buttonText: Text('Вибрати групи'),
-            buttonIcon: Icon(
-              Icons.arrow_downward,
-              color: Colors.black,
+        if (isAllowToChange)
+          Padding(
+            key: Key(selectedGroups.join('/')),
+            padding: const EdgeInsets.all(8.0),
+            child: MultiSelectDialogField<Group?>(
+              items: items,
+              listType: MultiSelectListType.CHIP,
+              onConfirm: onConfirm,
+              chipDisplay: MultiSelectChipDisplay.none(),
+              initialValue: selectedGroups,
+              searchable: true,
+              buttonText: Text('Вибрати групи'),
+              buttonIcon: Icon(
+                Icons.arrow_downward,
+                color: Colors.black,
+              ),
+              searchIcon: Icon(
+                Icons.search,
+                color: Colors.black,
+              ),
+              closeSearchIcon: Icon(
+                Icons.close,
+                color: Colors.black,
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty)
+                  return 'Виберіть мінімум 1 групу';
+              },
             ),
-            searchIcon: Icon(
-              Icons.search,
-              color: Colors.black,
-            ),
-            closeSearchIcon: Icon(
-              Icons.close,
-              color: Colors.black,
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty)
-                return 'Виберіть мінімум 1 групу';
-            },
           ),
-        ),
         MultiSelectChipDisplay<Group?>(
           items: selectedGroups
               .map((group) => MultiSelectItem(
@@ -61,9 +64,11 @@ class GroupsMultiSelect extends StatelessWidget {
               .toList(),
           height: 50,
           onTap: (value) {
-            Group group = selectedGroups
-                .firstWhere((group) => group == (value as Group));
-            removeGroup(group);
+            if (isAllowToChange) {
+              Group group = selectedGroups
+                  .firstWhere((group) => group == (value as Group));
+              removeGroup(group);
+            }
           },
         ),
       ],

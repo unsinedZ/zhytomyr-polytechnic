@@ -49,11 +49,13 @@ class ActivityCard extends StatefulWidget {
 class _ActivityCardState extends State<ActivityCard> {
   late final TimetableBloc timetableBloc;
   late final Tutor tutor;
+  late final List<String> unavailableTimes;
 
   @override
   void initState() {
     timetableBloc = context.read<TimetableBloc>();
     tutor = context.read<Tutor>();
+    unavailableTimes = context.read<List<String>>();
     super.initState();
   }
 
@@ -192,6 +194,7 @@ class _ActivityCardState extends State<ActivityCard> {
         },
         dateTime: widget.dateTime,
         tutor: tutor,
+        unavailableTimes: unavailableTimes,
       ),
     );
   }

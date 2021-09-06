@@ -44,6 +44,8 @@ class _TimetableTabState extends State<TimetableTab> {
   late final AuthClient authClient;
   late final Tutor tutor;
   late final TimetableBloc timetableBloc;
+  late List<UpdatableTimetableItem> updatableTimetableItems;
+  late List<String> unavailableTimes;
 
   @override
   void initState() {
@@ -52,68 +54,103 @@ class _TimetableTabState extends State<TimetableTab> {
     timetableBloc = context.read<TimetableBloc>();
     tutor = context.read<Tutor>();
 
+    updatableTimetableItems = stateToUpdatableItems();
+    unavailableTimes = updatableTimetableItems.map((item) {
+      if (item.timetableItemUpdate != null &&
+          item.timetableItemUpdate!.timetableItem != null) {
+        return item.timetableItemUpdate!.timetableItem!.activity.time.start;
+      }
+
+      if (item.timetableItem != null) {
+        return item.timetableItem!.activity.time.start;
+      }
+      return '';
+    }).toList();
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> widgets = stateToWidgets();
-
-    return SingleChildScrollView(
-      key: Key(widget.weekNumber.toString() +
-          '/' +
-          widget.dayOfWeekNumber.toString() +
-          '/' +
-          timetableItemUpdates.length.toString()),
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              (widget.isTomorrow == true
-                  ? widget.textLocalizer.localize('Tomorrow')
-                  : DateFormat('d MMMM', 'uk').format(widget.dateTime)),
-            ),
-          ),
-          ...widgets,
-          Container(
-            width: double.infinity,
-            child: Padding(
+    return MultiProvider(
+      providers: [
+        Provider<List<String>>(create: (_) => unavailableTimes),
+      ],
+      child: SingleChildScrollView(
+        key: Key(widget.weekNumber.toString() +
+            '/' +
+            widget.dayOfWeekNumber.toString() +
+            '/' +
+            timetableItemUpdates.length.toString()),
+        child: Column(
+          children: <Widget>[
+            Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/update_form', arguments: {
-                    'dateTime': widget.dateTime,
-                    'dayNumber': widget.dayOfWeekNumber,
-                    'weekNumber': widget.weekNumber,
-                    'tutorJson': tutor.toJson(),
-                  });
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    'Додати нову пару',
-                    textScaleFactor: 1.3,
+              child: Text(
+                (widget.isTomorrow == true
+                    ? widget.textLocalizer.localize('Tomorrow')
+                    : DateFormat('d MMMM', 'uk').format(widget.dateTime)),
+              ),
+            ),
+            ...updatableTimetableItems
+                .map((updatableTimetableItem) => TimetableTabItem(
+                      updatableTimetableItem: updatableTimetableItem,
+                      textLocalizer: widget.textLocalizer,
+                      dateTime: widget.dateTime,
+                    ))
+                .expand((element) => [
+                      Divider(
+                        height: 1,
+                        thickness: 1,
+                      ),
+                      element
+                    ])
+                .skip(1)
+                .toList(),
+            Container(
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/update_form',
+                      arguments: {
+                        'unavailableTimes': unavailableTimes,
+                        'dateTime': widget.dateTime,
+                        'dayNumber': widget.dayOfWeekNumber,
+                        'weekNumber': widget.weekNumber,
+                        'tutorJson': tutor.toJson(),
+                      },
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(
+                      'Додати нову пару',
+                      textScaleFactor: 1.3,
+                    ),
                   ),
-                ),
-                style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.disabled)) {
-                      return Theme.of(context).disabledColor;
-                    }
-                    return Color(0xff36d02b);
-                  }),
+                  style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.disabled)) {
+                        return Theme.of(context).disabledColor;
+                      }
+                      return Color(0xff36d02b);
+                    }),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  List<Widget> stateToWidgets() {
+  List<UpdatableTimetableItem> stateToUpdatableItems() {
     List<TimetableItem> timetableItems = widget.timetable.items
         .where((timetableItem) =>
             timetableItem.weekNumber == widget.weekNumber &&
@@ -159,21 +196,7 @@ class _TimetableTabState extends State<TimetableTab> {
 
     updatableTimetableItems.sort((a, b) => a.compareTo(b));
 
-    return updatableTimetableItems
-        .map((updatableTimetableItem) => TimetableTabItem(
-              updatableTimetableItem: updatableTimetableItem,
-              textLocalizer: widget.textLocalizer,
-              dateTime: widget.dateTime,
-            ))
-        .expand((element) => [
-              Divider(
-                height: 1,
-                thickness: 1,
-              ),
-              element
-            ])
-        .skip(1)
-        .toList();
+    return updatableTimetableItems;
   }
 
   UpdatableTimetableItem createUpdatableItem({

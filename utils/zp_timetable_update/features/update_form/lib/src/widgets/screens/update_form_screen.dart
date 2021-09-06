@@ -47,6 +47,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
   late Tutor tutor;
   late DateTime dateTime;
   late List<Group>? initialGroups;
+  late List<String> unavailableTimes;
 
   TimetableItem? timetableItem;
 
@@ -84,6 +85,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
     dateTime = arguments['dateTime'];
     dayNumber = arguments['dayNumber'];
     weekNumber = arguments['weekNumber'];
+    unavailableTimes = arguments['unavailableTimes'];
     tutor = Tutor.fromJson(arguments['tutorJson']);
     timetableItem = arguments['timetableItemJson'] != null
         ? TimetableItem.fromJson(arguments['timetableItemJson'])
@@ -91,6 +93,9 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
 
     initialGroups = timetableItem?.activity.groups;
     if (timetableItem != null) {
+      unavailableTimes = unavailableTimes
+          .where((time) => time != timetableItem!.activity.time.start)
+          .toList();
       lessonNameController.text = timetableItem!.activity.name;
       auditoryController.text = timetableItem!.activity.room;
       startLessonTime = timetableItem!.activity.time.start;
@@ -161,8 +166,9 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
                           hint: Text('Початок пари'),
                           disabledHint: Text('Початок пари'),
                           items: startEndLessonMap.keys
-                              .map((key) => DropdownMenuItem(
-                                  child: Text(key), value: key))
+                              .where((start) => !unavailableTimes.any((time) => time == start))
+                              .map((start) => DropdownMenuItem(
+                                  child: Text(start), value: start))
                               .toList(),
                           value: startLessonTime,
                           onChanged: (newValue) {
@@ -223,6 +229,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
                                   widget.updateFormBloc.setSelectedGroups(
                                       values.map((group) => group!).toList());
                                 },
+                                isAllowToChange: timetableItem == null,
                               ),
                               SizedBox(
                                 height: 7,
@@ -331,6 +338,7 @@ Map<String, String> startEndLessonMap = {
   '13:30': '14:50',
   '15:00': '16:20',
   '16:30': '17:50',
+  '18:00': '19:20',
 };
 
 _defaultValidator(String? value, validationMessage) {

@@ -23,6 +23,7 @@ class TimetableBloc {
   final BehaviorSubject<List<TimetableItemUpdate>?>
       _timetableItemUpdatesController =
       BehaviorSubject<List<TimetableItemUpdate>?>();
+
   final BehaviorSubject<Tutor?> _tutorController = BehaviorSubject<Tutor?>();
 
   Stream<Timetable?> get timetable => _timetableController.stream;
@@ -72,6 +73,10 @@ class TimetableBloc {
       print(stack);
       errorSink.add(error.toString());
     });
+  }
+
+  void showUpdateForm() {
+
   }
 
   void cancelLesson(

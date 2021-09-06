@@ -11,6 +11,7 @@ class ActivityInfoDialog extends StatelessWidget {
   final VoidCallback onUpdateCancel;
   final bool isUpdated;
   final Tutor tutor;
+  final List<String> unavailableTimes;
 
   ActivityInfoDialog({
     required this.timetableItem,
@@ -20,6 +21,7 @@ class ActivityInfoDialog extends StatelessWidget {
     required this.onUpdateCancel,
     required this.isUpdated,
     required this.tutor,
+    required this.unavailableTimes,
   });
 
   @override
@@ -99,14 +101,18 @@ class ActivityInfoDialog extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/update_form',
-                            arguments: {
-                              'timetableItemJson': timetableItem.toJson(),
-                              'dateTime': dateTime,
-                              'dayNumber': timetableItem.dayNumber,
-                              'weekNumber': timetableItem.weekNumber,
-                              'tutorJson': tutor.toJson(),
-                            });
+                        Navigator.pushNamed(
+                          context,
+                          '/update_form',
+                          arguments: {
+                            'timetableItemJson': timetableItem.toJson(),
+                            'unavailableTimes': unavailableTimes,
+                            'dateTime': dateTime,
+                            'dayNumber': timetableItem.dayNumber,
+                            'weekNumber': timetableItem.weekNumber,
+                            'tutorJson': tutor.toJson(),
+                          },
+                        );
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
