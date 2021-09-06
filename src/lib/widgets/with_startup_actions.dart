@@ -92,6 +92,8 @@ class _WithStartupActionsState extends State<WithStartupActions> {
       context.read<AppleAuthenticationBloc>().loadUser();
     }
 
+    context.read<PushNotificationBloc>().onMessageOpened.listen((event) => print(event));
+
     super.initState();
   }
 

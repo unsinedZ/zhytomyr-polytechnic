@@ -16,6 +16,7 @@ class PushNotificationBloc {
   String? lastTopic;
 
   Stream<String?> get pushNotification => _pushNotificationController.stream;
+  Stream<Map<String, dynamic>> get onMessageOpened => FirebaseMessaging.onMessageOpenedApp.map((message) => message.data);
 
   void init() async {
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
