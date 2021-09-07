@@ -46,6 +46,10 @@ const {
         await firestore.collection("groups").doc().set(Object.assign({}, group))
     })
 
+    jsonOutput["subjects"].map((subject) => subject.subject_name).forEach(async(subject) => {
+        await firestore.collection("subjects").doc().set({name: subject})
+    })
+
     jsonOutput["teachers"].map((tutor) => Tutor.fromSQL(tutor)).forEach(async(tutor) => {
         await firestore.collection("tutors").doc().set(Object.assign({}, tutor))
     })
