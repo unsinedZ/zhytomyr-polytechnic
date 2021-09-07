@@ -9,6 +9,7 @@ void main() {
     final ContactsData contactsData = ContactsData.fromJson(jsonDecode(
         '{"phoneNumber" : "phoneNumber", '
           '"address" : "address", '
+          '"socialNetworks" : [], '
           '"addressUrl" : "addressUrl"'
         '}'));
 
