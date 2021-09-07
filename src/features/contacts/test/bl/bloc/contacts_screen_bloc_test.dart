@@ -14,11 +14,9 @@ class ContactsRepositoryMock extends Mock implements ContactsRepository {
         returnValue: Future.value(
           ContactsData(
             address: '',
-            telegramUrl: '',
-            instagramUrl: '',
-            facebookUrl: '',
             phoneNumber: '',
             addressUrl: '',
+            socialNetworks: [],
           ),
         ),
       );
@@ -36,12 +34,10 @@ void main() {
     when(contactsRepositoryMock.loadContactsData()).thenAnswer(
       (_) => Future.value(
         ContactsData(
-          telegramUrl: 'telegramUrl',
-          instagramUrl: 'instagramUrl',
-          facebookUrl: 'facebookUrl',
           phoneNumber: 'phoneNumber',
           address: 'address',
           addressUrl: 'addressUrl',
+          socialNetworks: [],
         ),
       ),
     );
@@ -56,11 +52,8 @@ void main() {
 
     expect(results[0], null);
     expect(results.length, 2);
-    expect(results[1]!.facebookUrl, 'facebookUrl');
     expect(results[1]!.address, 'address');
     expect(results[1]!.addressUrl, 'addressUrl');
-    expect(results[1]!.telegramUrl, 'telegramUrl');
-    expect(results[1]!.instagramUrl, 'instagramUrl');
     expect(results[1]!.phoneNumber, 'phoneNumber');
   });
 }
