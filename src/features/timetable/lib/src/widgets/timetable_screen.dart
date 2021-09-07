@@ -224,6 +224,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
               }
 
               return TabBarView(
+                key: Key("$weekNumber.toString()/$isWeekChanged.toString()/"),
                 children: _weekDaysNames
                     .asMap()
                     .keys
