@@ -98,25 +98,28 @@ class ActivityCard extends StatelessWidget {
                             activity.type,
                         style: Theme.of(context).textTheme.headline2,
                       ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Text(
+                        activity.tutors.map((tutor) => tutor.name).join(', '),
+                        style: Theme.of(context).textTheme.headline2,
+                        textScaleFactor: 1,
+                      ),
                     ],
                   ),
                 ),
+                if (this._activityCardType == _ActivityCardType.Canceled)
                 Expanded(
                   flex: 2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        activity.tutors.map((tutor) => tutor.name).join(', '),
-                        style: Theme.of(context).textTheme.headline2,
-                        textScaleFactor: 1.15,
-                      ),
-                      if (this._activityCardType == _ActivityCardType.Canceled)
                         Text(
                           textLocalizer.localize('Canceled'),
                           style: TextStyle(color: Colors.red),
-                          textScaleFactor: 1.15,
+                          textScaleFactor: 1.05,
                         ),
                     ],
                   ),

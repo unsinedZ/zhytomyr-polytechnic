@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -11,7 +12,7 @@ class PushNotificationBloc {
   final StreamController<String?> _pushNotificationController =
       StreamController.broadcast();
   final StreamController<String?> _onNotificationOpenedController =
-      StreamController();
+      StreamController.broadcast();
 
   PushNotificationBloc({required this.errorSink});
 
@@ -23,7 +24,7 @@ class PushNotificationBloc {
   void init() async {
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
-        _onNotificationOpenedController.add(message.data.toString());
+        _onNotificationOpenedController.add(jsonEncode(message.data));
       }
     });
 
@@ -115,7 +116,7 @@ class PushNotificationBloc {
       title,
       body,
       platformChannelSpecifics,
-      payload: payload.toString(),
+      payload: jsonEncode(payload),
     );
   }
 

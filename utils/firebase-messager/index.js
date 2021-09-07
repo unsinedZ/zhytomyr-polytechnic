@@ -1,5 +1,5 @@
 const axios = require('axios');
-const {google} = require('googleapis')
+const { google } = require('googleapis')
 const opts = require('optimist').argv
 const jsonCreditals = require(opts.file)
 
@@ -7,9 +7,9 @@ const data = JSON.stringify({
     "message": {
         "token": opts.topic,
         "data": {
-			    "click_action": "FLUTTER_NOTIFICATION_CLICK",
-            "type": "warning",
-            "alert": "Пари змінились"
+            "click_action": "FLUTTER_NOTIFICATION_CLICK",
+            "weekNumber": "0",
+            "dayNumber": "3"
         },
         "notification": {
             "title": "Пари змінились!",
@@ -41,13 +41,15 @@ const data = JSON.stringify({
     );
 
     const token = await jwtClient.authorize();
-    
-    const response = await axios({method: 'post',
-            url: `https://fcm.googleapis.com/v1/projects/${jsonCreditals.project_id}/messages:send`,
-            headers: {
-                'Authorization': 'Bearer '+ token.access_token,
-                'Content-Type': 'application/json'
-            },
-            data: data});
+
+    const response = await axios({
+        method: 'post',
+        url: `https://fcm.googleapis.com/v1/projects/${jsonCreditals.project_id}/messages:send`,
+        headers: {
+            'Authorization': 'Bearer ' + token.access_token,
+            'Content-Type': 'application/json'
+        },
+        data: data
+    });
     return response.data;
 })().then(console.log).catch(console.log)

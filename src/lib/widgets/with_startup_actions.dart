@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -31,13 +32,6 @@ class _WithStartupActionsState extends State<WithStartupActions> {
     final userSyncBloc = context.read<UserSyncBloc>();
 
     context.read<PushNotificationBloc>().init();
-
-    context
-        .read<PushNotificationBloc>()
-        .onMessageOpened
-        .listen((event) {
-          print("smth: " + event.toString());
-        });
 
     userSyncBloc.syncUser
         .where((user) => user != null && !user.isEmpty)

@@ -84,23 +84,19 @@ class _TimetableScreenState extends State<TimetableScreen> {
     final arguments =
         (ModalRoute.of(context)!.settings.arguments) as Map<String, dynamic>;
 
-    if (arguments.length > 3) {
-      TimetableFilters timetableFilters =
-          TimetableFilters.fromJson(arguments[3]);
-      weekNumber = timetableFilters.weekNumber;
-      id = timetableFilters.id;
-      subgroupId = timetableFilters.subgroupId;
-      timetableType = timetableFilters.timetableType;
-      initialIndex = timetableFilters.weekDayNumber - 1;
-    } else {
-      id = arguments['groupId'];
+    id = arguments['groupId'];
 
-      timetableType = timetableTypeFromString(arguments['type'] as String);
+    timetableType = timetableTypeFromString(arguments['type'] as String);
 
-      if (timetableType == TimetableType.Group &&
-          arguments['subgroupId'] != null) {
-        subgroupId = arguments['subgroupId'];
-      }
+    if (timetableType == TimetableType.Group &&
+        arguments['subgroupId'] != null) {
+      subgroupId = arguments['subgroupId'];
+    }
+
+    if (arguments['params'] != null) {
+      final params = arguments['params'];
+      weekNumber = int.parse(params['weekNumber']);
+      initialIndex = int.parse(params['dayNumber']);
     }
 
     timetableBloc = TimetableBloc(
