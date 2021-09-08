@@ -28,6 +28,10 @@ class PushNotificationBloc {
       }
     });
 
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+        _onNotificationOpenedController.add(jsonEncode(message.data));
+    });
+
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
     const AndroidInitializationSettings initializationSettingsAndroid =

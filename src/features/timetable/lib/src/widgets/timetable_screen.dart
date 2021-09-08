@@ -81,7 +81,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   void didChangeDependencies() {
-    final arguments =
+    final Map<String, dynamic> arguments =
         (ModalRoute.of(context)!.settings.arguments) as Map<String, dynamic>;
 
     id = arguments['groupId'];
@@ -140,6 +140,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     return DefaultTabController(
       initialIndex: initialIndex,
       length: 6,
@@ -155,11 +156,16 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     ))
                 .toList(),
           ),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+          leading: Stack(
+            children: [
+              if (arguments['params'] != null)
+                IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+            ],
           ),
           title: Text(
             title,

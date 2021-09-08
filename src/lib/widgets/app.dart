@@ -196,6 +196,8 @@ class _AppState extends State<App> {
                   tutorRepository: FirestoreRepository(),
                 ),
             '/my-timetable': (context) => MyTimetableScreen(
+              bodyWrapper: ({required Widget child}) =>
+                      BodyWrapper(child: child),
                 textLocalizer: TextLocalizer(),
                 errorSink: context.read<ErrorBloc>().errorSink,
                 userStream: context

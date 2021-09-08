@@ -21,11 +21,12 @@ const data = JSON.stringify({
         "apns": {
             "payload": {
                 "aps": {
-                    "contentAvailable": true
+                    "contentAvailable": true,
+                    "category": "NEW_MESSAGE_CATEGORY",
+                    "sound": 'default',
                 }
             },
             "headers": {
-                "apns-push-type": "background",
                 "apns-priority": "5"
             }
         }
