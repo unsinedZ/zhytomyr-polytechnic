@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:update_form/src/widgets/components/activity_name_text_field.dart';
 import 'package:update_form/src/widgets/components/groupsMultiSelect.dart';
 import 'package:uuid/uuid.dart';
 
@@ -30,7 +31,7 @@ class UpdateFormScreen extends StatefulWidget {
 }
 
 class _UpdateFormScreenState extends State<UpdateFormScreen> {
-  final TextEditingController lessonNameController = TextEditingController();
+  late TextEditingController lessonNameController;
   final TextEditingController auditoryController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
@@ -96,7 +97,6 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
       unavailableTimes = unavailableTimes
           .where((time) => time != timetableItem!.activity.time.start)
           .toList();
-      lessonNameController.text = timetableItem!.activity.name;
       auditoryController.text = timetableItem!.activity.room;
       startLessonTime = timetableItem!.activity.time.start;
       tutors = timetableItem!.activity.tutors;
@@ -109,6 +109,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
     }
 
     widget.updateFormBloc.loadGroups();
+    widget.updateFormBloc.loadActivityNames();
 
     super.didChangeDependencies();
   }
@@ -145,18 +146,15 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
               child: Form(
                 key: _formKey,
                 child: Column(
+                  key: Key(''),
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        controller: lessonNameController,
-                        validator: (value) =>
-                            _defaultValidator(value, 'Введіть назву заняття'),
-                        decoration: InputDecoration(
-                          floatingLabelBehavior: FloatingLabelBehavior.auto,
-                          labelText: "Назва пари",
-                        ),
-                      ),
+                    ActivityNameTextField(
+                      setController: (TextEditingController controller) {
+                        lessonNameController = controller;
+                        lessonNameController.text =
+                            timetableItem?.activity.name ?? '';
+                      },
+                      namesStream: widget.updateFormBloc.activityNames,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -166,7 +164,8 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
                           hint: Text('Початок пари'),
                           disabledHint: Text('Початок пари'),
                           items: startEndLessonMap.keys
-                              .where((start) => !unavailableTimes.any((time) => time == start))
+                              .where((start) => !unavailableTimes
+                                  .any((time) => time == start))
                               .map((start) => DropdownMenuItem(
                                   child: Text(start), value: start))
                               .toList(),
@@ -174,7 +173,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
                           onChanged: (newValue) {
                             startLessonTime = newValue;
                           },
-                          validator: (value) => _defaultValidator(
+                          validator: (value) => defaultValidator(
                               value, 'Виберіть час початку заняття'),
                         ),
                       ),
@@ -188,7 +187,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
                           labelText: "Аудиторія",
                         ),
                         validator: (value) =>
-                            _defaultValidator(value, 'Введіть назву аудиторії'),
+                            defaultValidator(value, 'Введіть назву аудиторії'),
                       ),
                     ),
                     Padding(
@@ -208,7 +207,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
                             timetableItemType = newValue;
                           },
                           validator: (value) =>
-                              _defaultValidator(value, 'Вибуріть тип заннятя'),
+                              defaultValidator(value, 'Вибуріть тип заннятя'),
                         ),
                       ),
                     ),
@@ -341,7 +340,7 @@ Map<String, String> startEndLessonMap = {
   '18:00': '19:20',
 };
 
-_defaultValidator(String? value, validationMessage) {
+defaultValidator(String? value, validationMessage) {
   if (value == null || value.isEmpty) {
     return validationMessage;
   } else {

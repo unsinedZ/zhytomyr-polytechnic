@@ -66,8 +66,9 @@ class Dependencies extends StatelessWidget {
           context.read<AuthorizationBloc>().tutorId,
         ),
         timetableUpdateRepository: TimetableUpdateRepository(
-          context.read<AuthorizationBloc>().authClient,
-          context.read<AuthorizationBloc>().tutorId,
+          sharedPreferences: SharedPreferences.getInstance(),
+          tutorIdStream: context.read<AuthorizationBloc>().tutorId,
+          clientStream: context.read<AuthorizationBloc>().authClient,
         ),
       );
 }

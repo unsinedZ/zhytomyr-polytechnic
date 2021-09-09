@@ -73,16 +73,6 @@ class MainFirestoreRepository
     groups.addAll(groupsResponse.documents!
         .map((groupDocument) => Group.fromJson(groupDocument.toJsonFixed())));
 
-    while (groupsResponse.nextPageToken != null) {
-      groupsResponse = await firestoreApi.projects.databases.documents
-          .list('projects/${Const.FirebaseProjectId}/databases/(default)/documents', 'groups',
-              pageSize: 10000,
-              pageToken: groupsResponse.nextPageToken);
-
-      groups.addAll(groupsResponse.documents!
-          .map((groupDocument) => Group.fromJson(groupDocument.toJsonFixed())));
-    }
-
     return groups;
   }
 }

@@ -9,3 +9,4 @@ export 'src/bl/bloc/update_form_bloc.dart';
 export 'src/bl/models/group.dart';
 export 'src/bl/models/tutor.dart';
 export 'src/bl/models/timetable_item_update.dart';
+export 'src/bl/models/activity_name.dart';

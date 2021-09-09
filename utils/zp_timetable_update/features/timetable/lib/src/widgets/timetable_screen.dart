@@ -54,7 +54,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   void initState() {
-    if (indexDayDateTime.hour >= 18) {
+    if (indexDayDateTime.hour >= 19) {
       isNextDay = true;
       initialIndex = (initialIndex + 1) % 6;
       indexDayDateTime = indexDayDateTime.add(Duration(days: 1));
@@ -77,10 +77,11 @@ class _TimetableScreenState extends State<TimetableScreen> {
       });
     });
 
-    dataStream = Rx.combineLatest2(
+    dataStream = Rx.combineLatest3(
       widget.timetableBloc.timetable,
       widget.timetableBloc.timetableItemUpdates,
-      (a, b) => <dynamic>[a, b],
+      widget.timetableBloc.tutor,
+      (a, b, c) => <dynamic>[a, b, c],
     );
 
     super.didChangeDependencies();
@@ -131,6 +132,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
             child: Icon(Icons.filter_alt_outlined),
           ),
           body: StreamBuilder<List<dynamic>>(
+
             stream: dataStream,
             builder: (context, snapshot) {
               if (_isSnapshotHasData(snapshot)) {
@@ -150,6 +152,10 @@ class _TimetableScreenState extends State<TimetableScreen> {
                 }
 
                 return TabBarView(
+                  key: Key(weekNumber.toString() +
+                      '/' +
+                      isWeekChanged.toString() +
+                      '/'),
                   children: _weekDaysNames
                       .asMap()
                       .keys
@@ -226,9 +232,9 @@ TimetableType timetableTypeFromString(String value) =>
 
 bool _isSnapshotHasData(AsyncSnapshot<List<dynamic>> snapshot) {
   if (snapshot.hasData &&
-      snapshot.data != null &&
       snapshot.data![0] != null &&
-      snapshot.data![1] != null) {
+      snapshot.data![1] != null &&
+      snapshot.data![2] != null) {
     return true;
   }
 

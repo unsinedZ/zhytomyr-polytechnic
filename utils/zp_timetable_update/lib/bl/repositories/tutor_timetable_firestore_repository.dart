@@ -36,8 +36,6 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
 
     final SharedPreferences prefs = await sharedPreferences;
 
-    prefs.remove('timetable.tutor');
-
     Timetable? timetable;
     TimetableData timetableData;
 
