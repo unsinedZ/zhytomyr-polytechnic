@@ -9,4 +9,4 @@ FirebaseMessaging initNotification() => FirebaseMessaging.instance
       criticalAlert: true,
       provisional: true,
       sound: true,
-    )..getToken().then((value) => print(value));
+    );

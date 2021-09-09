@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -30,14 +29,14 @@ class _WithStartupActionsState extends State<WithStartupActions> {
   @override
   void initState() {
     final userSyncBloc = context.read<UserSyncBloc>();
+    final pushNotification = context.read<PushNotificationBloc>();
 
-    context.read<PushNotificationBloc>().init();
+    pushNotification.init();
 
     userSyncBloc.syncUser
         .where((user) => user != null && !user.isEmpty)
         .listen((user) {
-      context
-          .read<PushNotificationBloc>()
+      pushNotification
           .subscribeToNew(user!.groupId, user.subgroupId);
     });
 

@@ -392,7 +392,7 @@ PODS:
   - firebase_core (1.6.0):
     - Firebase/CoreOnly (= 8.6.0)
     - Flutter
-  - firebase_crashlytics (2.0.3):
+  - firebase_crashlytics (2.2.1):
     - Firebase/Crashlytics (= 8.6.0)
     - firebase_core
     - Flutter
@@ -400,7 +400,7 @@ PODS:
     - Firebase/DynamicLinks (= 8.6.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (9.1.4):
+  - firebase_messaging (10.0.6):
     - Firebase/Messaging (= 8.6.0)
     - firebase_core
     - Flutter
@@ -473,6 +473,8 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 7.4)
     - nanopb (~> 2.30908.0)
   - Flutter (1.0.0)
+  - flutter_app_badger (0.0.1):
+    - Flutter
   - flutter_facebook_auth (2.0.0):
     - FBSDKCoreKit (~> 9.1.0)
     - FBSDKLoginKit (~> 9.1.0)
@@ -595,6 +597,7 @@ DEPENDENCIES:
   - firebase_dynamic_links (from `.symlinks/plugins/firebase_dynamic_links/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
+  - flutter_app_badger (from `.symlinks/plugins/flutter_app_badger/ios`)
   - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
@@ -654,6 +657,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
+  flutter_app_badger:
+    :path: ".symlinks/plugins/flutter_app_badger/ios"
   flutter_facebook_auth:
     :path: ".symlinks/plugins/flutter_facebook_auth/ios"
   flutter_local_notifications:
@@ -689,9 +694,9 @@ SPEC CHECKSUMS:
   Firebase: 21ac9f28b09a8bdfc005f34c984fca84e7e8786d
   firebase_auth: 12f76720203b13f9b97b4dedb92b498dcb0cc7b6
   firebase_core: c21ac09a8d23afd3594b56ed786bad12e5266bba
-  firebase_crashlytics: dec66751e9f03c8aee26b1fc5efa18055e1bd168
+  firebase_crashlytics: b0581024be6112af8821de61e5a37fdb292373f0
   firebase_dynamic_links: f14a3c4f00ae80495abb560e781054109ceee2c7
-  firebase_messaging: 63d8b975bccd66ebfc5bb14124378d79ff9c988c
+  firebase_messaging: 0da89f644566bce5822fa3a5d47c764c44f1cf1d
   FirebaseAnalytics: 8f32ae54ad42754f503354782575c4ddfc1425c3
   FirebaseAuth: 223adeeb2262b417532e89bf06a960e3a0a1e9e4
   FirebaseCore: 620b677f70f5470a8e59cb77f3ddc666f6f09785
@@ -702,6 +707,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 0ede6ffcd215b8f93c19d9b06c1c54e2d4107e98
   FirebaseMessaging: ce0a5ee974f7bfe83b6cc5acce88c2d969e37c41
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  flutter_app_badger: 65de4d6f0c34a891df49e6cfb8a1c0496426fa68
   flutter_facebook_auth: 4b170c07b7fce791497093fcc3f134fb215f3f07
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
