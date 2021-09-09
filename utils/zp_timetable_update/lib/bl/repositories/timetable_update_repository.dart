@@ -1,7 +1,6 @@
 import 'package:googleapis/firestore/v1.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:update_form/update_form.dart';
 import 'package:uuid/uuid.dart';
@@ -9,16 +8,19 @@ import 'package:zp_timetable_update/bl/const.dart';
 
 import 'package:zp_timetable_update/bl/extensions/document_extension.dart';
 import 'package:zp_timetable_update/bl/repositories/common_repository.dart';
+import 'package:zp_timetable_update/bl/services/memory_cache_service.dart';
 
 class TimetableUpdateRepository implements ITimetableUpdateRepository {
   final ValueStream<AuthClient?> clientStream;
   final ValueStream<int?> tutorIdStream;
-  final Future<SharedPreferences> sharedPreferences;
+  final MemoryCacheService memoryCacheService;
+
+  static const namesKey = 'activityNames';
 
   TimetableUpdateRepository({
     required this.clientStream,
     required this.tutorIdStream,
-    required this.sharedPreferences,
+    required this.memoryCacheService,
   });
 
   @override
@@ -89,6 +91,12 @@ class TimetableUpdateRepository implements ITimetableUpdateRepository {
       throw 'Unauthorized';
     }
 
+    var cachedNames = memoryCacheService.get(namesKey);
+    if(cachedNames != null && cachedNames is List<ActivityName>) {
+      print('Load from cache');
+      return cachedNames;
+    }
+
     FirestoreApi firestoreApi = FirestoreApi(clientStream.value!);
 
     List<ActivityName> subjectNames = [];
@@ -118,6 +126,7 @@ class TimetableUpdateRepository implements ITimetableUpdateRepository {
           ActivityName.fromJson(activityNameDocument.toJsonFixed())));
     }
 
+    memoryCacheService.addOrUpdate(namesKey, subjectNames, Duration(days: 1));
     return subjectNames;
   }
 }

@@ -12,6 +12,7 @@ import 'package:zp_timetable_update/bl/repositories/main_firestore_repository.da
 import 'package:zp_timetable_update/bl/repositories/timetable_update_repository.dart';
 import 'package:zp_timetable_update/bl/repositories/tutor_auth_repository.dart';
 import 'package:zp_timetable_update/bl/repositories/tutor_timetable_firestore_repository.dart';
+import 'package:zp_timetable_update/bl/services/memory_cache_service.dart';
 
 class Dependencies extends StatelessWidget {
   final Widget child;
@@ -24,6 +25,7 @@ class Dependencies extends StatelessWidget {
   Widget build(BuildContext context) => MultiProvider(
         providers: [
           Provider<ErrorBloc>(create: getErrorBloc),
+          Provider<MemoryCacheService>(create: getMemoryCacheService),
         ],
         child: MultiProvider(
             providers: [
@@ -39,6 +41,9 @@ class Dependencies extends StatelessWidget {
       );
 
   ErrorBloc getErrorBloc(BuildContext context) => ErrorBloc();
+
+  MemoryCacheService getMemoryCacheService(BuildContext context) =>
+      MemoryCacheService();
 
   AuthorizationBloc getAuthorizationBloc(BuildContext context) =>
       AuthorizationBloc(
@@ -66,9 +71,9 @@ class Dependencies extends StatelessWidget {
           context.read<AuthorizationBloc>().tutorId,
         ),
         timetableUpdateRepository: TimetableUpdateRepository(
-          sharedPreferences: SharedPreferences.getInstance(),
           tutorIdStream: context.read<AuthorizationBloc>().tutorId,
           clientStream: context.read<AuthorizationBloc>().authClient,
+          memoryCacheService: context.read<MemoryCacheService>(),
         ),
       );
 }

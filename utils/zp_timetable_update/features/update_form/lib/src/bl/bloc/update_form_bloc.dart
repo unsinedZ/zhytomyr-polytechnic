@@ -60,7 +60,6 @@ class UpdateFormBloc {
     _activityNamesSubject.add(null);
 
     timetableUpdateRepository.loadSubjectNames().then((subjectNames) {
-      print(subjectNames.length);
       _activityNamesSubject.add(subjectNames);
     }).onError((error, stack) {
       _activityNamesSubject.add([]);
