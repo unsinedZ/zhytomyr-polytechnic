@@ -61,36 +61,40 @@ class ContactsScreen extends StatelessWidget {
                   PrefixedContainer(
                     title: textLocalizer.localize("Address"),
                     text: snapshot.data!.address,
-                    onTap: () =>
-                        _launchURL(snapshot.data!.addressUrl),
+                    onTap: () => _launchURL(snapshot.data!.addressUrl),
                   ),
                   SizedBox(
                     height: 20,
                   ),
-                  SocialNetworkContainer(
-                    icon: FaIcon(
-                      FontAwesomeIcons.instagram,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    text: "@instagram",
-                    onTap: () => _launchURL(snapshot.data!.instagramUrl),
-                  ),
-                  SocialNetworkContainer(
-                    icon: FaIcon(
-                      FontAwesomeIcons.telegram,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    text: "@telegram",
-                    onTap: () => _launchURL(snapshot.data!.telegramUrl),
-                  ),
-                  SocialNetworkContainer(
-                    icon: FaIcon(
-                      FontAwesomeIcons.facebook,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    text: "@facebook",
-                    onTap: () => _launchURL(snapshot.data!.facebookUrl),
-                  ),
+                  ...snapshot.data!.socialNetworks.map(
+                    (socialNetwork) {
+                      IconData iconData;
+
+                      switch (socialNetwork.name) {
+                        case 'instagram':
+                          iconData = FontAwesomeIcons.instagram;
+                          break;
+                        case 'telegram' :
+                            iconData = FontAwesomeIcons.telegram;
+                            break;
+                        case 'facebook' :
+                          iconData = FontAwesomeIcons.facebook;
+                          break;
+                        default :
+                          iconData = FontAwesomeIcons.globeEurope;
+                          break;
+                      }
+
+                      return SocialNetworkContainer(
+                        icon: FaIcon(
+                          iconData,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        text: socialNetwork.label,
+                        onTap: () => _launchURL(socialNetwork.url),
+                      );
+                    },
+                  ).toList(),
                 ],
               );
             }),
@@ -99,6 +103,8 @@ class ContactsScreen extends StatelessWidget {
   }
 
   void _launchURL(url) async {
+    print(url);
+    print(await canLaunch(url));
     if (await canLaunch(url)) {
       await launch(url);
     }
