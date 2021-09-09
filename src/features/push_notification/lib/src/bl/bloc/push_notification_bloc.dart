@@ -23,7 +23,7 @@ class PushNotificationBloc {
 
   void init() async {
     FirebaseMessaging.instance.getInitialMessage().then((message) {
-      if (message != null) {
+      if (message != null && message.notification != null) {
         _onNotificationOpenedController.add(jsonEncode(message.data));
       }
     });
