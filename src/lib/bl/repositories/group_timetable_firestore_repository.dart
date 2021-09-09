@@ -85,9 +85,10 @@ class GroupTimetableFirestoreRepository implements TimetableRepository {
   }
 
   Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int id) async {
+    print(id);
     return firebaseFirestoreInstance
         .collection('timetable_items_update')
-        .where('key', isEqualTo: 'group/' + id.toString())
+        .where('groupKey', isEqualTo: 'group/' + id.toString())
         .get()
         .then(
           (timetableItemUpdateListJson) => timetableItemUpdateListJson.docs
