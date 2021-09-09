@@ -7,6 +7,8 @@ abstract class ITimetableUpdateRepository {
     TimetableItemUpdate timetableItemUpdate,
     List<Group> groups,
     List<Group>? initialGroups,
+    int weekNumber,
+    int dayNumber,
   );
 
   Future<List<ActivityName>> loadSubjectNames();

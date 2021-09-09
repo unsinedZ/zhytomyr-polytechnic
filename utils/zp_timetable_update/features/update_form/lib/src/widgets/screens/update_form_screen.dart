@@ -280,7 +280,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
 
     TimetableItemUpdate timetableItemUpdate = _createTimetableUpdate(groups);
     await widget.updateFormBloc.createTimetableUpdate(
-        timetableItemUpdate, groups.compress(), initialGroups);
+        timetableItemUpdate, groups.compress(), initialGroups, weekNumber, dayNumber);
     Navigator.pop(context);
     if (timetableItem != null) {
       Navigator.pop(context);

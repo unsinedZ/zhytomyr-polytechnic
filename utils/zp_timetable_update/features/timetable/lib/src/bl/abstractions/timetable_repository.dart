@@ -5,7 +5,16 @@ abstract class TimetableRepository {
 
   Future<List<TimetableItemUpdate>> getTimetableItemUpdates();
 
-  Future<void> cancelLesson(Activity activity, DateTime dateTime);
+  Future<void> cancelLesson(
+    Activity activity,
+    DateTime dateTime,
+    int weekNumber,
+    int dayNumber,
+  );
 
-  Future<void> deleteTimetableUpdate(String id);
+  Future<void> deleteTimetableUpdate(
+    String id,
+    int weekNumber,
+    int dayNumber,
+  );
 }

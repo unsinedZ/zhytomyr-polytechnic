@@ -133,7 +133,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
   }
 
   @override
-  Future<void> cancelLesson(Activity activity, DateTime dateTime) async {
+  Future<void> cancelLesson(Activity activity, DateTime dateTime, int weekNumber, int dayNumber) async {
     if (!clientStream.hasValue ||
         !tutorIdStream.hasValue ||
         clientStream.value == null ||
@@ -159,7 +159,11 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
             keyValue: 'group/' + group.id.toString()));
 
       CommonRepository.createNotification(
-          clientStream.value!, group.id.toString());
+        client: clientStream.value!,
+        groupId: group.id.toString(),
+        weekNumber: weekNumber,
+        dayNumber: dayNumber,
+      );
     });
 
     activity.tutors.forEach((tutor) async {
@@ -177,7 +181,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
   }
 
   @override
-  Future<void> deleteTimetableUpdate(String id) async {
+  Future<void> deleteTimetableUpdate(String id, int weekNumber, int dayNumber) async {
     if (!clientStream.hasValue ||
         !tutorIdStream.hasValue ||
         clientStream.value == null ||
@@ -203,7 +207,11 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
               groupKeyValue.stringValue != null &&
               groupKeyValue.stringValue != '') {
             CommonRepository.createNotification(
-                clientStream.value!, groupKeyValue.stringValue!.substring(6));
+              client: clientStream.value!,
+              groupId: groupKeyValue.stringValue!.substring(6),
+              weekNumber: weekNumber,
+              dayNumber: dayNumber,
+            );
           }
 
           return (Write()..delete = doc.name!);

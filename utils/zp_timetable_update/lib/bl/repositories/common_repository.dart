@@ -5,8 +5,12 @@ import 'package:uuid/uuid.dart';
 import 'package:zp_timetable_update/bl/const.dart';
 
 class CommonRepository {
-  static Future<void> createNotification(
-      AuthClient client, String groupId) async {
+  static Future<void> createNotification({
+    required AuthClient client,
+    required String groupId,
+    required int weekNumber,
+    required int dayNumber,
+  }) async {
     FirebaseCloudMessagingApi firebaseCloudMessagingApi =
         FirebaseCloudMessagingApi(
       client,
@@ -14,6 +18,14 @@ class CommonRepository {
 
     SendMessageRequest request = SendMessageRequest();
     Message requestMessage = Message();
+
+    Map<String, String> notificationData = Map<String, String>();
+    notificationData['click_action'] = 'FLUTTER_NOTIFICATION_CLICK';
+    notificationData['weekNumber'] = weekNumber.toString();
+    notificationData['dayNumber'] = (dayNumber - 1).toString();
+    notificationData['badge'] = '1';
+
+    requestMessage.data = notificationData;
 
     requestMessage.topic = 'group.' + groupId;
 
@@ -81,7 +93,9 @@ class CommonRepository {
     };
 
     document.fields = fields;
-    document.name = 'projects/${Const.FirebaseProjectId}/databases/(default)/documents/timetable_items_update/' + uuid.v4();
+    document.name =
+        'projects/${Const.FirebaseProjectId}/databases/(default)/documents/timetable_items_update/' +
+            uuid.v4();
 
     return document;
   }

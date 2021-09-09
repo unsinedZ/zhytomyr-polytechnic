@@ -83,10 +83,13 @@ class UpdateFormBloc {
     TimetableItemUpdate timetableItemUpdate,
     List<Group> groups,
     List<Group>? initialGroups,
+    int weekNumber,
+    int dayNumber,
   ) async {
     _isUpdateCreatingSubject.add(true);
     await timetableUpdateRepository
-        .addTimetableUpdate(timetableItemUpdate, groups, initialGroups)
+        .addTimetableUpdate(
+            timetableItemUpdate, groups, initialGroups, weekNumber, dayNumber)
         .then((_) {
       _onUpdateCreatedController.add(null);
     }).onError((error, stack) {

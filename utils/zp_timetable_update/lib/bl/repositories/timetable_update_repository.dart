@@ -28,6 +28,8 @@ class TimetableUpdateRepository implements ITimetableUpdateRepository {
     TimetableItemUpdate timetableItemUpdate,
     List<Group> groups,
     List<Group>? initialGroups,
+    int weekNumber,
+    int dayNumber,
   ) async {
     if (!clientStream.hasValue ||
         !tutorIdStream.hasValue ||
@@ -54,7 +56,11 @@ class TimetableUpdateRepository implements ITimetableUpdateRepository {
 
     groups.forEach((group) {
       CommonRepository.createNotification(
-          clientStream.value!, group.id.toString());
+        client: clientStream.value!,
+        groupId: group.id.toString(),
+        weekNumber: weekNumber,
+        dayNumber: dayNumber,
+      );
     });
 
     if (initialGroups != null) {
@@ -63,7 +69,11 @@ class TimetableUpdateRepository implements ITimetableUpdateRepository {
               groups.every((group) => group.id != initialGroup.id))
           .forEach((group) {
         CommonRepository.createNotification(
-            clientStream.value!, group.id.toString());
+          client: clientStream.value!,
+          groupId: group.id.toString(),
+          weekNumber: weekNumber,
+          dayNumber: dayNumber,
+        );
 
         commitRequest.writes!.add(Write()
           ..update = CommonRepository.createActivityCancelDocument(
@@ -92,7 +102,7 @@ class TimetableUpdateRepository implements ITimetableUpdateRepository {
     }
 
     var cachedNames = memoryCacheService.get(namesKey);
-    if(cachedNames != null && cachedNames is List<ActivityName>) {
+    if (cachedNames != null && cachedNames is List<ActivityName>) {
       print('Load from cache');
       return cachedNames;
     }

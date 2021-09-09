@@ -80,9 +80,11 @@ class TimetableBloc {
   }
 
   void cancelLesson(
-      Activity activity, DateTime dateTime) {
+      Activity activity, DateTime dateTime,
+      int weekNumber,
+      int dayNumber,) {
     timetableRepository
-        .cancelLesson(activity, dateTime)
+        .cancelLesson(activity, dateTime, weekNumber, dayNumber)
         .then((_) => loadTimetableItemUpdates())
         .onError((error, stackTrace) {
       print(error);
@@ -91,9 +93,11 @@ class TimetableBloc {
     });
   }
 
-  void deleteTimetableUpdate(String id) {
+  void deleteTimetableUpdate(String id,
+      int weekNumber,
+      int dayNumber,) {
     timetableRepository
-        .deleteTimetableUpdate(id)
+        .deleteTimetableUpdate(id, weekNumber, dayNumber)
         .then((_) => loadTimetableItemUpdates())
         .onError((error, stackTrace) {
       print(error);

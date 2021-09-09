@@ -181,6 +181,8 @@ class _ActivityCardState extends State<ActivityCard> {
           timetableBloc.cancelLesson(
             widget.timetableItem.activity,
             widget.dateTime,
+            widget.timetableItem.weekNumber,
+            widget.timetableItem.dayNumber,
           );
         },
         isUpdated: widget.updateId != null,
@@ -189,6 +191,8 @@ class _ActivityCardState extends State<ActivityCard> {
             Navigator.pop(context);
             timetableBloc.deleteTimetableUpdate(
               widget.updateId!,
+              widget.timetableItem.weekNumber,
+              widget.timetableItem.dayNumber,
             );
           }
         },
