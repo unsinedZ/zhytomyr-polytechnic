@@ -31,11 +31,11 @@ class _WithStartupActionsState extends State<WithStartupActions> {
     final userSyncBloc = context.read<UserSyncBloc>();
     final pushNotification = context.read<PushNotificationBloc>();
 
-    pushNotification.init();
 
     userSyncBloc.syncUser
         .where((user) => user != null && !user.isEmpty)
         .listen((user) {
+          pushNotification.init();
       pushNotification
           .subscribeToNew(user!.groupId, user.subgroupId);
     });
@@ -57,29 +57,29 @@ class _WithStartupActionsState extends State<WithStartupActions> {
 
     context.read<GoogleAuthenticationBloc>().user.listen((user) {
       if (user?.uid == "") {
-        context.read<UserSyncBloc>().cleanData();
+        userSyncBloc.cleanData();
         return;
       }
 
-      context.read<UserSyncBloc>().setData(user?.uid, AuthProvider.Google);
+      userSyncBloc.setData(user?.uid, AuthProvider.Google);
     });
 
     context.read<FacebookAuthenticationBloc>().user.listen((user) {
       if (user?.uid == "") {
-        context.read<UserSyncBloc>().cleanData();
+        userSyncBloc.cleanData();
         return;
       }
 
-      context.read<UserSyncBloc>().setData(user?.uid, AuthProvider.Facebook);
+      userSyncBloc.setData(user?.uid, AuthProvider.Facebook);
     });
 
     context.read<AppleAuthenticationBloc>().user.listen((user) {
       if (user?.uid == "") {
-        context.read<UserSyncBloc>().cleanData();
+        userSyncBloc.cleanData();
         return;
       }
 
-      context.read<UserSyncBloc>().setData(user?.uid, AuthProvider.Apple);
+      userSyncBloc.setData(user?.uid, AuthProvider.Apple);
     });
 
     context.read<UpdateCheckBloc>().checkForUpdates();
@@ -90,7 +90,7 @@ class _WithStartupActionsState extends State<WithStartupActions> {
     if (Platform.isIOS) {
       context.read<AppleAuthenticationBloc>().loadUser();
     }
-
+    
     super.initState();
   }
 
