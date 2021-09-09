@@ -5,7 +5,7 @@ const jsonCreditals = require(opts.file)
 
 const data = JSON.stringify({
     "message": {
-        "token": opts.topic,
+        "topic": opts.topic,
         "data": {
             "click_action": "FLUTTER_NOTIFICATION_CLICK",
             "weekNumber": "0",

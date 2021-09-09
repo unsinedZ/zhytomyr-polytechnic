@@ -50,4 +50,3 @@ Future<void> initAsync() async {
   initNotification();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }
-

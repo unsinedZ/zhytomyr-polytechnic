@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:push_notification/src/bl/models/group.dart';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
+
+import 'package:push_notification/src/bl/models/group.dart';
 
 class PushNotificationBloc {
   final StreamSink<String> errorSink;
@@ -29,7 +29,7 @@ class PushNotificationBloc {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-        _onNotificationOpenedController.add(jsonEncode(message.data));
+      _onNotificationOpenedController.add(jsonEncode(message.data));
     });
 
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -49,7 +49,6 @@ class PushNotificationBloc {
         onSelectNotification: (payload) async {
       _onNotificationOpenedController.add(payload);
     });
-
     if (Platform.isIOS) {
       await flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
