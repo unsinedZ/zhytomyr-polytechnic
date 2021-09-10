@@ -42,7 +42,7 @@ class TimetableScreen extends StatefulWidget {
 class _TimetableScreenState extends State<TimetableScreen> {
   List<String> _weekDaysNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-  DateTime indexDayDateTime = DateTime.now();
+  DateTime initialDateTime = DateTime.now();
   int initialIndex = (DateTime.now().weekday - 1) % 6;
   bool isWeekChanged = false;
   bool isNextDay = false;
@@ -50,6 +50,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
   late TimetableBloc timetableBloc;
   late TimetableType timetableType;
   late int weekNumber;
+  int? paramsWeekNumber;
   late int id;
   late Stream<List<dynamic>> dataStream;
 
@@ -68,12 +69,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   void initState() {
-    if (indexDayDateTime.hour >= 18) {
-      isNextDay = true;
-      initialIndex = (initialIndex + 1) % 6;
-      indexDayDateTime = indexDayDateTime.add(Duration(days: 1));
-    }
-
     weekNumber = _calculateWeekNumber();
 
     super.initState();
@@ -93,10 +88,19 @@ class _TimetableScreenState extends State<TimetableScreen> {
       subgroupId = arguments['subgroupId'];
     }
 
-    if (arguments['params'] != null) {
-      final params = arguments['params'];
-      weekNumber = int.parse(params['weekNumber']);
-      initialIndex = int.parse(params['dayNumber']);
+    final params = arguments['params'];
+    if (params != null) {
+      paramsWeekNumber = int.parse(params['weekNumber']);
+
+      final paramsDayNumber = int.parse(params['dayNumber']);
+      initialDateTime =
+          initialDateTime.add(Duration(days: paramsDayNumber - initialIndex));
+      initialIndex = paramsDayNumber;
+    }
+    if (initialDateTime.hour >= 18 && params == null) {
+      isNextDay = true;
+      initialIndex = (initialIndex + 1) % 6;
+      initialDateTime = initialDateTime.add(Duration(days: 1));
     }
 
     timetableBloc = TimetableBloc(
@@ -140,7 +144,8 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final arguments =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     return DefaultTabController(
       initialIndex: initialIndex,
       length: 6,
@@ -158,15 +163,15 @@ class _TimetableScreenState extends State<TimetableScreen> {
           ),
           leading: Stack(
             children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    if (arguments['params'] == null) {
-                      return Navigator.pop(context);
-                    }
-                    Navigator.pushNamed(context, '/faculties');
-                  },
-                ),
+              IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  if (arguments['params'] == null) {
+                    return Navigator.pop(context);
+                  }
+                  Navigator.pushNamed(context, '/faculties');
+                },
+              ),
             ],
           ),
           title: Text(
@@ -231,33 +236,33 @@ class _TimetableScreenState extends State<TimetableScreen> {
                 weekNumber = 2;
               }
 
+              if(paramsWeekNumber != null && paramsWeekNumber != weekNumber){
+                weekNumber = paramsWeekNumber!;
+                isWeekChanged = true;
+              }
+
               return TabBarView(
                 key: Key("$weekNumber.toString()/$isWeekChanged.toString()/"),
-                children: _weekDaysNames
-                    .asMap()
-                    .keys
-                    .map<Widget>(
-                      (index) => TimetableTab(
-                        textLocalizer: widget.textLocalizer,
-                        timetable: timetable,
-                        timetableItemUpdates: timetableItemUpdates,
-                        weekNumber: weekNumber,
-                        dayOfWeekNumber: index + 1,
-                        dateTime: indexDayDateTime.add(Duration(
-                            days: -initialIndex +
-                                index +
-                                (isWeekChanged ? 7 : 0))),
-                        id: id,
-                        subgroupId: subgroupId,
-                        timetableType: timetableType,
-                        isTomorrow: initialIndex == index &&
-                                isNextDay == true &&
-                                isWeekChanged == false
-                            ? true
-                            : false,
-                      ),
-                    )
-                    .toList(),
+                children: _weekDaysNames.asMap().keys.map<Widget>(
+                  (index) => TimetableTab(
+                      textLocalizer: widget.textLocalizer,
+                      timetable: timetable,
+                      timetableItemUpdates: timetableItemUpdates,
+                      weekNumber: weekNumber,
+                      dayOfWeekNumber: index + 1,
+                      dateTime: initialDateTime.add(Duration(
+                          days:
+                              -initialIndex + index + (isWeekChanged ? 7 : 0))),
+                      id: id,
+                      subgroupId: subgroupId,
+                      timetableType: timetableType,
+                      isTomorrow: initialIndex == index &&
+                              isNextDay == true &&
+                              isWeekChanged == false
+                          ? true
+                          : false,
+                    ),
+                ).toList(),
               );
             },
           ),
