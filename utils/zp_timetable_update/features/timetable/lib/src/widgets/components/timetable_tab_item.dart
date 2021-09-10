@@ -32,8 +32,8 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
   TimetableItem? get mainTimetableItem =>
       widget.updatableTimetableItem.timetableItem;
 
-  TimetableItem get timetableItemUpdate => widget
-      .updatableTimetableItem.timetableItemUpdate!.timetableItem!;
+  TimetableItem? get timetableItemUpdate =>
+      widget.updatableTimetableItem.timetableItemUpdate?.timetableItem;
 
   String? get activityUpdateId =>
       widget.updatableTimetableItem.timetableItemUpdate?.id;
@@ -44,7 +44,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
       TimetableItem timetableItem;
 
       if (isNew) {
-        timetableItem = timetableItemUpdate;
+        timetableItem = timetableItemUpdate!;
       } else {
         timetableItem = mainTimetableItem!;
       }
@@ -83,14 +83,14 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
           ),
         isCurrentClass
             ? ActivityCard.current(
-          timetableItem: mainTimetableItem ?? timetableItemUpdate,
+                timetableItem: timetableItemUpdate ?? mainTimetableItem!,
                 textLocalizer: widget.textLocalizer,
                 dateTime: widget.dateTime,
                 updateId: activityUpdateId,
               )
             : isReplaced || isNew
                 ? ActivityCard.added(
-          timetableItem: timetableItemUpdate,
+                    timetableItem: timetableItemUpdate!,
                     textLocalizer: widget.textLocalizer,
                     dateTime: widget.dateTime,
                     updateId: activityUpdateId,
@@ -98,7 +98,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
                 : isCancelled
                     ? Container()
                     : ActivityCard.simple(
-          timetableItem: mainTimetableItem!,
+                        timetableItem: mainTimetableItem!,
                         textLocalizer: widget.textLocalizer,
                         dateTime: widget.dateTime,
                         updateId: activityUpdateId,
