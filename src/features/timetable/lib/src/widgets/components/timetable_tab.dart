@@ -137,7 +137,7 @@ class _TimetableTabState extends State<TimetableTab> {
     }).toList();
 
     List<UpdatableTimetableItem> updatableTimetableItems = timetableItems
-        .map(
+        .expand(
           (timetableItem) => createUpdatableItem(
               timetableItemUpdates: timetableItemUpdates,
               timetableItem: timetableItem),
@@ -151,8 +151,7 @@ class _TimetableTabState extends State<TimetableTab> {
                     timetableItem.activity.time.start !=
                         timetableItemUpdate.time &&
                     timetableItemUpdate.timetableItem != null))
-            .map((timetableItemUpdate) => createUpdatableItem(
-                timetableItemUpdates: [],
+            .map((timetableItemUpdate) => createNewUpdatableItem(
                 timetableItemUpdate: timetableItemUpdate))
             .toList();
 
@@ -181,45 +180,60 @@ class _TimetableTabState extends State<TimetableTab> {
         .toList();
   }
 
-  UpdatableTimetableItem createUpdatableItem({
-    required List<TimetableItemUpdate> timetableItemUpdates,
-    TimetableItem? timetableItem,
-    TimetableItemUpdate? timetableItemUpdate,
-  }) {
+  List<UpdatableTimetableItem> createUpdatableItem(
+      {required List<TimetableItemUpdate> timetableItemUpdates,
+        required TimetableItem timetableItem}) {
+    TimetableItemUpdate? itemUpdate;
+
     if (timetableItemUpdates.isNotEmpty) {
       List<TimetableItemUpdate> updates =
       timetableItemUpdates.where((timetableUpdate) {
         String updateItemTime = timetableUpdate.time;
-        String activityStartTime = timetableItem!.activity.time.start;
+        String activityStartTime = timetableItem.activity.time.start;
 
-        DateTime dateTime =
-        DateTime.parse(timetableUpdate.date.replaceAll('/', '-'));
-
-        return widget.dateTime.asDate().isAtSameMomentAs(dateTime) &&
-            updateItemTime == activityStartTime;
+        return updateItemTime == activityStartTime;
       }).toList();
 
       if (updates.length == 1) {
-        timetableItemUpdate = updates.first;
-      }
-
-      if (updates.length > 1) {
+        itemUpdate = updates.first;
+      } else if (updates.length > 1) {
         List<TimetableItemUpdate> updatesWithItem =
         updates.where((update) => update.timetableItem != null).toList();
-        if(updatesWithItem.isNotEmpty) {
-          timetableItemUpdate = updatesWithItem.first;
+        if (updatesWithItem.isNotEmpty) {
+          if (updatesWithItem.length == 2 &&
+              updatesWithItem[0].timetableItem!.activity.time.start !=
+                  updatesWithItem[1].timetableItem!.activity.time.start) {
+            return [
+              UpdatableTimetableItem(
+                timetableItem: timetableItem,
+                timetableItemUpdate: updatesWithItem[0],
+              ),
+              UpdatableTimetableItem(
+                timetableItem: null,
+                timetableItemUpdate: updatesWithItem[1],
+              )
+            ];
+          } else {
+            itemUpdate = updatesWithItem.first;
+          }
         } else {
-          timetableItemUpdate = updates.first;
+          itemUpdate = updates.first;
         }
       }
     }
 
-    if (timetableItem != null || timetableItemUpdate != null) {
-      return UpdatableTimetableItem(
-          timetableItem: timetableItem,
-          timetableItemUpdate: timetableItemUpdate);
-    } else {
-      throw ArgumentError.notNull('timetableItem || timetableItemUpdate');
-    }
+    return [
+      UpdatableTimetableItem(
+          timetableItem: timetableItem, timetableItemUpdate: itemUpdate)
+    ];
+  }
+
+  UpdatableTimetableItem createNewUpdatableItem({
+    TimetableItemUpdate? timetableItemUpdate,
+  }) {
+    return UpdatableTimetableItem(
+      timetableItem: null,
+      timetableItemUpdate: timetableItemUpdate,
+    );
   }
 }

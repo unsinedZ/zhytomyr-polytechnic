@@ -29,10 +29,11 @@ flutter_ios_podfile_setup
 
 target 'Runner' do
   use_frameworks!
-  pod 'Firebase/Analytics', '~> 7.2-M1'
-  pod 'Firebase/Auth', '~> 7.2-M1'
-  pod 'Firebase/Firestore', '~> 7.2-M1'
-  pod 'Firebase/Crashlytics', '~> 7.2-M1'
+  pod 'Firebase/CoreOnly'
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Firestore'
+  pod 'Firebase/Crashlytics'
   
   use_frameworks!
   use_modular_headers!

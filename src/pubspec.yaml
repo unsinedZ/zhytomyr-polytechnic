@@ -13,11 +13,10 @@ dependencies:
   terms_and_conditions:
     path: ./features/terms_and_conditions
   cupertino_icons: ^1.0.2
-  cloud_firestore: ^2.0.0
+  cloud_firestore: ^2.5.1
   rxdart: ^0.26.0
   fluttertoast: ^8.0.3
-  firebase_core: ^1.1.0
-  flutter_local_notifications: ^8.0.0
+  firebase_core: ^1.6.0
   faculty_list: 
     path: features/faculty_list
   provider: ^5.0.0
@@ -36,7 +35,7 @@ dependencies:
   push_notification:
     path: ./features/push_notification
   easy_localization: ^3.0.0
-  shared_preferences: ^2.0.5
+  shared_preferences: ^2.0.7
   user_sync:
     path: ./features/user_sync
   deep_links:
@@ -46,12 +45,11 @@ dependencies:
   flutter_phoenix: ^1.0.0
   update_check:
     path: ./features/update_check
-  url_launcher: ^6.0.3
+  url_launcher: ^6.0.10
   facebook_authentication:
     path: ./features/facebook_authentication
-  package_info: ^2.0.0
-  firebase_crashlytics: ^2.0.3
-
+  package_info: ^2.0.2
+  firebase_crashlytics: ^2.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

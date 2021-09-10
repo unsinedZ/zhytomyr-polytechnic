@@ -25,7 +25,7 @@ import 'package:zhytomyr_polytechnic/bl/repositories/timetable_firestore_reposit
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 import 'package:zhytomyr_polytechnic/widgets/components/verify_authentication.dart';
 import 'package:zhytomyr_polytechnic/widgets/components/body_wrapper.dart';
-import 'package:zhytomyr_polytechnic/widgets/components/my_timetable_screen.dart';
+import 'package:zhytomyr_polytechnic/widgets/screens/my_timetable_screen.dart';
 import 'package:zhytomyr_polytechnic/widgets/dependencies.dart';
 import 'package:zhytomyr_polytechnic/widgets/screens/authentication_screen.dart';
 import 'package:zhytomyr_polytechnic/widgets/with_startup_actions.dart';

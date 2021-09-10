@@ -32,8 +32,8 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
   Activity? get mainActivity =>
       widget.updatableTimetableItem.timetableItem?.activity;
 
-  Activity get activityUpdate => widget
-      .updatableTimetableItem.timetableItemUpdate!.timetableItem!.activity;
+  Activity? get activityUpdate => widget
+      .updatableTimetableItem.timetableItemUpdate?.timetableItem?.activity;
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
       Activity activity;
 
       if (isNew) {
-        activity = activityUpdate;
+        activity = activityUpdate!;
       } else {
         activity = mainActivity!;
       }
@@ -78,12 +78,12 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
           ),
         isCurrentClass
             ? ActivityCard.current(
-                activity: mainActivity ?? activityUpdate,
+                activity: activityUpdate ?? mainActivity!,
                 textLocalizer: widget.textLocalizer,
               )
             : isReplaced || isNew
                 ? ActivityCard.added(
-                    activity: activityUpdate,
+                    activity: activityUpdate!,
                     textLocalizer: widget.textLocalizer,
                   )
                 : isCancelled ? Container() : ActivityCard.simple(
