@@ -164,7 +164,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     if (arguments['params'] == null) {
                       return Navigator.pop(context);
                     }
-                    Navigator.pushNamed(context, '/faculties');
+                    Navigator.pushNamedReplacement(context, '/faculties');
                   },
                 ),
             ],
