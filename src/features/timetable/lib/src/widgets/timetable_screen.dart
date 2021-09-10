@@ -169,7 +169,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   if (arguments['params'] == null) {
                     return Navigator.pop(context);
                   }
-                  Navigator.pushNamed(context, '/faculties');
+                  Navigator.pushReplacementNamed(context, '/faculties');
                 },
               ),
             ],
@@ -236,33 +236,38 @@ class _TimetableScreenState extends State<TimetableScreen> {
                 weekNumber = 2;
               }
 
-              if(paramsWeekNumber != null && paramsWeekNumber != weekNumber){
+              if (paramsWeekNumber != null && paramsWeekNumber != weekNumber) {
                 weekNumber = paramsWeekNumber!;
                 isWeekChanged = true;
               }
 
               return TabBarView(
                 key: Key("$weekNumber.toString()/$isWeekChanged.toString()/"),
-                children: _weekDaysNames.asMap().keys.map<Widget>(
-                  (index) => TimetableTab(
-                      textLocalizer: widget.textLocalizer,
-                      timetable: timetable,
-                      timetableItemUpdates: timetableItemUpdates,
-                      weekNumber: weekNumber,
-                      dayOfWeekNumber: index + 1,
-                      dateTime: initialDateTime.add(Duration(
-                          days:
-                              -initialIndex + index + (isWeekChanged ? 7 : 0))),
-                      id: id,
-                      subgroupId: subgroupId,
-                      timetableType: timetableType,
-                      isTomorrow: initialIndex == index &&
-                              isNextDay == true &&
-                              isWeekChanged == false
-                          ? true
-                          : false,
-                    ),
-                ).toList(),
+                children: _weekDaysNames
+                    .asMap()
+                    .keys
+                    .map<Widget>(
+                      (index) => TimetableTab(
+                        textLocalizer: widget.textLocalizer,
+                        timetable: timetable,
+                        timetableItemUpdates: timetableItemUpdates,
+                        weekNumber: weekNumber,
+                        dayOfWeekNumber: index + 1,
+                        dateTime: initialDateTime.add(Duration(
+                            days: -initialIndex +
+                                index +
+                                (isWeekChanged ? 7 : 0))),
+                        id: id,
+                        subgroupId: subgroupId,
+                        timetableType: timetableType,
+                        isTomorrow: initialIndex == index &&
+                                isNextDay == true &&
+                                isWeekChanged == false
+                            ? true
+                            : false,
+                      ),
+                    )
+                    .toList(),
               );
             },
           ),

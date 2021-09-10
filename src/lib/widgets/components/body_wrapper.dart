@@ -43,7 +43,7 @@ class _BodyWrapperState extends State<BodyWrapper> {
       }
     });
 
-    _onNotificationOpenedSubscription =context
+    _onNotificationOpenedSubscription = context
         .read<PushNotificationBloc>()
         .onMessageOpened.
         where((data) => data != null)
