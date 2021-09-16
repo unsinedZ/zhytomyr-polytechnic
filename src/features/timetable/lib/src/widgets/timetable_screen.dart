@@ -151,6 +151,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
       length: 6,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Theme.of(context).primaryColor,
           bottom: TabBar(
             indicatorColor: Colors.amberAccent,
             labelColor: Colors.white,

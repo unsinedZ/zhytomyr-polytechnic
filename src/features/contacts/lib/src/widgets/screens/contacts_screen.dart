@@ -37,6 +37,7 @@ class ContactsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text(
           textLocalizer.localize("Contacts"),
           style: Theme.of(context).textTheme.headline1,

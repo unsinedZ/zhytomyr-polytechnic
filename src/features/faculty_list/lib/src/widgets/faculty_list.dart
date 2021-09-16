@@ -63,6 +63,7 @@ class _FacultyListState extends State<FacultyList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text(
           widget.textLocalizer.localize("Faculties"),
           style: Theme.of(context).textTheme.headline1,
