@@ -40,6 +40,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Theme.of(context).primaryColor,
           leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
