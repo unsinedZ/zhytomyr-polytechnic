@@ -9,13 +9,11 @@ class MyTimetableScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
   final StreamSink<String> errorSink;
   final Stream<User?> userStream;
-  final Widget Function({required Widget child}) bodyWrapper;
 
   MyTimetableScreen({
     required this.textLocalizer,
     required this.errorSink,
     required this.userStream,
-    required this.bodyWrapper,
   });
 
   @override
