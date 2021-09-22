@@ -8,35 +8,35 @@ import 'package:timetable/src/bl/models/models.dart';
 import 'package:timetable/src/widgets/components/activity_info_dialog.dart';
 
 class ActivityCard extends StatefulWidget {
-  final Activity activity;
+  final TimetableItem timetableItem;
   final DateTime dateTime;
   final ITextLocalizer textLocalizer;
   final String? updateId;
   final _ActivityCardType _activityCardType;
 
   ActivityCard.simple({
-    required this.activity,
+    required this.timetableItem,
     required this.dateTime,
     required this.textLocalizer,
     this.updateId,
   }) : this._activityCardType = _ActivityCardType.Simple;
 
   ActivityCard.canceled({
-    required this.activity,
+    required this.timetableItem,
     required this.dateTime,
     required this.textLocalizer,
     this.updateId,
   }) : this._activityCardType = _ActivityCardType.Canceled;
 
   ActivityCard.current({
-    required this.activity,
+    required this.timetableItem,
     required this.dateTime,
     required this.textLocalizer,
     this.updateId,
   }) : this._activityCardType = _ActivityCardType.Current;
 
   ActivityCard.added({
-    required this.activity,
+    required this.timetableItem,
     required this.dateTime,
     required this.textLocalizer,
     this.updateId,
@@ -48,43 +48,26 @@ class ActivityCard extends StatefulWidget {
 
 class _ActivityCardState extends State<ActivityCard> {
   late final TimetableBloc timetableBloc;
+  late final Tutor tutor;
+  late final List<String> unavailableTimes;
 
   @override
   void initState() {
     timetableBloc = context.read<TimetableBloc>();
+    tutor = context.read<Tutor>();
+    unavailableTimes = context.read<List<String>>();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      key: Key(widget.updateId == null ? '' : widget.updateId! + '/' + widget.dateTime.toString()),
-      onTap: () {
-        showDialog<void>(
-          context: context,
-          builder: (context) => ActivityInfoDialog(
-            activity: widget.activity,
-            textLocalizer: widget.textLocalizer,
-            onCancel: () {
-              timetableBloc
-                  .cancelLesson(widget.activity, widget.dateTime)
-                  .then((_) {
-                Navigator.pop(context);
-              });
-            },
-            isUpdated: widget.updateId != null,
-            onUpdateCancel: () {
-              if(widget.updateId != null) {
-                timetableBloc.deleteTimetableUpdate(widget.updateId!).then((_) {
-                  Navigator.pop(context);
-                });
-              }
-            },
-          ),
-        );
-      },
+      key: Key(widget.updateId == null
+          ? ''
+          : widget.updateId! + '/' + widget.dateTime.toString()),
+      onTap: _showActivityInfoDialog,
       child: Container(
-        color: getBackgroundColor(context),
+        color: _getBackgroundColor(context),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 12),
           child: IntrinsicHeight(
@@ -98,11 +81,11 @@ class _ActivityCardState extends State<ActivityCard> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        widget.activity.time.start,
+                        widget.timetableItem.activity.time.start,
                         textScaleFactor: 1.3,
                       ),
                       Text(
-                        widget.activity.time.end,
+                        widget.timetableItem.activity.time.end,
                         style: Theme.of(context).textTheme.headline2,
                         textScaleFactor: 1.3,
                       ),
@@ -126,7 +109,7 @@ class _ActivityCardState extends State<ActivityCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        widget.activity.name,
+                        widget.timetableItem.activity.name,
                         textScaleFactor: 1.3,
                       ),
                       SizedBox(
@@ -135,9 +118,9 @@ class _ActivityCardState extends State<ActivityCard> {
                       Text(
                         widget.textLocalizer.localize('aud.') +
                             ' ' +
-                            widget.activity.room +
+                            widget.timetableItem.activity.room +
                             ', ' +
-                            widget.activity.type,
+                            widget.timetableItem.activity.type,
                         style: Theme.of(context).textTheme.headline2,
                       ),
                     ],
@@ -150,7 +133,7 @@ class _ActivityCardState extends State<ActivityCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        widget.activity.tutors
+                        widget.timetableItem.activity.tutors
                             .map((tutor) => tutor.name)
                             .join(', '),
                         style: Theme.of(context).textTheme.headline2,
@@ -174,7 +157,7 @@ class _ActivityCardState extends State<ActivityCard> {
     );
   }
 
-  Color? getBackgroundColor(BuildContext context) {
+  Color? _getBackgroundColor(BuildContext context) {
     switch (this.widget._activityCardType) {
       case _ActivityCardType.Simple:
         return Theme.of(context).canvasColor;
@@ -185,6 +168,39 @@ class _ActivityCardState extends State<ActivityCard> {
       case _ActivityCardType.Current:
         return Theme.of(context).hoverColor;
     }
+  }
+
+  void _showActivityInfoDialog() {
+    showDialog<void>(
+      context: context,
+      builder: (context) => ActivityInfoDialog(
+        timetableItem: widget.timetableItem,
+        textLocalizer: widget.textLocalizer,
+        onCancel: () async {
+          Navigator.pop(context);
+          timetableBloc.cancelLesson(
+            widget.timetableItem.activity,
+            widget.dateTime,
+            widget.timetableItem.weekNumber,
+            widget.timetableItem.dayNumber,
+          );
+        },
+        isUpdated: widget.updateId != null,
+        onUpdateCancel: () async {
+          if (widget.updateId != null) {
+            Navigator.pop(context);
+            timetableBloc.deleteTimetableUpdate(
+              widget.updateId!,
+              widget.timetableItem.weekNumber,
+              widget.timetableItem.dayNumber,
+            );
+          }
+        },
+        dateTime: widget.dateTime,
+        tutor: tutor,
+        unavailableTimes: unavailableTimes,
+      ),
+    );
   }
 }
 

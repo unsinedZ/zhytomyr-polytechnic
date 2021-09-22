@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:googleapis_auth/auth_io.dart';
 
 import 'package:mockito/mockito.dart';
 
@@ -11,11 +12,10 @@ import 'package:timetable/src/bl/models/models.dart';
 
 class TimetableLoaderMock extends Mock implements TimetableRepository {
   @override
-  Future<Timetable> loadTimetableByReferenceId(int? referenceId,
-          [String? userGroupId]) =>
+  Future<Timetable> loadTimetableByReferenceId() =>
       super.noSuchMethod(
         Invocation.method(
-            #loadTimetableByReferenceId, [referenceId, userGroupId]),
+            #loadTimetableByReferenceId, []),
         returnValue: Future.value(
           Timetable(
             items: [],
@@ -31,11 +31,14 @@ class TimetableLoaderMock extends Mock implements TimetableRepository {
       );
 
   @override
-  Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int? id) =>
-      super.noSuchMethod(Invocation.method(#getTimetableItemUpdates, [id]),
+  Future<List<TimetableItemUpdate>> getTimetableItemUpdates() =>
+      super.noSuchMethod(Invocation.method(#getTimetableItemUpdates, []),
           returnValue: Future.value(<TimetableItemUpdate>[]));
 }
 
+class AuthClientMock extends Mock implements AuthClient {
+
+}
 
 class TutorRepositoryMock extends Mock implements TutorRepository {}
 
@@ -47,10 +50,10 @@ void main() {
       timetableRepository: timetableLoaderMock,
       errorSink: StreamController<String>().sink,
       //groupRepository: groupRepositoryMock,
-      tutorRepository: TutorRepositoryMock(), tutorId: 0,
+      tutorRepository: TutorRepositoryMock()
     );
 
-    when(timetableLoaderMock.loadTimetableByReferenceId(any, any)).thenAnswer(
+    when(timetableLoaderMock.loadTimetableByReferenceId()).thenAnswer(
       (_) => Future.value(
         Timetable(
           items: [],
@@ -83,10 +86,10 @@ void main() {
     TimetableBloc timetableBloc = TimetableBloc(
       timetableRepository: timetableLoaderMock,
       errorSink: StreamController<String>().sink,
-      tutorRepository: TutorRepositoryMock(), tutorId: 0,
+      tutorRepository: TutorRepositoryMock()
     );
 
-    when(timetableLoaderMock.getTimetableItemUpdates(0))
+    when(timetableLoaderMock.getTimetableItemUpdates())
         .thenAnswer((_) => Future.value(<TimetableItemUpdate>[
               TimetableItemUpdate(time: '1', timetableItem: null, date: '1', id: ''),
               TimetableItemUpdate(time: '2', timetableItem: null, date: '2', id: ''),

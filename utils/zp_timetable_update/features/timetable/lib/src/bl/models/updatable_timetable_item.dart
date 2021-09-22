@@ -28,6 +28,9 @@ class UpdatableTimetableItem {
   bool get isReplaced =>
       isUpdated && timetableItemUpdate!.timetableItem != null;
 
+  bool get isSimple =>
+      timetableItem != null && timetableItemUpdate == null;
+
   int compareTo(UpdatableTimetableItem updatableTimetableItem) {
     Activity aActivity = this.timetableItem != null
         ? this.timetableItem!.activity

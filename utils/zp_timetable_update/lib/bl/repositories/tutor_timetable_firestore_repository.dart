@@ -1,27 +1,39 @@
 import 'dart:convert';
 
-import 'package:authorization_bloc/authorization_bloc.dart';
 import 'package:googleapis/firestore/v1.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:authorization_bloc/authorization_bloc.dart';
 import 'package:timetable/timetable.dart';
+import 'package:zp_timetable_update/bl/const.dart';
 
-import 'package:zp_timetable_update/bl/models/expireble.dart';
+import 'package:zp_timetable_update/bl/models/expirable.dart';
 import 'package:zp_timetable_update/bl/extensions/document_extension.dart';
 import 'package:zp_timetable_update/bl/api/timetable_update_api.dart';
+import 'package:zp_timetable_update/bl/repositories/common_repository.dart';
 
 class TutorTimetableFirestoreRepository implements TimetableRepository {
-  final AuthClient client;
   final Future<SharedPreferences> sharedPreferences;
+  final ValueStream<AuthClient?> clientStream;
+  final ValueStream<int?> tutorIdStream;
 
   TutorTimetableFirestoreRepository({
-    required this.client,
     required this.sharedPreferences,
+    required this.clientStream,
+    required this.tutorIdStream,
   });
 
   @override
-  Future<Timetable> loadTimetableByReferenceId(int id) async {
+  Future<Timetable> loadTimetableByReferenceId() async {
+    if (!clientStream.hasValue ||
+        !tutorIdStream.hasValue ||
+        clientStream.value == null ||
+        tutorIdStream.value == null) {
+      throw 'Unauthorized';
+    }
+
     final SharedPreferences prefs = await sharedPreferences;
 
     Timetable? timetable;
@@ -32,7 +44,7 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
       fieldValue: '1',
       collectionId: 'timetables',
       valueType: ValueType.Int,
-      client: client,
+      client: clientStream.value!,
     ))
         .map(
       (timetableDataDoc) {
@@ -63,10 +75,10 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
     if (timetable == null) {
       timetable = await TimetableUpdateApi.runQuery(
         fieldPath: 'key',
-        fieldValue: 'tutor/' + id.toString(),
+        fieldValue: 'tutor/' + tutorIdStream.value!.toString(),
         collectionId: 'timetable_items_tutor',
         valueType: ValueType.String,
-        client: client,
+        client: clientStream.value!,
       ).then(
         (docs) {
           return Timetable(
@@ -93,75 +105,121 @@ class TutorTimetableFirestoreRepository implements TimetableRepository {
   }
 
   @override
-  Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int id) async {
-    //return [];
+  Future<List<TimetableItemUpdate>> getTimetableItemUpdates() async {
+    if (!clientStream.hasValue ||
+        !tutorIdStream.hasValue ||
+        clientStream.value == null ||
+        tutorIdStream.value == null) {
+      throw 'Unauthorized';
+    }
+
     List<TimetableItemUpdate> timetableUpdates =
         await TimetableUpdateApi.runQuery(
       fieldPath: 'tutorKey',
-      fieldValue: 'tutor/' + id.toString(),
+      fieldValue: 'tutor/' + tutorIdStream.value!.toString(),
       collectionId: 'timetable_items_update',
       valueType: ValueType.String,
-      client: client,
+      client: clientStream.value!,
     ).then(
-      (docs) => docs
-          .map(
-            (timetableItemUpdateJson) => TimetableItemUpdate.fromJson(
-                timetableItemUpdateJson.toJsonFixed()),
-          )
-          .toList(),
+      (docs) => docs.map(
+        (timetableItemUpdate) {
+          return TimetableItemUpdate.fromJson(
+              timetableItemUpdate.toJsonFixed());
+        },
+      ).toList(),
     );
 
     return timetableUpdates;
   }
 
   @override
-  Future<void> cancelLesson(Activity activity, DateTime dateTime) async {
+  Future<void> cancelLesson(Activity activity, DateTime dateTime, int weekNumber, int dayNumber) async {
+    if (!clientStream.hasValue ||
+        !tutorIdStream.hasValue ||
+        clientStream.value == null ||
+        tutorIdStream.value == null) {
+      throw 'Unauthorized';
+    }
+
     var uuid = Uuid();
-
-    FirestoreApi firestoreApi =
-        FirestoreApi(client, rootUrl: 'http://127.0.0.1:9190/');
-
-    String date = dateTime.year.toString() +
-        '-' +
-        (dateTime.month < 10
-            ? ('0' + dateTime.month.toString())
-            : dateTime.month.toString()) +
-        '-' +
-        (dateTime.day < 10
-            ? '0' + dateTime.day.toString()
-            : dateTime.day.toString());
-
-    Document document = Document();
     String id = uuid.v4();
-    Map<String, Value> fields = {
-      'date': Value()..stringValue = date,
-      'time': Value()..stringValue = activity.time.start,
-      'groupKey': Value()
-        ..stringValue = 'group/' + activity.groups.first.id.toString(),
-      'tutorKey': Value()
-        ..stringValue = 'tutor/' + activity.tutors.first.id.toString(),
-      'id': Value()..stringValue = id,
-    };
+    FirestoreApi firestoreApi = FirestoreApi(clientStream.value!);
 
-    document.fields = fields;
+    CommitRequest commitRequest = CommitRequest();
 
-    await firestoreApi.projects.databases.documents.createDocument(
-        document,
-        'projects/emulator/databases/(default)/documents',
-        'timetable_items_update',
-        documentId: id);
-    return null;
+    commitRequest.writes = [];
+
+    activity.groups.forEach((group) async {
+      commitRequest.writes!.add(Write()
+        ..update = CommonRepository.createActivityCancelDocument(
+            activityTimeStart: activity.time.start,
+            dateTime: dateTime,
+            id: id,
+            key: 'groupKey',
+            keyValue: 'group/' + group.id.toString()));
+
+      CommonRepository.createNotification(
+        client: clientStream.value!,
+        groupId: group.id.toString(),
+        weekNumber: weekNumber,
+        dayNumber: dayNumber,
+      );
+    });
+
+    activity.tutors.forEach((tutor) async {
+      commitRequest.writes!.add(Write()
+        ..update = CommonRepository.createActivityCancelDocument(
+            activityTimeStart: activity.time.start,
+            dateTime: dateTime,
+            id: id,
+            key: 'tutorKey',
+            keyValue: 'tutor/' + tutor.id.toString()));
+    });
+
+    await firestoreApi.projects.databases.documents.commit(commitRequest,
+        'projects/${Const.FirebaseProjectId}/databases/(default)');
   }
 
   @override
-  Future<void> deleteTimetableUpdate(String id) async {
-    FirestoreApi firestoreApi =
-        FirestoreApi(client, rootUrl: 'http://127.0.0.1:9190/');
+  Future<void> deleteTimetableUpdate(String id, int weekNumber, int dayNumber) async {
+    if (!clientStream.hasValue ||
+        !tutorIdStream.hasValue ||
+        clientStream.value == null ||
+        tutorIdStream.value == null) {
+      throw 'Unauthorized';
+    }
 
-    await firestoreApi.projects.databases.documents.delete(
-      'projects/emulator/databases/(default)/documents/timetable_items_update/' +
-          id,
+    FirestoreApi firestoreApi = FirestoreApi(clientStream.value!);
+
+    await TimetableUpdateApi.runQuery(
+      fieldPath: 'id',
+      fieldValue: id,
+      collectionId: 'timetable_items_update',
+      valueType: ValueType.String,
+      client: clientStream.value!,
+    ).then(
+      (docs) async {
+        CommitRequest commitRequest = CommitRequest();
+
+        commitRequest.writes = docs.map((doc) {
+          Value? groupKeyValue = doc.fields?['groupKey'];
+          if (groupKeyValue != null &&
+              groupKeyValue.stringValue != null &&
+              groupKeyValue.stringValue != '') {
+            CommonRepository.createNotification(
+              client: clientStream.value!,
+              groupId: groupKeyValue.stringValue!.substring(6),
+              weekNumber: weekNumber,
+              dayNumber: dayNumber,
+            );
+          }
+
+          return (Write()..delete = doc.name!);
+        }).toList();
+
+        await firestoreApi.projects.databases.documents.commit(commitRequest,
+            'projects/${Const.FirebaseProjectId}/databases/(default)');
+      },
     );
-    return null;
   }
 }

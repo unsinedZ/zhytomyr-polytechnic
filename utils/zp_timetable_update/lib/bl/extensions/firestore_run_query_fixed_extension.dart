@@ -1,9 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:googleapis/firestore/v1.dart';
-
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:http/http.dart' as http;
 
 extension FirestoreRunQueryFixedExtension
@@ -35,14 +33,21 @@ extension FirestoreRunQueryFixedExtension
   /// this method will complete with the same error.
   Future<List<Document>> runQueryFixed(RunQueryRequest request,
       {required http.Client client, String? parent}) async {
-    // final projectId = 'zhytomyr-politechnic-dev';
+    final projectId = 'zhytomyr-politechnic-dev';
     final urlParentAddition = parent != null ? '/$parent' : '';
-    // final url =
-    //     'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents$urlParentAddition:runQuery';
     final url =
-        'http://127.0.0.1:9190/v1/projects/emulator/databases/(default)/documents$urlParentAddition:runQuery'; // TODO delete
+        'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents$urlParentAddition:runQuery';
     final body = json.encode(request.toJson());
-    final response = await client.post(Uri.parse(url), body: body);
+
+    final response = await client.post(
+      Uri.parse(url),
+      body: body,
+      encoding: Encoding.getByName('utf-8'),
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+    );
     final resBody = response.body;
     final List<dynamic> decoded = json.decode(resBody) as List;
     if (decoded[0]['error'] != null) {

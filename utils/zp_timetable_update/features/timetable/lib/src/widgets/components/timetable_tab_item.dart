@@ -29,11 +29,11 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
 
   bool get isReplaced => widget.updatableTimetableItem.isReplaced;
 
-  Activity get mainActivity =>
-      widget.updatableTimetableItem.timetableItem!.activity;
+  TimetableItem? get mainTimetableItem =>
+      widget.updatableTimetableItem.timetableItem;
 
-  Activity get activityUpdate => widget
-      .updatableTimetableItem.timetableItemUpdate!.timetableItem!.activity;
+  TimetableItem? get timetableItemUpdate =>
+      widget.updatableTimetableItem.timetableItemUpdate?.timetableItem;
 
   String? get activityUpdateId =>
       widget.updatableTimetableItem.timetableItemUpdate?.id;
@@ -41,16 +41,16 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
   @override
   void initState() {
     if (DateTime.now().asDate().isAtSameMomentAs(widget.dateTime.asDate())) {
-      Activity activity;
+      TimetableItem timetableItem;
 
       if (isNew) {
-        activity = activityUpdate;
+        timetableItem = timetableItemUpdate!;
       } else {
-        activity = mainActivity;
+        timetableItem = mainTimetableItem!;
       }
 
-      List<String> timeStart = activity.time.start.split(':');
-      List<String> timeEnd = activity.time.end.split(':');
+      List<String> timeStart = timetableItem.activity.time.start.split(':');
+      List<String> timeEnd = timetableItem.activity.time.end.split(':');
 
       DateTime dateTimeStart = DateTime.now().asDate().add(Duration(
           hours: int.parse(timeStart[0]), minutes: int.parse(timeStart[1])));
@@ -71,7 +71,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
       children: [
         if (isCancelled || isReplaced)
           ActivityCard.canceled(
-            activity: mainActivity,
+            timetableItem: mainTimetableItem!,
             textLocalizer: widget.textLocalizer,
             dateTime: widget.dateTime,
             updateId: activityUpdateId,
@@ -83,14 +83,14 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
           ),
         isCurrentClass
             ? ActivityCard.current(
-                activity: mainActivity,
+                timetableItem: timetableItemUpdate ?? mainTimetableItem!,
                 textLocalizer: widget.textLocalizer,
                 dateTime: widget.dateTime,
                 updateId: activityUpdateId,
               )
             : isReplaced || isNew
                 ? ActivityCard.added(
-                    activity: activityUpdate,
+                    timetableItem: timetableItemUpdate!,
                     textLocalizer: widget.textLocalizer,
                     dateTime: widget.dateTime,
                     updateId: activityUpdateId,
@@ -98,7 +98,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
                 : isCancelled
                     ? Container()
                     : ActivityCard.simple(
-                        activity: mainActivity,
+                        timetableItem: mainTimetableItem!,
                         textLocalizer: widget.textLocalizer,
                         dateTime: widget.dateTime,
                         updateId: activityUpdateId,

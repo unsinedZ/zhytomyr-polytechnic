@@ -1,11 +1,13 @@
+import 'package:bot_toast/bot_toast.dart';
 
 import 'package:authorization_bloc/authorization_bloc.dart';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:error_bloc/error_bloc.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:timetable/timetable.dart';
+import 'package:update_form/update_form.dart';
 
 class WithStartupAction extends StatefulWidget {
   final Widget child;
@@ -19,6 +21,10 @@ class WithStartupAction extends StatefulWidget {
 class _WithStartupActionState extends State<WithStartupAction> {
   @override
   void initState() {
+    context.read<UpdateFormBloc>().onUpdateCreated.listen((_) {
+      context.read<TimetableBloc>().loadTimetableItemUpdates();
+    });
+
     context
         .read<ErrorBloc>()
         .error

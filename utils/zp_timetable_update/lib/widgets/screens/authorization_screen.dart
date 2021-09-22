@@ -7,7 +7,6 @@ import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 import 'package:authorization_bloc/authorization_bloc.dart';
-import 'package:googleapis_auth/auth_io.dart';
 
 import 'package:zp_timetable_update/bl/services/files_picker.dart';
 import 'package:zp_timetable_update/widgets/components/submit_button.dart';
@@ -31,10 +30,13 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     _tokenSubscription = _authorizationBloc.authClient
         .where((client) => client != null)
         .listen((client) {
-      Navigator.pushReplacementNamed(context, "/main_screen", arguments: {
-        'id': 60,
-        'client': client,
-      });
+      if (_authorizationBloc.tutorId.hasValue &&
+          _authorizationBloc.tutorId.value != -1) {
+        Navigator.pushReplacementNamed(
+          context,
+          "/timetable_screen",
+        );
+      }
     });
     super.initState();
   }

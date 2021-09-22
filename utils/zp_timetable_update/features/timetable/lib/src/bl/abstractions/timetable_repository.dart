@@ -1,11 +1,20 @@
 import 'package:timetable/src/bl/models/models.dart';
 
 abstract class TimetableRepository {
-  Future<Timetable> loadTimetableByReferenceId(int referenceId);
+  Future<Timetable> loadTimetableByReferenceId();
 
-  Future<List<TimetableItemUpdate>> getTimetableItemUpdates(int id);
+  Future<List<TimetableItemUpdate>> getTimetableItemUpdates();
 
-  Future<void> cancelLesson(Activity activity, DateTime dateTime);
+  Future<void> cancelLesson(
+    Activity activity,
+    DateTime dateTime,
+    int weekNumber,
+    int dayNumber,
+  );
 
-  Future<void> deleteTimetableUpdate(String id);
+  Future<void> deleteTimetableUpdate(
+    String id,
+    int weekNumber,
+    int dayNumber,
+  );
 }

@@ -5,17 +5,23 @@ import 'package:timetable/src/bl/models/models.dart';
 
 class ActivityInfoDialog extends StatelessWidget {
   final ITextLocalizer textLocalizer;
-  final Activity activity;
+  final TimetableItem timetableItem;
+  final DateTime dateTime;
   final VoidCallback onCancel;
   final VoidCallback onUpdateCancel;
   final bool isUpdated;
+  final Tutor tutor;
+  final List<String> unavailableTimes;
 
   ActivityInfoDialog({
-    required this.activity,
+    required this.timetableItem,
     required this.textLocalizer,
+    required this.dateTime,
     required this.onCancel,
     required this.onUpdateCancel,
     required this.isUpdated,
+    required this.tutor,
+    required this.unavailableTimes,
   });
 
   @override
@@ -34,7 +40,7 @@ class ActivityInfoDialog extends StatelessWidget {
               children: [
                 Center(
                   child: Text(
-                    activity.name,
+                    timetableItem.activity.name,
                     textScaleFactor: 1.5,
                   ),
                 ),
@@ -48,7 +54,7 @@ class ActivityInfoDialog extends StatelessWidget {
                     style: Theme.of(context).textTheme.subtitle1,
                     children: <TextSpan>[
                       TextSpan(
-                          text: activity.tutors
+                          text: timetableItem.activity.tutors
                               .map((tutor) => tutor.name)
                               .join(', '),
                           style: TextStyle(fontWeight: FontWeight.bold)),
@@ -65,7 +71,7 @@ class ActivityInfoDialog extends StatelessWidget {
                     style: Theme.of(context).textTheme.subtitle1,
                     children: <TextSpan>[
                       TextSpan(
-                          text: activity.groups
+                          text: timetableItem.activity.groups
                               .map((group) => group.name)
                               .join(', '),
                           style: TextStyle(fontWeight: FontWeight.bold)),
@@ -82,7 +88,7 @@ class ActivityInfoDialog extends StatelessWidget {
                     style: Theme.of(context).textTheme.subtitle1,
                     children: <TextSpan>[
                       TextSpan(
-                          text: activity.room,
+                          text: timetableItem.activity.room,
                           style: TextStyle(fontWeight: FontWeight.bold)),
                     ],
                   ),
@@ -94,7 +100,20 @@ class ActivityInfoDialog extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/update_form',
+                          arguments: {
+                            'timetableItemJson': timetableItem.toJson(),
+                            'unavailableTimes': unavailableTimes,
+                            'dateTime': dateTime,
+                            'dayNumber': timetableItem.dayNumber,
+                            'weekNumber': timetableItem.weekNumber,
+                            'tutorJson': tutor.toJson(),
+                          },
+                        );
+                      },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
