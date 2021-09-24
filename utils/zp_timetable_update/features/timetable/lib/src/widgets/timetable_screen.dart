@@ -100,6 +100,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
         child: Scaffold(
           drawer: widget.navigationDrawer,
           appBar: AppBar(
+            backgroundColor: Theme.of(context).primaryColor,
             bottom: TabBar(
               indicatorColor: Theme.of(context).focusColor,
               labelColor: Colors.white,
