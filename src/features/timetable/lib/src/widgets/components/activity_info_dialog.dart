@@ -82,18 +82,6 @@ class ActivityInfoDialog extends StatelessWidget {
               ],
             ),
           ),
-          Positioned(
-            right: 3,
-            top: 3,
-            child: IconButton(
-              alignment: Alignment.topRight,
-              padding: EdgeInsets.zero,
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.close, color: Colors.black,),
-            ),
-          )
         ],
       ),
     );

@@ -162,18 +162,14 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     ))
                 .toList(),
           ),
-          leading: Stack(
-            children: [
-              IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  if (arguments['params'] == null) {
-                    return Navigator.pop(context);
-                  }
-                  Navigator.pushReplacementNamed(context, '/faculties');
-                },
-              ),
-            ],
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              if (arguments['params'] == null) {
+                return Navigator.pop(context);
+              }
+              Navigator.pushReplacementNamed(context, '/faculties');
+            },
           ),
           title: Text(
             title,
