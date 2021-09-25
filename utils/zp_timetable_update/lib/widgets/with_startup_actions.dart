@@ -30,6 +30,11 @@ class _WithStartupActionState extends State<WithStartupAction> {
         .error
         .debounceTime(Duration(milliseconds: 500))
         .listen((errorMessage) {
+
+      if(errorMessage.contains("403")){
+      context.read<AuthorizationBloc>()..logout();
+      }
+
       BotToast.showText(text: errorMessage);
     });
 

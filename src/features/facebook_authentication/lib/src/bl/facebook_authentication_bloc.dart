@@ -8,27 +8,27 @@ import 'package:logger/logger.dart';
 import 'package:facebook_authentication/src/bl/models/facebook_user.dart';
 
 class FacebookAuthenticationBloc {
+  static const String providerId = "facebook.com";
+
   final StreamSink<String> errorSink;
 
   FacebookAuthenticationBloc({
     required this.errorSink,
   });
 
-  var _logger = Logger(
+  final Logger _logger = Logger(
     printer: PrettyPrinter(),
   );
 
-  final BehaviorSubject<FacebookUser?> _userController = BehaviorSubject();
+  final BehaviorSubject<FacebookUser?> _userSubject = BehaviorSubject();
 
-  Stream<FacebookUser?> get user => _userController.stream;
-
-  String get providerId => "facebook.com";
+  Stream<FacebookUser?> get user => _userSubject.stream;
 
   void loadUser() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null && user.providerData.last.providerId == providerId) {
-        _userController.add(FacebookUser.fromLogin(user));
+        _userSubject.add(FacebookUser.fromLogin(user));
       }
     } catch (err) {
       errorSink.add(err.toString());
@@ -39,12 +39,11 @@ class FacebookAuthenticationBloc {
     try {
       final LoginResult result = await FacebookAuth.instance.login();
 
-      if (result.status == LoginStatus.cancelled ||
-          result.status == LoginStatus.failed) {
+      if (result.status != LoginStatus.success) {
         return;
       }
 
-      _userController.add(null);
+      _userSubject.add(null);
 
       final facebookAuthCredential =
           FacebookAuthProvider.credential(result.accessToken!.token);
@@ -56,10 +55,10 @@ class FacebookAuthenticationBloc {
       _logger.d('Signed in Facebook user');
       _logger.d(user);
 
-      _userController.add(FacebookUser.fromLogin(user!));
+      _userSubject.add(FacebookUser.fromLogin(user!));
     } catch (err) {
       errorSink.add(err.toString());
-      _userController.add(FacebookUser.empty());
+      _userSubject.add(FacebookUser.empty());
     }
   }
 
@@ -67,10 +66,10 @@ class FacebookAuthenticationBloc {
     await FirebaseAuth.instance.signOut();
     await FacebookAuth.instance.logOut();
 
-    _userController.add(FacebookUser.empty());
+    _userSubject.add(FacebookUser.empty());
   }
 
   void dispose() {
-    _userController.close();
+    _userSubject.close();
   }
 }

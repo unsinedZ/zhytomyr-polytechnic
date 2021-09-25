@@ -26,7 +26,7 @@ class _VerifyAuthenticationState extends State<VerifyAuthentication> {
   void initState() {
     final authenticationBloc = context.read<UserSyncBloc>();
 
-    _authSubscription = authenticationBloc.mappedUser
+    _authSubscription = authenticationBloc.syncUser
         .where((user) => user != null && user.isEmpty)
         .asyncMap(
             (_) async => await (await SharedPreferences.getInstance()).clear())

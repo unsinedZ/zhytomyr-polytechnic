@@ -4,22 +4,19 @@ import 'package:flutter/material.dart';
 
 import 'package:navigation_drawer/src/bl/abstractions/text_localizer.dart';
 
-class NavigationDrawer extends StatefulWidget {
+class NavigationDrawer extends StatelessWidget {
   final TextLocalizer textLocalizer;
   final VoidCallback onSignOut;
   final StreamSink<String> errorSink;
+  final CurrentPage currentPage;
 
   NavigationDrawer({
     required this.textLocalizer,
     required this.onSignOut,
     required this.errorSink,
+    required this.currentPage,
   });
 
-  @override
-  _NavigationDrawerState createState() => _NavigationDrawerState();
-}
-
-class _NavigationDrawerState extends State<NavigationDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -36,7 +33,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
           ),
           ListTile(
             leading: Icon(Icons.list_alt),
-            title: Text(widget.textLocalizer.localize('My timetable')),
+            title: Text(textLocalizer.localize('My timetable')),
             onTap: () {
               Navigator.pushNamed(
                 context,
@@ -47,27 +44,30 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
           Divider(),
           ListTile(
             leading: Icon(Icons.wysiwyg),
-            title: Text(widget.textLocalizer.localize('Faculties')),
+            title: Text(textLocalizer.localize('Faculties')),
             onTap: () {
-              Navigator.pop(context);
-              Navigator.pushReplacementNamed(context, '/faculties');
+              if(currentPage == CurrentPage.Faculties){
+                Navigator.of(context).pop();
+                return;
+              }
+              Navigator.pushNamed(context, '/faculties');
             },
           ),
           ListTile(
             leading: Icon(Icons.contacts),
-            title: Text(widget.textLocalizer.localize('Contacts')),
+            title: Text(textLocalizer.localize('Contacts')),
             onTap: () => Navigator.pushNamed(context, '/contacts'),
           ),
           ListTile(
             leading: Icon(Icons.text_snippet_outlined),
-            title: Text(widget.textLocalizer.localize('Terms and conditions')),
+            title: Text(textLocalizer.localize('Terms and conditions')),
             onTap: () => Navigator.pushNamed(context, '/terms&conditions'),
           ),
           Spacer(),
           ListTile(
             leading: Icon(Icons.exit_to_app),
-            title: Text(widget.textLocalizer.localize('Sign out')),
-            onTap: () => widget.onSignOut(),
+            title: Text(textLocalizer.localize('Sign out')),
+            onTap: () => onSignOut(),
           ),
           SizedBox(
             height: 5,
@@ -76,4 +76,8 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
       ),
     );
   }
+}
+
+enum CurrentPage{
+  Faculties
 }

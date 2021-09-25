@@ -1,31 +1,31 @@
+import 'package:contacts/src/bl/models/social_network.dart';
+
 class ContactsData {
   final String phoneNumber;
   final String address;
-  final String instagramUrl;
-  final String telegramUrl;
-  final String facebookUrl;
+  final String addressUrl;
+  final List<SocialNetwork> socialNetworks;
 
   ContactsData({
     required this.phoneNumber,
     required this.address,
-    required this.instagramUrl,
-    required this.telegramUrl,
-    required this.facebookUrl,
+    required this.addressUrl,
+    required this.socialNetworks,
   });
 
   factory ContactsData.fromJson(Map<String, dynamic> json) => ContactsData(
         phoneNumber: json['phoneNumber'],
         address: json['address'],
-        instagramUrl: json['instagramUrl'],
-        telegramUrl: json['telegramUrl'],
-        facebookUrl: json['facebookUrl'],
+        addressUrl: json['addressUrl'],
+        socialNetworks: (json['socialNetworks'] as List<dynamic>)
+            .map((json) => SocialNetwork.fromJson(json))
+            .toList(),
       );
 
   factory ContactsData.empty() => ContactsData(
         phoneNumber: '',
         address: '',
-        instagramUrl: '',
-        telegramUrl: '',
-        facebookUrl: '',
+        addressUrl: '',
+        socialNetworks: [],
       );
 }

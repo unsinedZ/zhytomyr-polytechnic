@@ -17,7 +17,6 @@ class SignInWithFacebookButton extends StatefulWidget {
 class _SignInWithFacebookButtonState extends State<SignInWithFacebookButton> {
   @override
   void initState() {
-    widget.authenticationBloc.loadUser();
     super.initState();
   }
 

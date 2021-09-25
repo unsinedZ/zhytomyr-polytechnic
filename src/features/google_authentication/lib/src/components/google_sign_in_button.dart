@@ -16,7 +16,6 @@ class GoogleSignInButton extends StatefulWidget {
 class _GoogleSignInButtonState extends State<GoogleSignInButton> {
   @override
   void initState() {
-    widget.authenticationBloc.loadUser();
     super.initState();
   }
 

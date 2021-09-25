@@ -8,27 +8,27 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_authentication/src/models/google_user.dart';
 
 class GoogleAuthenticationBloc {
+  static const String providerId = "google.com";
+
   final StreamSink<String> errorSink;
 
   GoogleAuthenticationBloc({
     required this.errorSink,
   });
 
-  var _logger = Logger(
+  final Logger _logger = Logger(
     printer: PrettyPrinter(),
   );
 
-  final BehaviorSubject<GoogleUser?> _userController = BehaviorSubject();
+  final BehaviorSubject<GoogleUser?> _userSubject = BehaviorSubject();
 
-  Stream<GoogleUser?> get user => _userController.stream;
-
-  String get providerId => "google.com";
+  Stream<GoogleUser?> get user => _userSubject.stream;
 
   void loadUser() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null && user.providerData.last.providerId == providerId) {
-        _userController.add(GoogleUser.fromLogin(user));
+        _userSubject.add(GoogleUser.fromLogin(user));
       }
     } catch (err) {
       errorSink.add(err.toString());
@@ -43,7 +43,7 @@ class GoogleAuthenticationBloc {
         return;
       }
 
-      _userController.add(null);
+      _userSubject.add(null);
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
@@ -59,10 +59,10 @@ class GoogleAuthenticationBloc {
       _logger.d('Signed in Google user');
       _logger.d(user);
 
-      _userController.add(GoogleUser.fromLogin(user!));
+      _userSubject.add(GoogleUser.fromLogin(user!));
     } catch (err) {
       errorSink.add(err.toString());
-      _userController.add(GoogleUser.empty());
+      _userSubject.add(GoogleUser.empty());
     }
   }
 
@@ -70,10 +70,10 @@ class GoogleAuthenticationBloc {
     await FirebaseAuth.instance.signOut();
     await GoogleSignIn().signOut();
 
-    _userController.add(GoogleUser.empty());
+    _userSubject.add(GoogleUser.empty());
   }
 
   void dispose() {
-    _userController.close();
+    _userSubject.close();
   }
 }

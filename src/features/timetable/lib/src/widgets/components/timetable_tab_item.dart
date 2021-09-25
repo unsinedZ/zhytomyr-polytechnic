@@ -29,11 +29,11 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
 
   bool get isReplaced => widget.updatableTimetableItem.isReplaced;
 
-  Activity get mainActivity =>
-      widget.updatableTimetableItem.timetableItem!.activity;
+  Activity? get mainActivity =>
+      widget.updatableTimetableItem.timetableItem?.activity;
 
-  Activity get activityUpdate => widget
-      .updatableTimetableItem.timetableItemUpdate!.timetableItem!.activity;
+  Activity? get activityUpdate => widget
+      .updatableTimetableItem.timetableItemUpdate?.timetableItem?.activity;
 
   @override
   void initState() {
@@ -41,9 +41,9 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
       Activity activity;
 
       if (isNew) {
-        activity = activityUpdate;
+        activity = activityUpdate!;
       } else {
-        activity = mainActivity;
+        activity = mainActivity!;
       }
 
       List<String> timeStart = activity.time.start.split(':');
@@ -68,7 +68,7 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
       children: [
         if (isCancelled || isReplaced)
           ActivityCard.canceled(
-            activity: mainActivity,
+            activity: mainActivity!,
             textLocalizer: widget.textLocalizer,
           ),
         if (isReplaced)
@@ -78,16 +78,16 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
           ),
         isCurrentClass
             ? ActivityCard.current(
-                activity: mainActivity,
+                activity: activityUpdate ?? mainActivity!,
                 textLocalizer: widget.textLocalizer,
               )
             : isReplaced || isNew
                 ? ActivityCard.added(
-                    activity: activityUpdate,
+                    activity: activityUpdate!,
                     textLocalizer: widget.textLocalizer,
                   )
-                : ActivityCard.simple(
-                        activity: mainActivity,
+                : isCancelled ? Container() : ActivityCard.simple(
+                        activity: mainActivity!,
                         textLocalizer: widget.textLocalizer,
                       ),
       ],
