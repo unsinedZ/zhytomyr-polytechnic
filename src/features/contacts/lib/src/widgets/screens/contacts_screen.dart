@@ -104,8 +104,6 @@ class ContactsScreen extends StatelessWidget {
   }
 
   void _launchURL(url) async {
-    print(url);
-    print(await canLaunch(url));
     if (await canLaunch(url)) {
       await launch(url);
     }
