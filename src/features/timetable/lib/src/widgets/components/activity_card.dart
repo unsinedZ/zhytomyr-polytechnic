@@ -50,7 +50,8 @@ class ActivityCard extends StatelessWidget {
               children: [
                 ConstrainedBox(
                   constraints: new BoxConstraints(
-                    minWidth: 45.0,
+                    minWidth: 50.0,
+                    maxWidth: 50.0,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -110,20 +111,20 @@ class ActivityCard extends StatelessWidget {
                   ),
                 ),
                 if (this._activityCardType == _ActivityCardType.Canceled)
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
                         Text(
                           textLocalizer.localize('Canceled'),
                           style: TextStyle(color: Colors.red),
                           textScaleFactor: 1.05,
                         ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
               ],
             ),
           ),

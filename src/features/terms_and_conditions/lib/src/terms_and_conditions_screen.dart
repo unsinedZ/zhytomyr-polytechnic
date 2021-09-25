@@ -37,21 +37,21 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-          title: Text(
-            widget.textLocalizer.localize('Terms and conditions'),
-            style: Theme.of(context).textTheme.headline1,
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        title: Text(
+          widget.textLocalizer.localize('Terms and conditions'),
+          style: Theme.of(context).textTheme.headline1,
         ),
-        body: widget.bodyWrapper(
+      ),
+      body: SafeArea(
+        child: widget.bodyWrapper(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: Center(

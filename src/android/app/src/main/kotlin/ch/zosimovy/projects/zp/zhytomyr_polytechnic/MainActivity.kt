@@ -1,4 +1,4 @@
-package ch.zosimovy.projects.zp
+package ch.zosimovy.projects.zhytomyrpolytechnic
 
 import io.flutter.embedding.android.FlutterActivity
 
