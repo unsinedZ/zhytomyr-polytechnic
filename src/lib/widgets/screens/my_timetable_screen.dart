@@ -38,7 +38,8 @@ class _MyTimetableScreenState extends State<MyTimetableScreen> {
             'type': 'group',
             'groupId': int.parse(user.groupId),
             'subgroupId':
-                user.subgroupId.isNotEmpty ? int.parse(user.subgroupId) : null
+                user.subgroupId.isNotEmpty ? int.parse(user.subgroupId) : null,
+            'params': ModalRoute.of(context)!.settings.arguments,
           },
         );
       }

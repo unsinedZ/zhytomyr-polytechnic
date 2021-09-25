@@ -23,7 +23,7 @@ class FirestoreRepository
         VersionsRepository {
   @override
   Stream<List<Faculty>> getFaculties() =>
-      FirebaseFirestore.instance.collection('faculty').get().asStream().map(
+      FirebaseFirestore.instance.collection('faculties').get().asStream().map(
             (facultyListJson) => facultyListJson.docs
                 .map(
                   (facultyJson) => Faculty.fromJson(facultyJson.data()),
@@ -53,7 +53,7 @@ class FirestoreRepository
     if (expirableGroupsJson == null) {
       expirableGroupsJson = Expirable<List<Map<String, dynamic>>>(
           duration: Duration(days: 30),
-          data: (await FirebaseFirestore.instance.collection('group').get())
+          data: (await FirebaseFirestore.instance.collection('groups').get())
               .docs
               .map((doc) => doc.data())
               .toList());
@@ -61,25 +61,31 @@ class FirestoreRepository
       prefs.setString('groups', jsonEncode(expirableGroupsJson));
     }
 
-    return expirableGroupsJson.data
+    List<Group> groups = expirableGroupsJson.data
         .map(
           (groupJson) => Group.fromJson(groupJson),
         )
         .toList();
+
+    return groups;
   }
 
   @override
   Future<List<Group>> getGroups(String year, int facultyId) async {
-    return (await this.getAllGroups())
+    List<Group> groups = (await this.getAllGroups())
         .where((group) => group.year == year && group.facultyId == facultyId)
         .toList();
+
+    return groups;
   }
 
   @override
   Future<Timetable.Group> getGroupById(int groupId) async {
-    return (await this.getAllGroups())
+    Timetable.Group group = (await this.getAllGroups())
         .map((group) => Timetable.Group.fromObject(group))
         .firstWhere((group) => group.id == groupId);
+
+    return group;
   }
 
   @override
@@ -146,9 +152,8 @@ class FirestoreRepository
 
     if (tutors.isNotEmpty) {
       return tutors.first;
-    } else {
-      return null;
     }
+    return null;
   }
 
   @override

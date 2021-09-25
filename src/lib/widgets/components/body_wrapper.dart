@@ -1,9 +1,14 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:push_notification/push_notification.dart';
 
 import 'package:update_check/update_check.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 
 class BodyWrapper extends StatefulWidget {
@@ -16,8 +21,10 @@ class BodyWrapper extends StatefulWidget {
 }
 
 class _BodyWrapperState extends State<BodyWrapper> {
+  late final StreamSubscription _onNotificationOpenedSubscription;
   @override
   void initState() {
+
     context.read<UpdateCheckBloc>().version.listen((version) {
       if (version != null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -31,9 +38,19 @@ class _BodyWrapperState extends State<BodyWrapper> {
               }
             },
           ),
+          behavior: SnackBarBehavior.floating,
         ));
       }
     });
+
+    _onNotificationOpenedSubscription = context
+        .read<PushNotificationBloc>()
+        .onMessageOpened.
+        where((data) => data != null)
+        .listen((data) {
+          Navigator.of(context).pushReplacementNamed('/my-timetable', arguments: jsonDecode(data!));
+        });
+
 
     super.initState();
   }
@@ -41,5 +58,12 @@ class _BodyWrapperState extends State<BodyWrapper> {
   @override
   Widget build(BuildContext context) {
     return widget.child;
+  }
+
+
+  @override
+  void dispose() {
+    _onNotificationOpenedSubscription.cancel();
+    super.dispose();
   }
 }

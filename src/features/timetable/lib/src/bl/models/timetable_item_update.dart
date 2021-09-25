@@ -15,6 +15,6 @@ class TimetableItemUpdate {
       TimetableItemUpdate(
         date: json['date'],
         time: json['time'],
-        timetableItem: json['timetableItem'] != null ? TimetableItem.fromJson(json['timetableItem']) : null,
+        timetableItem: json['item'] != null ? TimetableItem.fromJson(json['item']) : null,
       );
 }

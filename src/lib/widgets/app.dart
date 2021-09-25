@@ -1,14 +1,18 @@
-import 'package:apple_authentication/apple_authentication.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 
+import 'package:apple_authentication/apple_authentication.dart';
 import 'package:google_authentication/google_authentication.dart';
 import 'package:facebook_authentication/facebook_authentication.dart';
-import 'package:terms_and_conditions/terms_and_conditions.dart' hide TextLocalizer;
-import 'package:timetable/timetable.dart' hide TextLocalizer, User, AuthProvider;
+import 'package:push_notification/push_notification.dart';
+import 'package:terms_and_conditions/terms_and_conditions.dart'
+    hide TextLocalizer;
+import 'package:timetable/timetable.dart'
+    hide TextLocalizer, User, AuthProvider;
 import 'package:faculty_list/faculty_list.dart' hide TextLocalizer;
 import 'package:group_selection/group_selection.dart' hide TextLocalizer;
 import 'package:navigation_drawer/navigation_drawer.dart' hide TextLocalizer;
@@ -21,7 +25,7 @@ import 'package:zhytomyr_polytechnic/bl/repositories/timetable_firestore_reposit
 import 'package:zhytomyr_polytechnic/bl/services/text_localizer.dart';
 import 'package:zhytomyr_polytechnic/widgets/components/verify_authentication.dart';
 import 'package:zhytomyr_polytechnic/widgets/components/body_wrapper.dart';
-import 'package:zhytomyr_polytechnic/widgets/components/my_timetable_screen.dart';
+import 'package:zhytomyr_polytechnic/widgets/screens/my_timetable_screen.dart';
 import 'package:zhytomyr_polytechnic/widgets/dependencies.dart';
 import 'package:zhytomyr_polytechnic/widgets/screens/authentication_screen.dart';
 import 'package:zhytomyr_polytechnic/widgets/with_startup_actions.dart';
@@ -130,7 +134,7 @@ class _AppState extends State<App> {
                       onSignOut: () {
                         context
                             .read<UserSyncBloc>()
-                            .mappedUser
+                            .syncUser
                             .first
                             .then((user) {
                           if (user != null && !user.isEmpty) {
@@ -153,11 +157,15 @@ class _AppState extends State<App> {
                                     .logout();
                                 break;
                             }
+                            context
+                                .read<PushNotificationBloc>()
+                                .unsubscribeFromCurrentTopic();
                           }
                         });
                       },
                       textLocalizer: TextLocalizer(),
                       errorSink: context.read<ErrorBloc>().errorSink,
+                      currentPage: CurrentPage.Faculties,
                     ),
                     bodyWrapper: ({required Widget child}) =>
                         BodyWrapper(child: child),
@@ -182,19 +190,18 @@ class _AppState extends State<App> {
                   groupRepository: FirestoreRepository(),
                   userStream: context
                       .read<UserSyncBloc>()
-                      .mappedUser
+                      .syncUser
                       .where((user) => user != null && !user.isEmpty)
                       .map((user) => user!.toJson()),
                   tutorRepository: FirestoreRepository(),
                 ),
             '/my-timetable': (context) => MyTimetableScreen(
-                  textLocalizer: TextLocalizer(),
-                  errorSink: context.read<ErrorBloc>().errorSink,
-                  userStream: context
-                      .read<UserSyncBloc>()
-                      .mappedUser
-                      .where((user) => user != null && !user.isEmpty),
-                ),
+                textLocalizer: TextLocalizer(),
+                errorSink: context.read<ErrorBloc>().errorSink,
+                userStream: context
+                    .read<UserSyncBloc>()
+                    .syncUser
+                    .where((user) => user != null && !user.isEmpty)),
             '/contacts': (context) => ContactsScreen(
                   textLocalizer: TextLocalizer(),
                   contactsRepository: FirestoreRepository(),

@@ -40,6 +40,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Theme.of(context).primaryColor,
           leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
@@ -59,13 +60,18 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    MarkdownBody(
-                      data: text ?? '',
-                      selectable: true,
-                      onTapLink: (_, uri, ___) async {
-                        await launch(uri!);
-                      },
-                    ),
+                    if (text == null)
+                      Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    else
+                      MarkdownBody(
+                        data: text!,
+                        selectable: true,
+                        onTapLink: (_, uri, ___) async {
+                          await launch(uri!);
+                        },
+                      ),
                   ],
                 ),
               ),
@@ -77,7 +83,8 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
   }
 
   Future<String> loadTermsAndConditions() async {
-    return await rootBundle
-        .loadString(getAssetPathPrefix() + 'assets/' + widget.textLocalizer.localize('terms_and_conditions_en.md'));
+    return await rootBundle.loadString(getAssetPathPrefix() +
+        'assets/' +
+        widget.textLocalizer.localize('terms_and_conditions_en.md'));
   }
 }

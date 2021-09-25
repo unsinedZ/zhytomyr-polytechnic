@@ -20,30 +20,33 @@ class TimetableBloc {
     required this.tutorRepository,
   });
 
-  final BehaviorSubject<Timetable?> _timetableController =
+  final BehaviorSubject<Timetable?> _timetableSubject =
       BehaviorSubject<Timetable?>();
-  final BehaviorSubject<Group?> _groupController = BehaviorSubject<Group?>();
+
+  final BehaviorSubject<Group?> _groupSubject = BehaviorSubject<Group?>();
+
   final BehaviorSubject<List<TimetableItemUpdate>?>
-      _timetableItemUpdatesController =
+      _timetableItemUpdatesSubject =
       BehaviorSubject<List<TimetableItemUpdate>?>();
-  final BehaviorSubject<Tutor?> _tutorController = BehaviorSubject<Tutor?>();
 
-  Stream<Timetable?> get timetable => _timetableController.stream;
+  final BehaviorSubject<Tutor?> _tutorSubject = BehaviorSubject<Tutor?>();
 
-  Stream<Group?> get group => _groupController.stream;
+  Stream<Timetable?> get timetable => _timetableSubject.stream;
+
+  Stream<Group?> get group => _groupSubject.stream;
 
   Stream<List<TimetableItemUpdate>?> get timetableItemUpdates =>
-      _timetableItemUpdatesController.stream;
+      _timetableItemUpdatesSubject.stream;
 
-  Stream<Tutor?> get tutor => _tutorController.stream;
+  Stream<Tutor?> get tutor => _tutorSubject.stream;
 
   void loadTimetable(int id, [String? groupId]) {
-    _timetableController.add(null);
+    _timetableSubject.add(null);
 
     timetableRepository
         .loadTimetableByReferenceId(id, groupId)
         .then((timetable) {
-      _timetableController.add(timetable);
+      _timetableSubject.add(timetable);
     }).onError((error, stack) {
       print(error);
       print(stack);
@@ -52,10 +55,10 @@ class TimetableBloc {
   }
 
   void loadGroup(int groupId) {
-    _groupController.add(null);
+    _groupSubject.add(null);
 
     groupRepository.getGroupById(groupId).then((group) {
-      _groupController.add(group);
+      _groupSubject.add(group);
     }).onError((error, stack) {
       print(error);
       print(stack);
@@ -64,10 +67,12 @@ class TimetableBloc {
   }
 
   void loadTimetableItemUpdates(int id) {
-    _timetableItemUpdatesController.add(null);
+    _timetableItemUpdatesSubject.add(null);
 
-    timetableRepository.getTimetableItemUpdates(id).then((timetableItemUpdates) {
-      _timetableItemUpdatesController.add(timetableItemUpdates);
+    timetableRepository
+        .getTimetableItemUpdates(id)
+        .then((timetableItemUpdates) {
+      _timetableItemUpdatesSubject.add(timetableItemUpdates);
     }).onError((error, stack) {
       print(error);
       print(stack);
@@ -76,19 +81,19 @@ class TimetableBloc {
   }
 
   void loadTutor(int tutorId) {
-    _tutorController.add(null);
+    _tutorSubject.add(null);
 
     tutorRepository.getTutorById(tutorId).then((tutor) {
-      _tutorController.add(tutor);
+      _tutorSubject.add(tutor);
     }).onError((error, _) {
       errorSink.add(error.toString());
     });
   }
 
   void dispose() {
-    _timetableController.close();
-    _groupController.close();
-    _timetableItemUpdatesController.close();
-    _tutorController.close();
+    _timetableSubject.close();
+    _groupSubject.close();
+    _timetableItemUpdatesSubject.close();
+    _tutorSubject.close();
   }
 }

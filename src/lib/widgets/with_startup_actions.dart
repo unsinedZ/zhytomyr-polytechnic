@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:rxdart/rxdart.dart';
@@ -5,8 +7,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 import 'package:error_bloc/error_bloc.dart';
-import 'package:google_authentication/google_authentication.dart';
 import 'package:apple_authentication/apple_authentication.dart';
+import 'package:google_authentication/google_authentication.dart';
 import 'package:facebook_authentication/facebook_authentication.dart';
 import 'package:push_notification/push_notification.dart';
 import 'package:user_sync/user_sync.dart';
@@ -27,13 +29,14 @@ class _WithStartupActionsState extends State<WithStartupActions> {
   @override
   void initState() {
     final userSyncBloc = context.read<UserSyncBloc>();
+    final pushNotification = context.read<PushNotificationBloc>();
 
-    userSyncBloc.mappedUser
+
+    userSyncBloc.syncUser
         .where((user) => user != null && !user.isEmpty)
-        .map((user) => user)
         .listen((user) {
-      context
-          .read<PushNotificationBloc>()
+          pushNotification.init();
+      pushNotification
           .subscribeToNew(user!.groupId, user.subgroupId);
     });
 
@@ -54,33 +57,40 @@ class _WithStartupActionsState extends State<WithStartupActions> {
 
     context.read<GoogleAuthenticationBloc>().user.listen((user) {
       if (user?.uid == "") {
-        context.read<UserSyncBloc>().cleanData();
+        userSyncBloc.cleanData();
         return;
       }
 
-      context.read<UserSyncBloc>().setData(user?.uid, AuthProvider.Google);
+      userSyncBloc.setData(user?.uid, AuthProvider.Google);
     });
 
     context.read<FacebookAuthenticationBloc>().user.listen((user) {
       if (user?.uid == "") {
-        context.read<UserSyncBloc>().cleanData();
+        userSyncBloc.cleanData();
         return;
       }
 
-      context.read<UserSyncBloc>().setData(user?.uid, AuthProvider.Facebook);
+      userSyncBloc.setData(user?.uid, AuthProvider.Facebook);
     });
 
     context.read<AppleAuthenticationBloc>().user.listen((user) {
       if (user?.uid == "") {
-        context.read<UserSyncBloc>().cleanData();
+        userSyncBloc.cleanData();
         return;
       }
 
-      context.read<UserSyncBloc>().setData(user?.uid, AuthProvider.Apple);
+      userSyncBloc.setData(user?.uid, AuthProvider.Apple);
     });
 
     context.read<UpdateCheckBloc>().checkForUpdates();
 
+    context.read<FacebookAuthenticationBloc>().loadUser();
+    context.read<GoogleAuthenticationBloc>().loadUser();
+
+    if (Platform.isIOS) {
+      context.read<AppleAuthenticationBloc>().loadUser();
+    }
+    
     super.initState();
   }
 
