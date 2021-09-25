@@ -201,6 +201,9 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
                                 child: Text('Лекція'), value: 'Лекція'),
                             DropdownMenuItem(
                                 child: Text('Практика'), value: 'Практика'),
+                            DropdownMenuItem(
+                                child: Text('Лабораторна'),
+                                value: 'Лабораторна'),
                           ],
                           value: timetableItemType,
                           onChanged: (newValue) {
@@ -279,8 +282,8 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
     }
 
     TimetableItemUpdate timetableItemUpdate = _createTimetableUpdate(groups);
-    await widget.updateFormBloc.createTimetableUpdate(
-        timetableItemUpdate, groups.compress(), initialGroups, weekNumber, dayNumber);
+    await widget.updateFormBloc.createTimetableUpdate(timetableItemUpdate,
+        groups.compress(), initialGroups, weekNumber, dayNumber);
     Navigator.pop(context);
     if (timetableItem != null) {
       Navigator.pop(context);
