@@ -47,12 +47,6 @@ class TimetableUpdateApi {
       client: client,
     );
 
-    // documents.forEach((doc) {
-    //   doc.fields!.forEach((key, value) {
-    //     print(key);
-    //     print(value);
-    //   });
-    // });
     return documents;
   }
 }

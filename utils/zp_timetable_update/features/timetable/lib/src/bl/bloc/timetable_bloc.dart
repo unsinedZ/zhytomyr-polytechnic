@@ -54,8 +54,6 @@ class TimetableBloc {
         .getTimetableItemUpdates()
         .then((timetableItemUpdates) {
       _timetableItemUpdatesController.add(timetableItemUpdates);
-      print(timetableItemUpdates.length.toString() +
-          ' - timetableItemUpdates.length');
     }).onError((error, stackTrace) {
       print(error);
       print(stackTrace);
