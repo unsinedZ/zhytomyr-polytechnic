@@ -44,11 +44,11 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   DateTime initialDateTime = DateTime.now();
   int initialIndex = (DateTime.now().weekday - 1) % 6;
-  bool isWeekChanged = false;
   bool isNextDay = false;
 
   late TimetableBloc timetableBloc;
   late TimetableType timetableType;
+  late int initialWeekNumber;
   late int weekNumber;
   int? paramsWeekNumber;
   late int id;
@@ -69,7 +69,8 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   void initState() {
-    weekNumber = _calculateWeekNumber();
+    initialWeekNumber = _calculateWeekNumber();
+    weekNumber = initialWeekNumber;
 
     super.initState();
   }
@@ -139,6 +140,32 @@ class _TimetableScreenState extends State<TimetableScreen> {
       (a, b) => <dynamic>[a, b],
     );
 
+    timetableBloc.timetable
+        .where((timetable) => timetable != null)
+        .listen((timetable) {
+      if ((initialWeekNumber.isEven &&
+              timetable!.timetableData.weekDetermination ==
+                  WeekDetermination.Even) ||
+          (initialWeekNumber.isOdd &&
+              timetable!.timetableData.weekDetermination ==
+                  WeekDetermination.Odd)) {
+        initialWeekNumber = 1;
+      } else {
+        initialWeekNumber = 2;
+      }
+      setState(() {
+        weekNumber = initialWeekNumber;
+      });
+
+
+      if (paramsWeekNumber != null) {
+        setState(() {
+          weekNumber = paramsWeekNumber!;
+        });
+        //weekNumber = paramsWeekNumber!;
+      }
+    });
+
     super.didChangeDependencies();
   }
 
@@ -192,7 +219,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
                       onCurrentWeekChanged: (int newWeekNumber) {
                         setState(() {
                           weekNumber = newWeekNumber;
-                          isWeekChanged = !isWeekChanged;
                         });
                       },
                       onCurrentSubgroupChanged: (int newSubgroupId) {
@@ -222,24 +248,9 @@ class _TimetableScreenState extends State<TimetableScreen> {
               List<TimetableItemUpdate> timetableItemUpdates =
                   snapshot.data![1];
 
-              if ((weekNumber.isEven &&
-                      timetable.timetableData.weekDetermination ==
-                          WeekDetermination.Even) ||
-                  (weekNumber.isOdd &&
-                      timetable.timetableData.weekDetermination ==
-                          WeekDetermination.Odd)) {
-                weekNumber = 1;
-              } else {
-                weekNumber = 2;
-              }
-
-              if (paramsWeekNumber != null && paramsWeekNumber != weekNumber) {
-                weekNumber = paramsWeekNumber!;
-                isWeekChanged = true;
-              }
-
               return TabBarView(
-                key: Key("$weekNumber.toString()/$isWeekChanged.toString()/"),
+                key: Key(
+                    "${initialWeekNumber.toString()}/${weekNumber.toString()}/"),
                 children: _weekDaysNames
                     .asMap()
                     .keys
@@ -253,13 +264,13 @@ class _TimetableScreenState extends State<TimetableScreen> {
                         dateTime: initialDateTime.add(Duration(
                             days: -initialIndex +
                                 index +
-                                (isWeekChanged ? 7 : 0))),
+                                (weekNumber != initialWeekNumber ? 7 : 0))),
                         id: id,
                         subgroupId: subgroupId,
                         timetableType: timetableType,
                         isTomorrow: initialIndex == index &&
                                 isNextDay == true &&
-                                isWeekChanged == false
+                                (weekNumber != initialWeekNumber) == false
                             ? true
                             : false,
                       ),
