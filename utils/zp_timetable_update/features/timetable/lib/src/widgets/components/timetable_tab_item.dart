@@ -58,7 +58,8 @@ class _TimetableTabItemState extends State<TimetableTabItem> {
           hours: int.parse(timeEnd[0]), minutes: int.parse(timeEnd[1])));
 
       if (DateTime.now().isAfter(dateTimeStart) &&
-          DateTime.now().isBefore(dateTimeEnd)) {
+          DateTime.now().isBefore(dateTimeEnd) &&
+          !isCancelled) {
         isCurrentClass = true;
       }
     }

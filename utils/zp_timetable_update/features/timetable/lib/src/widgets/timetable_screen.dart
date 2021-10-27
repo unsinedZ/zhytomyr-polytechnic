@@ -44,6 +44,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   StreamSubscription? groupStreamSubscription;
   StreamSubscription? clientStreamSubscription;
+  StreamSubscription? tutorStreamSubscription;
   int? subgroupId;
   Group? group;
   Tutor? tutor;
@@ -71,7 +72,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
     widget.timetableBloc.loadTimetableItemUpdates();
     widget.timetableBloc.loadTutor();
 
-    widget.timetableBloc.tutor.listen((tutor) {
+    tutorStreamSubscription = widget.timetableBloc.tutor.listen((tutor) {
       setState(() {
         this.tutor = tutor;
       });
@@ -218,6 +219,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
   void dispose() {
     groupStreamSubscription?.cancel();
     clientStreamSubscription?.cancel();
+    tutorStreamSubscription?.cancel();
 
     super.dispose();
   }

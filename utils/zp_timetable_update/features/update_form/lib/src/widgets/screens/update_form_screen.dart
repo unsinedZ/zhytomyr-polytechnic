@@ -118,6 +118,7 @@ class _UpdateFormScreenState extends State<UpdateFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text(
           'Створення заміни',
           style: Theme.of(context).textTheme.headline1,
