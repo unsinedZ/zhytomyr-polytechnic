@@ -108,7 +108,8 @@ class PushNotificationBloc {
       Map<String, dynamic> payload) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-            'zp_chanel', 'zp', 'chanel for timetable update notifications',
+            'zp_chanel', 'zp', 
+            channelDescription: 'chanel for timetable update notifications',
             importance: Importance.max,
             priority: Priority.high,
             showWhen: false);
