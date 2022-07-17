@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
-
 import 'package:rxdart/rxdart.dart';
 
 import 'package:timetable/src/bl/abstractions/text_localizer.dart';
+import 'package:timetable/src/bl/abstractions/timetable_repository_factory.dart';
 import 'package:timetable/src/widgets/components/components.dart';
 import 'package:timetable/src/bl/bloc/timetable_bloc.dart';
 import 'package:timetable/src/bl/abstractions/group_repository.dart';
@@ -14,7 +14,6 @@ import 'package:timetable/src/bl/abstractions/tutor_repository.dart';
 import 'package:timetable/src/bl/models/models.dart';
 import 'package:timetable/src/widgets/components/filters_bottom_sheet.dart';
 import 'package:timetable/src/widgets/components/timetable_tab_shimmer.dart';
-import 'package:timetable/timetable.dart';
 
 class TimetableScreen extends StatefulWidget {
   final TextLocalizer textLocalizer;
@@ -162,7 +161,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
         setState(() {
           weekNumber = paramsWeekNumber!;
         });
-        //weekNumber = paramsWeekNumber!;
       }
     });
 
@@ -270,9 +268,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                         timetableType: timetableType,
                         isTomorrow: initialIndex == index &&
                                 isNextDay == true &&
-                                (weekNumber != initialWeekNumber) == false
-                            ? true
-                            : false,
+                                weekNumber == initialWeekNumber,
                       ),
                     )
                     .toList(),

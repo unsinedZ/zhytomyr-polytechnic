@@ -1,7 +1,6 @@
 name: user_sync
 description: User synchronization package
 version: 0.0.1
-author: Softwine
 publish_to: none
 
 environment:

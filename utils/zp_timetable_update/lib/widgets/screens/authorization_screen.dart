@@ -85,9 +85,10 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                         height: 100,
                       ),
                       SubmitButton(
-                          onTap: _login,
-                          text: "Ввійти",
-                          color: Theme.of(context).buttonColor)
+                        onTap: _login,
+                        text: "Ввійти",
+                        color: Theme.of(context).primaryColor,
+                      )
                     ],
                   ),
                 ),

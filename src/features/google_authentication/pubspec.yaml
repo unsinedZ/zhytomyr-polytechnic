@@ -1,7 +1,6 @@
 name: google_authentication
 description: A new flutter plugin project.
 version: 0.0.1
-author: Softwine
 
 publish_to: 'none'
 
