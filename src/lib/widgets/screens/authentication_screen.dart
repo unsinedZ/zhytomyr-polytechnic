@@ -104,13 +104,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             authenticationBloc:
                                 context.read<GoogleAuthenticationBloc>(),
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          SignInWithFacebookButton(
-                            authenticationBloc:
-                                context.read<FacebookAuthenticationBloc>(),
-                          ),
+                          // SizedBox(
+                          //   height: 10,
+                          // ),
+                          // SignInWithFacebookButton(
+                          //   authenticationBloc:
+                          //       context.read<FacebookAuthenticationBloc>(),
+                          // ),
                           if (Platform.isIOS) ...[
                             SizedBox(
                               height: 10,
